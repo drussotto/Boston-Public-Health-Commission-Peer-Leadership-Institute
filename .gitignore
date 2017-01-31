@@ -1,0 +1,10 @@
+virtenv
+*~
+*#*
+*#
+*.pyc
+__PYCHACHE__
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
