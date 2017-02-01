@@ -7,25 +7,25 @@ ask_install () {
     exit 1
 }
 
-# Check that python-2.7 & virtualenv-2.7 is installed and on PATH
-[ which python2.7 > /dev/null 2>&1 ] && ask_install python2.7
-[ which virtualenv-2.7 > /dev/null 2>&1 ] && ask_install virtualenv-2.7
+# Check that python-2.7 & virtualenv is installed and on PATH
+[ which python > /dev/null 2>&1 ] && ask_install python
+[ which virtualenv > /dev/null 2>&1 ] && ask_install virtualenv
 
-virtualenv-2.7 virtenv > /dev/null
+virtualenv virtenv > /dev/null
 source ./virtenv/bin/activate
 
-# Make sure we have pip2 too
-[ which pip2 > /dev/null 2>&1 ] && ask_install pip2
+# Make sure we have pip too
+[ which pip > /dev/null 2>&1 ] && ask_install pip
 
 # Install flask to new virtualenv
-pip2 install -r ./requirements.txt > /dev/null
+pip install -r ./requirements.txt > /dev/null
 
 cat <<EOF
 You're all set!
 
 Just run 'source ./virtenv/bin/activate' to activate the virtualenv.
 
-To test that you have flask installed properly please run: 'python2.7 test-app.py'
+To test that you have flask installed properly please run: 'python test-app.py'
 
 This should print out a link telling you how to access the site in your browser.
 
