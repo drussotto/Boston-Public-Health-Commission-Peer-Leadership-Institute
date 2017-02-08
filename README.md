@@ -1,3 +1,10 @@
+Project Members
+Alex Berberi
+Howard Cheung
+Bill Caruso
+Neil Locketz
+Daniel Russotto
+
 ## Installation:
 
 For those of you who are using OSX or linux (or Cygwin) I've written a script to get you set up.
