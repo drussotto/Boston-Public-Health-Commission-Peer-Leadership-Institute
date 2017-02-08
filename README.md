@@ -1,8 +1,13 @@
 Project Members
+
 Alex Berberi
+
 Howard Cheung
+
 Bill Caruso
+
 Neil Locketz
+
 Daniel Russotto
 
 ## Installation:
