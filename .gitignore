@@ -3,6 +3,7 @@ virtenv
 *#*
 *#
 *.pyc
+.DS_Store
 __PYCHACHE__
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

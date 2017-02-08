@@ -11,7 +11,6 @@ def index():
 def page(path):
     return render_template(path)
 
-
 # run the app.
 if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be
