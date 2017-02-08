@@ -1,0 +1,6 @@
+install:
+  - virtualenv virtenv
+  - source ./virtenv/bin/activate
+  - pip install -r requirements.txt
+script:
+  - python -c 'print ("Hello world!")'
