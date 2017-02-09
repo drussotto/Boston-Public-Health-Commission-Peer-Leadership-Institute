@@ -1,7 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
+from flask_bootstrap import Bootstrap
+from jinja2 import TemplateNotFound
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
+Bootstrap(application)
 
 @application.route('/')
 def index():
@@ -9,7 +12,14 @@ def index():
 
 @application.route('/<path:path>/')
 def page(path):
-    return render_template(path)
+    try:
+      return render_template(path)
+    except TemplateNotFound:
+      abort(404)
+
+@application.errorhandler(404)
+def page_not_found(e):
+    return page("404.html"), 404
 
 # run the app.
 if __name__ == "__main__":
