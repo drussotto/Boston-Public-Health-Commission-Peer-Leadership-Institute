@@ -2,11 +2,12 @@
 {% block title %}BPHC Peer Leadership Institute{% endblock %}
 {% block styles %}
 {{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='layout.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/navbar.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/layout.css')}}">
 {% endblock %}
 
 {% block navbar %}
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-fixed-top navbar-default">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
@@ -17,7 +18,11 @@
               <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">
-              <img src="https://puu.sh/tUuBe/3915bad67d.png" alt="BPHC" height="100%">
+              <div id="brand-container">
+                <img src="{{url_for('static', filename='images/logo.png')}}" alt="BPHC" height="100%">
+                &nbsp;
+                <div>Peer Leadership Institute</div>
+              </div>
             </a>
           </div>
 
@@ -26,26 +31,33 @@
             <ul class="nav navbar-nav">
               <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
               <li><a href="http://www.bphc.org/whatwedo/Teens/peer-leadership-institute/Pages/Peer-Leadership-Institute.aspx">About</a></li>
-              <li><a href="#">Resources</a></li>
-              <li><a href="#">Surveys</a></li>
               <li><a href="#">Workshops</a></li>
-              
+              <li><a href="#">Surveys</a></li>
             </ul>
             <form class="navbar-form navbar-right">
-              <div class="form-group">
+              <div id="search-container">
                 <input type="text" class="form-control" placeholder="Search">
+                &nbsp;
+                <button type="submit" class="btn btn-default">Search</button>
               </div>
-              <button type="submit" class="btn btn-default">Submit</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                   Resources 
+                   <span class="caret"></span>
+                </a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
+                  <li><a href="/resources.html">Substance Abuse</a></li>
+                  <li><a href="/resources.html">Sexual Health</a></li>
+                  <li><a href="/resources.html">Wellness</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
+                  <li><a href="/resources.html">Clinics</a></li>
                 </ul>
               </li>
             </ul>
@@ -56,11 +68,11 @@
 
 {% block content %}
   {% block page_content %}
-    <h1>This page isn't properly set up...</h1>
+    <h1>There's nothing here...</h1>
   {% endblock %}
   <footer class="footer navbar-fixed-bottom">
     <div class="container-fluid">
-      <a class="text-muted" href="http://bphc.org">Boston Public Health Commission</a>
+      <a href="http://bphc.org" target="_blank">Boston Public Health Commission</a>
     </div>
   </footer>
 {% endblock %}
