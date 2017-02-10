@@ -1,0 +1,67 @@
+body {
+  padding-bottom: 2em;
+}
+
+#cards-container {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.card {
+  margin: 1em 0;
+  width: 92%;
+  border: 2px solid #002a5c;
+  border-radius: 10px;
+  box-shadow: -5px 5px 10px #d2a974;
+  display: flex;
+  flex-flow: column nowrap;
+  color: darkslategray;
+  max-width: 750px;
+}
+
+.card .heading {
+  background-color: #002a5c;
+  color: white;
+  font-size: 1.5em;
+  padding: 5px;
+}
+
+.card .card-body {
+  padding: 5px;
+}
+
+#qotd-options {
+  list-style-type: lower-alpha;
+}
+
+#resources .card-body {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#resources .resource-link {
+  display: flex;
+  align-items: center;
+  background-color: #8ABFDD;
+  margin: 2px 0;
+  padding: 3px;
+  max-width: 500px;
+  align-self: center;
+}
+
+#resources .resource-link > div {
+  flex: 1;
+  text-align: center;
+  color: white;
+  font-style: italic;
+  font-size: 1.1em;
+}
+
+#resources a {
+  width: 100%;
+}
+
+#resources img {
+  height: 60px;
+}

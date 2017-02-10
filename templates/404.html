@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+  {{super()}}
+  <style>
+    .error404 {
+      color: black;
+      font-weight: bold;
+      font-size: 5em;
+      font-family: monospace;
+    }
+    .error404.red {
+      color: red;
+    }
+  </style>
+{% endblock %} 
+
+{% block page_content %}
+  <h1 class="error404">PAGE NOT FOUND (⌣_⌣”)</h1>
+{% endblock %}
+
+{% block scripts %}
+  {{super()}}
+  <script>
+    function blink_error() {
+      setTimeout(function() {
+        $(".error404").toggleClass("red");
+        blink_error();
+      }, 500);
+    }
+    blink_error();
+  </script>
+{% endblock %} 
