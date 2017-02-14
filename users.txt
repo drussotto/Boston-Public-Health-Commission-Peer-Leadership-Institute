@@ -1,0 +1,4 @@
+# This file is a temp set of users which we will use until
+# the DB is set up.
+admin:admin
+users1:password
