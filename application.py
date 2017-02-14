@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort, url_for, request, current_app
+from flask import Flask, render_template, abort, url_for, request, current_app, redirect, flash
 from flask_bootstrap import Bootstrap
 from jinja2 import TemplateNotFound
 import os
@@ -15,8 +15,17 @@ def login_user():
     if request.method == "GET":
         form = pli.LoginForm()
         return render_template("login.html", form=form)
+    elif request.method == "POST":
+        form = pli.LoginForm(request.form)
+        # form.email.data
+        # form.password.data
+        if form.validate():
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('login_user'))
     else:
-        pass
+        abort(404)
+            
 
 @application.route('/')
 def index():
