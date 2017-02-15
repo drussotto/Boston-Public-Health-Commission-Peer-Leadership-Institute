@@ -40,28 +40,29 @@ def mocked_users():
     collection.insert_many(users)
     return collection
 
-def check_index_page(f, r):
-    f("PLI has answers to all your health-related questions" in r.data)
-    f("Index-Page" in r.data)
-    f("Choose a category or search below." in r.data)
+def check_page(expected_content, *name):
+        
+    def _check_page(f, d, *msg):
+        for s in expected_content:
+            f(s in d, *msg)
 
-def assert_index_page(tr, r):
-    check_index_page(lambda x: tr.assertTrue(x, "Is index page"), r)
-def assert_not_index_page(tr, r):
-    check_index_page(lambda x: tr.assertFalse(x, "Not index page"), r)
-    
-def check_login_page(f, r):
-    # I'm satisfied with these deciding this is the login page
-    f("Email Address" in r.data)
-    f("Login" in r.data)
-    f("Password" in r.data)
+    def assert_page(tr, r):
+        if len(name) == 1:
+            _check_page(tr.assertTrue, r.data, str(name[0]))
+        else:
+            _check_page(tr.assertTrue, r.data)
+            
+    def assert_not_page(tr, r):
+        if len(name) == 1:
+            _check_page(tr.assertFalse, r.data, "Not " + str(name[0]))
+        else:
+            _check_page(tr.assertFalse, r.data)
 
-def assert_login_page(tr, r):
-    check_login_page(lambda x: tr.assertTrue(x, "Is login page"), r)
+    return assert_page, assert_not_page
 
-def assert_not_login_page(tr, r):
-    check_login_page(tr.assertFalse(x, "Is not login page"), r)
-
+assert_index_page, assert_not_index_page = check_page(["PLI has answers to all your health-related questions","Index-Page","Choose a category or search below."],"index")
+assert_login_page, assert_not_login_page = check_page(["Email Address","Login","Password"], "login")
+assert_res_page, assert_not_res_page = check_page(["Resources-Page", "Resources go here ..."], "resources")
     
 class LoginTestCase(unittest.TestCase):
 
@@ -101,6 +102,32 @@ class LoginTestCase(unittest.TestCase):
             assert_login_page(self, self.do_login(user1["email_address"], user2["password"]))
             assert_login_page(self, self.do_login(user2["email_address"], user3["password"]))
             assert_login_page(self, self.do_login(user3["email_address"], user1["password"]))
+            assert_login_page(self, self.do_login(32, user1["password"]))
+            assert_login_page(self, self.do_login(user2["email_address"], user1["password"]))
+            assert_login_page(self, self.do_login(43.2, 4))
+            assert_login_page(self, self.do_login("{ $gt : \"*\" }", "{ $gt : \"*\" }"))
+            assert_login_page(self, self.do_login(user2["email_address"], user3["password"]))
+            assert_login_page(self, self.do_login("", ""))
+            assert_login_page(self, self.do_login(None, None))
+
+    def test_good_login_post_redirect(self):
+        with pli.app_context():
+            assert_login_page(self, self.do_login(user1["email_address"], user1["password"], to="login"))
+            assert_res_page(self, self.do_login(user2["email_address"], user2["password"], to="resources.html"))
+            assert_index_page(self, self.do_login(user3["email_address"], user3["password"]))
+
+    def test_bad_login_post_no_redirect(self):
+        with pli.app_context():
+            assert_login_page(self, self.do_login(user1["email_address"], user2["password"], to="resources.html"))
+            assert_login_page(self, self.do_login(user2["email_address"], user3["password"], to="resources.html"))
+            assert_login_page(self, self.do_login(user3["email_address"], user1["password"], to="resources.html"))
+            assert_login_page(self, self.do_login(32, user1["password"], to="resources.html"))
+            assert_login_page(self, self.do_login(user2["email_address"], user1["password"], to="resources.html"))
+            assert_login_page(self, self.do_login(43.2, 4, to="resources.html"))
+            assert_login_page(self, self.do_login("{ $gt : \"*\" }", "{ $gt : \"*\" }", to="resources.html"))
+            assert_login_page(self, self.do_login(user2["email_address"], user3["password"], to="resources.html"))
+            assert_login_page(self, self.do_login("", "", to="resources.html"))
+            assert_login_page(self, self.do_login(None, None, to="resources.html"))
 
     def do_login(self, user, passwd, to=None):
 
