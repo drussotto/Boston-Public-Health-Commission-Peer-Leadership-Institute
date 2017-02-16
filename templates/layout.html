@@ -1,4 +1,16 @@
 {% extends "bootstrap/base.html" %}
+{% macro render_field(field) %}
+  <dt>{{ field.label }}
+  <dd>{{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{% endmacro %}
 {% block title %}BPHC Peer Leadership Institute{% endblock %}
 {% block styles %}
 {{super()}}
@@ -53,11 +65,11 @@
                    <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="/resources.html">Substance Abuse</a></li>
-                  <li><a href="/resources.html">Sexual Health</a></li>
-                  <li><a href="/resources.html">Wellness</a></li>
+                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Substance Abuse</a></li>
+                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Sexual Health</a></li>
+                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Wellness</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="/resources.html">Clinics</a></li>
+                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Clinics</a></li>
                 </ul>
               </li>
             </ul>
@@ -76,6 +88,3 @@
     </div>
   </footer>
 {% endblock %}
-
-
-

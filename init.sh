@@ -2,20 +2,8 @@
 
 echo "Setting up ..." && echo
 
-ask_install () {
-    echo "Please install $1, or put it on your PATH" > /dev/stdout
-    exit 1
-}
-
-# Check that python-2.7 & virtualenv is installed and on PATH
-[ which python > /dev/null 2>&1 ] || ask_install python
-[ which virtualenv > /dev/null 2>&1 ] || ask_install virtualenv
-
 virtualenv virtenv > /dev/null
 source ./virtenv/bin/activate
-
-# Make sure we have pip too
-[ which pip > /dev/null 2>&1 ] || ask_install pip
 
 # Install flask to new virtualenv
 pip install -r ./requirements.txt > /dev/null
