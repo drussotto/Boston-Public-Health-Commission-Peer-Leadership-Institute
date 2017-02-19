@@ -1,32 +1,45 @@
 from flask import Flask, render_template, abort, url_for, request, current_app, redirect, flash
 from flask_bootstrap import Bootstrap
 from jinja2 import TemplateNotFound
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, login_user
+import pli
 import os
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
 Bootstrap(application)
-import pli
+login_manager = LoginManager()
+login_manager.init_app(application)
 application.url_map.strict_slashes = False
+application.secret_key = "We should make this more secret when we do this 4 real"
 
+@login_manager.user_loader
+def load_pli_user(uid):
+    return pli.PliUser.get(uid)
 
 @application.route('/login', methods = [ "POST", "GET" ])
 def login_user():
-    if request.method == "GET":
-        form = pli.LoginForm()
-        return render_template("login.html", form=form)
-    elif request.method == "POST":
-        form = pli.LoginForm(request.form)
-        # form.email.data
-        # form.password.data
-        if form.validate():
-            return redirect(url_for('index'))
-        else:
-            return redirect(url_for('login_user'))
-    else:
-        abort(404)
+    try:
+        if request.method == "GET":
+            form = pli.LoginForm()
+            return render_template("login.html", form=form)
+        if request.method == "POST":
+            form = pli.LoginForm(request.form)
+            if form.validate():
+                u = pli.validate_login(*form.as_args(hash_fun=generate_password_hash))
+                if u is not None:
+                    user = pli.PliUser.get_auth(u)
+                    login_user(user)
+                    n = request.args.get("next")
+                    to = n if n is not None else "index"
+                    return redirect(url_for(to))
+                # TODO indicate the failure on the login page ...
+                return redirect(url_for('login_user'))
+    except:
+        return redirect(url_for('login_user'))
+    abort(404)
             
-
 @application.route('/')
 def index():
     return render_template("index.html")
