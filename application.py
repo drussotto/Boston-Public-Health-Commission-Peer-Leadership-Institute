@@ -1,8 +1,9 @@
+from pymongo import MongoClient
 from flask import Flask, render_template, abort, url_for, request, current_app, redirect, flash
 from flask_bootstrap import Bootstrap
 from jinja2 import TemplateNotFound
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required
 import mongomock
 import pli
 import os
@@ -14,6 +15,10 @@ login_manager = LoginManager()
 login_manager.init_app(application)
 application.url_map.strict_slashes = False
 application.secret_key = "We should make this more secret when we do this 4 real"
+
+application.config["db"] = MongoClient().pli
+
+
 
 @login_manager.user_loader
 def load_pli_user(uid):
@@ -38,7 +43,7 @@ def login():
                 # TODO indicate the failure on the login page ...
         return redirect(url_for('login'))
     return abort(404)
-    
+
         
 @application.route('/')
 def index():
@@ -54,6 +59,7 @@ def page(path):
 @application.errorhandler(404)
 def page_not_found(e):
     return page("404.html"), 404
+
 
 # override_url_for automatically adds a timestamp query parameter to
 # static files (e.g. css) to avoid browser caching issues

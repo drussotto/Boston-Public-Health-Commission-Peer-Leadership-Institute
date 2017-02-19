@@ -5,7 +5,7 @@ from flask import current_app
 # Returns the user_id for the given user if the login was successful
 # Otherwise returns None
 def validate_login(email, password):
-    for user in current_app.config['db'].find({ "email_address" : email }):
+    for user in current_app.config['db'].users.find({ "email_address" : email }):
         # This checks password against the hash we have store, the stored hash includes
         # information such as salts, what algo was used ... etc.
         # So it is best to delegate to werkseug to check here.

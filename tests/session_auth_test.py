@@ -49,9 +49,9 @@ user3 = {
 users = [user1,user2,user3]
 
 def mocked_users():
-    collection = mongomock.MongoClient().db.collection
-    collection.insert_many(users)
-    return collection
+    db = mongomock.MongoClient().pli
+    db.users.insert_many(users)
+    return db
 
 def check_page(expected_content, *name):
         
