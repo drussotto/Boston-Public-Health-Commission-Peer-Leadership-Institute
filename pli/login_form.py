@@ -5,6 +5,5 @@ class LoginForm(Form):
     password = PasswordField('Password', [validators.DataRequired()])
 
     # Returns this form as a login-tuple (email, password).
-    # If hash_fun is provided, will return (email, hash_fun(password))
-    def as_args(self, hash_fun=None):
-        return email, password if hash_fun is None else hash_fun(password)
+    def as_args(self):
+        return self.email.data, self.password.data

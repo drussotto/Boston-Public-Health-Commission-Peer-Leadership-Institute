@@ -3,6 +3,7 @@ from flask_bootstrap import Bootstrap
 from jinja2 import TemplateNotFound
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user
+import mongomock
 import pli
 import os
 
@@ -19,27 +20,26 @@ def load_pli_user(uid):
     return pli.PliUser.get(uid)
 
 @application.route('/login', methods = [ "POST", "GET" ])
-def login_user():
-    try:
-        if request.method == "GET":
-            form = pli.LoginForm()
-            return render_template("login.html", form=form)
-        if request.method == "POST":
-            form = pli.LoginForm(request.form)
-            if form.validate():
-                u = pli.validate_login(*form.as_args(hash_fun=generate_password_hash))
-                if u is not None:
-                    user = pli.PliUser.get_auth(u)
-                    login_user(user)
-                    n = request.args.get("next")
-                    to = n if n is not None else "index"
+def login():
+    if request.method == "GET":
+        form = pli.LoginForm()
+        return render_template("login.html", form=form)
+    if request.method == "POST":
+        form = pli.LoginForm(request.form)
+        if form.validate():
+            uid = pli.validate_login(*form.as_args())
+            if pli.perform_login(uid):
+                n = request.args.get("next")
+                to = n if n is not None else "index"
+                if to == "index":
                     return redirect(url_for(to))
+                else:
+                    return redirect(url_for('page', path=to+".html"))
                 # TODO indicate the failure on the login page ...
-                return redirect(url_for('login_user'))
-    except:
-        return redirect(url_for('login_user'))
-    abort(404)
-            
+        return redirect(url_for('login'))
+    return abort(404)
+    
+        
 @application.route('/')
 def index():
     return render_template("index.html")
@@ -70,7 +70,8 @@ def dated_url_for(endpoint, **values):
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
 
-
+# Adds a "file_url_for" global in the templates
+# allows them to get the url for a templated html page
 def file_url_for(name):
     return dated_url_for("page", path=name)
 application.add_template_global(file_url_for, "file_url_for")
