@@ -80,15 +80,16 @@ assert_surv_page, assert_not_surv_page = check_page(["Survey-Page"], "surveys")
 
 def get_u(uid):
     return PliUser(uid, False)
-
+def post_login(client, user, pas, url="/login"):
+    return client.post(url, data=dict(
+        email=user, 
+        password=pas
+    ), follow_redirects=True)
 def with_login(username, passwd, to=None):
     def decorator(f):
         def actual_function(s, client):
             n = ("?next="+to) if to is not None else ""
-            r = client.post('/login'+n, data=dict(
-                email=username, 
-                password=passwd
-            ), follow_redirects=True)
+            r = post_login(client, username, passwd, url='/login'+n)
             p_len = len(inspect.getargspec(f).args)
             if p_len == 1:
                 f(s)
@@ -130,6 +131,12 @@ class LoginTestCase(unittest.TestCase):
 
     def assert_cur_uid(self, uid):
         self.assertTrue(current_user.same_uid(uid))
+
+    @classmethod
+    def setUpClass(cls):
+        def test_login():
+            return str(current_user.is_authenticated), 200
+        pli.add_url_rule("/test-login", endpoint="test_login", view_func=test_login)
         
     def setUp(self):
         pli.config['db'] = mocked_users()
@@ -253,3 +260,19 @@ class LoginTestCase(unittest.TestCase):
     def test_bad_login_redirect6(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
+    
+    def test_saved_login(self):
+        # Tests whether the login persists accross requests
+        client = pli.test_client()
+        r = post_login(client, user1["email_address"], user1["real_pass"])
+        assert_index_page(self, r)
+        # route registered during test setup
+        r = client.get("/test-login")
+        self.assertTrue(r.data == "True")
+
+    def test_bad_login_not_saved(self):
+        client = pli.test_client()
+        r = post_login(client, user1["email_address"], user2["real_pass"])
+        assert_login_page(self, r)
+        r = client.get("/test-login")
+        self.assertTrue(r.data == "False")
