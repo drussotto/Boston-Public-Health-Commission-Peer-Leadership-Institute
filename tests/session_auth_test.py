@@ -213,50 +213,50 @@ class LoginTestCase(unittest.TestCase):
         assert_login_page(self, res)
 
     @with_req_ctxt
-    @with_login(user1["email_address"], user1["real_pass"], to="resources")
+    @with_login(user1["email_address"], user1["real_pass"], to="resources.html")
     def test_good_login_post_red1(self, client, res):
         self.assert_logged_in()
         assert_res_page(self, res)
 
     @with_req_ctxt
-    @with_login(user2["email_address"], user2["real_pass"], to="surveys")
+    @with_login(user2["email_address"], user2["real_pass"], to="surveys.html")
     def test_good_login_post_redirect1(self, client, res):
         self.assert_logged_in()
         self.assert_cur_uid(get_u(user2["_id"]))
         assert_surv_page(self, res)
 
     @with_req_ctxt
-    @with_login(user1["email_address"], user2["real_pass"], to="resources")
+    @with_login(user1["email_address"], user2["real_pass"], to="resources.html")
     def test_bad_login_redirect1(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
     @with_req_ctxt
-    @with_login(user2["email_address"], user3["real_pass"], to="resources")
+    @with_login(user2["email_address"], user3["real_pass"], to="resources.html")
     def test_bad_login_redirect2(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
     @with_req_ctxt
-    @with_login(32, user1["real_pass"],to="resources")
+    @with_login(32, user1["real_pass"],to="resources.html")
     def test_bad_login_redirect3(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
     @with_req_ctxt
-    @with_login("", "",to="resources")
+    @with_login("", "",to="resources.html")
     def test_bad_login_redirect4(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
     @with_req_ctxt
-    @with_login(None, None, to="resources")
+    @with_login(None, None, to="resources.html")
     def test_bad_login_redirect5(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
     @with_req_ctxt
-    @with_login("{ $gt : \"*\" }", "{ $gt : \"*\" }", to="resources")
+    @with_login("{ $gt : \"*\" }", "{ $gt : \"*\" }", to="resources.html")
     def test_bad_login_redirect6(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)

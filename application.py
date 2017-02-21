@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from flask import Flask, render_template, abort, url_for, request, current_app, redirect, flash
+from flask import Flask, render_template, abort, url_for, request, current_app, redirect, flash, g
 from flask_bootstrap import Bootstrap
 from jinja2 import TemplateNotFound
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,9 +13,9 @@ application = Flask(__name__)
 Bootstrap(application)
 login_manager = LoginManager()
 login_manager.init_app(application)
+login_manager.login_view="login"
 application.url_map.strict_slashes = False
 application.secret_key = "We should make this more secret when we do this 4 real"
-
 application.config["db"] = MongoClient().pli
 
 
@@ -23,6 +23,11 @@ application.config["db"] = MongoClient().pli
 @login_manager.user_loader
 def load_pli_user(uid):
     return pli.PliUser.get(uid)
+
+@application.route('/hello')
+@login_required
+def hello():
+    return "hello"
 
 @application.route('/login', methods = [ "POST", "GET" ])
 def login():
@@ -39,7 +44,10 @@ def login():
                 if to == "index":
                     return redirect(url_for(to))
                 else:
-                    return redirect(url_for('page', path=to+".html"))
+                    if to.endswith(".html"):
+                        return redirect(url_for('page', path=to))
+                    else:
+                        return redirect(to)
                 # TODO indicate the failure on the login page ...
         return redirect(url_for('login'))
     return abort(404)
