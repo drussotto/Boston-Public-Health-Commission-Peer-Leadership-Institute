@@ -15,6 +15,7 @@ user1 = {
     "password": 'pbkdf2:sha1:1000$FmjdX5b2$c23a5cefc39cc669f3e193670c3c122041266f26',
     "first_name": "Bob",
     "last_name": "Smith",
+    "confirmed": True,
     "organization": {
         "name": "Boston Latin",
         "type": "School",
@@ -29,6 +30,7 @@ user2 = {
     "password": "pbkdf2:sha1:1000$HDOj8diN$62524eb1619b6ee167aeb1d6116ad6075a5bf3cb",
     "first_name": "Alice",
     "last_name": "Da Example",
+    "confirmed": False,
     "organization": {
     "name": "Squashbusters",
         "type": "Community Organization",
@@ -43,6 +45,7 @@ user3 = {
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "Eve",
     "last_name": "Fakename",
+    "confirmed": True,
     "organization": None
 }
 
@@ -260,6 +263,24 @@ class LoginTestCase(unittest.TestCase):
     def test_bad_login_redirect6(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
+
+    @with_req_ctxt
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_logout1(self, client, res):
+        self.assert_logged_in()
+        assert_index_page(self, res)
+        res = client.get('/logout')
+        assert_index_page(self, res)
+        self.assert_not_logged_in()
+
+    @with_req_ctxt
+    @with_login(user1["email_address"], user2["real_pass"])
+    def test_logout2(self, client, res):
+        self.assert_not_logged_in()
+        assert_login_page(self, res)
+        res = client.get('/logout')
+        assert_index_page(self, res)
+        self.assert_not_logged_in()
     
     def test_saved_login(self):
         # Tests whether the login persists accross requests
