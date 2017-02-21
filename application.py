@@ -3,7 +3,7 @@ from flask import Flask, render_template, abort, url_for, request, current_app, 
 from flask_bootstrap import Bootstrap
 from jinja2 import TemplateNotFound
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 import mongomock
 import pli
 import os
@@ -52,7 +52,11 @@ def login():
         return redirect(url_for('login'))
     return abort(404)
 
-        
+@application.route('/logout')
+def logout():
+    logout_user()
+    return redirect('/')
+
 @application.route('/')
 def index():
     return render_template("index.html")

@@ -270,7 +270,6 @@ class LoginTestCase(unittest.TestCase):
         self.assert_logged_in()
         assert_index_page(self, res)
         res = client.get('/logout')
-        assert_index_page(self, res)
         self.assert_not_logged_in()
 
     @with_req_ctxt
@@ -279,7 +278,6 @@ class LoginTestCase(unittest.TestCase):
         self.assert_not_logged_in()
         assert_login_page(self, res)
         res = client.get('/logout')
-        assert_index_page(self, res)
         self.assert_not_logged_in()
     
     def test_saved_login(self):
