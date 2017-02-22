@@ -11,12 +11,15 @@
     <div class="card" id="qotd">
       <div class="heading">Question of the Day</div>
       <div class="card-body">
-        <h4>How great is this new site?</h4>
-        <ol id="qotd-options">
-          <li>Pretty great</li>
-          <li>Really great</li>
-          <li>The greatest</li>
-        </ol>     
+        <h4>{{ question }}</h4>
+        <form action="/question" method="post">
+          <ol id="qotd-options">
+            <input type="radio" name="qotd" value="a"> a<br>
+            <input type="radio" name="qotd" value="b"> b<br>
+            <input type="radio" name="qotd" value="c"> c<br>
+          </ol>
+          <input type="submit" value="Submit">
+        </form>
       </div>
     </div>
     <div class="card" id="resources">

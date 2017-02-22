@@ -59,7 +59,17 @@ def logout():
 
 @application.route('/')
 def index():
-    return render_template("index.html")
+    question = "Choose C?"
+    return render_template("index.html", question=question)
+
+@application.route('/question', methods = ["POST"])
+def question():
+    if request.form["qotd"] == "c":
+        return_page = "correct.html"
+    else:
+        return_page = "wrong.html"
+    return render_template(return_page)
+
 
 @application.route('/page/<path:path>')
 def page(path):
