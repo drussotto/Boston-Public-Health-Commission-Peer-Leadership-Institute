@@ -43,7 +43,7 @@ def login():
             if perform_login(uid):
                 n = request.args.get("next")
                 to = n if n is not None else "index"
-                if to == "index":
+                if to == "index" or to.startswith('/'):
                     return redirect(url_for(to))
                 else:
                     if to.endswith(".html"):
