@@ -76,18 +76,25 @@ def override_url_for():
     return dict(url_for=dated_url_for)
 
 def dated_url_for(endpoint, **values):
-    if endpoint == 'static':
-        filename = values.get('filename', None)
-        if filename:
-            file_path = os.path.join(application.root_path,
-                                     endpoint, filename)
-            values['q'] = int(os.stat(file_path).st_mtime)
+    # Current hack to allow reloading of files.
+    if current_app.debug:
+        if endpoint == 'static':
+            filename = values.get('filename', None)
+            if filename:
+                file_path = os.path.join(application.root_path, endpoint, filename)
+                values['q'] = int(os.stat(file_path).st_mtime)
+        elif endpoint == 'page':
+            pth = values.get('path', None)
+            # This will never be None but whatever
+            if pth:
+                file_path = os.path.join(application.root_path,"templates", pth)
+                values["q"] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
 
 # Adds a "file_url_for" global in the templates
 # allows them to get the url for a templated html page
-def file_url_for(name):
-    return dated_url_for("page", path=name)
+def file_url_for(name, **kwargs):
+    return dated_url_for("page", path=name, **kwargs)
 application.add_template_global(file_url_for, "file_url_for")
 
 # run the application.

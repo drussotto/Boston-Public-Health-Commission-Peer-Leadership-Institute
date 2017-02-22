@@ -23,15 +23,15 @@
       <div class="heading">Learn Something New</div>
       <div class="card-body">
         <h4>PLI has answers to all your health-related questions. Choose a category or search below.</h4>
-        <a class="resource-link" href="{{ file_url_for ( 'resources.html' ) }}">
+        <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='subst-abuse' ) }}">
           <div>Substance Abuse</div>
           <img src="{{url_for('static', filename='images/subst_abuse.png')}}" alt="Substance Abuse">
         </a>
-        <a class="resource-link" href="{{ file_url_for ( 'resources.html' ) }}">
+        <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='sex' ) }}">
           <img src="{{url_for('static', filename='images/sexual_health.png')}}" alt="Sexual Health">
           <div>Sexual Health</div>
         </a>
-        <a class="resource-link" href="{{ file_url_for ( 'resources.html' ) }}">
+        <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='wellness' ) }}">
           <div>Wellness</div>
           <img src="{{url_for('static', filename='images/wellness.png')}}" alt="Wellness">
         </a>
