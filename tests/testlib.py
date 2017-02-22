@@ -80,6 +80,8 @@ assert_surv_page, assert_not_surv_page = check_page(["Survey-Page"], "surveys")
 assert_mail_sent_page, assert_not_mail_sent_page = check_page(["Reg-Email-Send"], "mail-sent")
 assert_reg_page, assert_not_reg_page = check_page(["Reg-Page"], "register-page")
 assert_alr_reg_page, assert_not_alr_reg_page = check_page(["Already-Reg"], "alr-reg")
+assert_bad_vtok_page, assert_not_bad_vtok_page = check_page(["Failed-Token-Valid"], "bad-token-page")
+assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid"], "good-valid-tok")
 
 def get_u(uid):
     return PliUser(uid, False)

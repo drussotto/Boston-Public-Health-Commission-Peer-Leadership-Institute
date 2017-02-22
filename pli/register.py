@@ -38,3 +38,27 @@ def send_confirmation_email(send_to, uid):
 # "_id" field of the given document once done.
 def create_user(user_document):
     return 1
+
+# TODO
+# "confirms" the user whose validation token is given.
+# Bad tokens should return the bad_validation template
+# otherwise the user's confirmed inside the mongo DB
+def validate_user(user_tok):
+    pass
+
+# TODO
+# returns true if the user with the given uid is "confirmed"
+def is_valid_uid(uid):
+    pass
+
+# TODO
+# returns the encoded uid (using itsdangerous)
+# this token will be used for email validation (should be ascii armored)
+def encode_uid(uid):
+    pass
+
+# TODO
+# decodes the given encoded uid, the token should have been encoded
+# by encoded_uid, and should be made with itsdangerous
+def decode_uid(euid):
+    pass

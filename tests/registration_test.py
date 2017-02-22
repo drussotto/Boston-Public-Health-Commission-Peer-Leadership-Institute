@@ -1,6 +1,7 @@
 from application import application as pli, mail
+from urllib import quote_plus
 from testlib import *
-from pli import validate_login
+from pli import validate_login, encode_uid
 import unittest
 
 def reg_form_from_user(d):
@@ -60,3 +61,57 @@ class RegistrationTest(unittest.TestCase):
                                               "thisismypassword"))
             self.assertEqual(1, len(outbox))
         
+
+
+class ValidationTest(unittest.TestCase):
+
+    def setUp(self):
+        pli.config['db'] = mocked_users()
+
+        
+    @with_test_client
+    def test_valid_token1(self, client):
+        r = client.get('/validate?user='+
+                       quote_plus(encode_uid(user2["_id"])))
+        assert_good_vtok_page(self, r)
+        # Call should have "validated" user2
+        self.assertTrue(pli.is_confirmed_uid(user2["_id"]))
+
+    @with_test_client
+    def test_invalid_token1(self, client):
+        r = client.get('/validate?user='+
+                       quote_plus(encode_uid(0)))
+
+        assert_bad_vtok_page(self, r)
+
+    @with_test_client
+    def test_invalid_token2(self, client):
+        r = client.get('/validate?user=garbage')
+        assert_bad_vtok_page(self, r)
+
+    @with_test_client
+    def test_invalid_token3(self, client):
+        r = client.get('/validate?user=5')
+        assert_bad_vtok_page(self, r)
+
+    @with_test_client
+    def test_invalid_token4(self, client):
+        r = client.get('/validate')
+        assert_bad_vtok_page(self, r)
+
+    @with_test_client
+    def test_invalid_token5(self, client):
+        r = client.get('/validate?user=5.73')
+        assert_bad_vtok_page(self, r)
+
+    @with_test_client
+    def test_invalid_token6(self, client):
+        r = client.get('/validate?user=\"')
+        assert_bad_vtok_page(self, r)
+
+    @with_test_client
+    def test_invalid_token7(self, client):
+        r = client.get('/validate?user=True')
+        assert_bad_vtok_page(self, r)
+
+

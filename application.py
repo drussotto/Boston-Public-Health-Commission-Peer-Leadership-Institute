@@ -43,6 +43,13 @@ def logout():
 def register():
     return pli.register()
 
+@application.route('/validate')
+def validate():
+    if "user" not in request.args:
+        return render_template("bad_validation_token.html")
+    else:
+        return pli.validate_user(request.args.get('user'))
+    
 @application.route('/')
 def index():
     question = "Choose C?"
