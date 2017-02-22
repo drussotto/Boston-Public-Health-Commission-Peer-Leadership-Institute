@@ -3,21 +3,24 @@ from flask import Flask, render_template, abort, url_for, request, current_app, 
 from flask_bootstrap import Bootstrap
 from jinja2 import TemplateNotFound
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 import mongomock
 import pli
 import os
+import config
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
+application.config.from_object('config.Config')
+mail = Mail(application)
 Bootstrap(application)
 login_manager = LoginManager()
 login_manager.init_app(application)
 login_manager.login_view="login"
 application.url_map.strict_slashes = False
-application.secret_key = "We should make this more secret when we do this 4 real"
 application.config["db"] = MongoClient().pli
-
+application.config["mail"] = mail
 
 @login_manager.user_loader
 def load_pli_user(uid):
@@ -36,6 +39,10 @@ def login():
 def logout():
     return pli.logout()
     
+@application.route('/register', methods = ["POST", "GET" ])
+def register():
+    return pli.register()
+
 @application.route('/')
 def index():
     question = "Choose C?"
