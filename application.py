@@ -19,7 +19,6 @@ application.secret_key = "We should make this more secret when we do this 4 real
 application.config["db"] = MongoClient().pli
 
 
-
 @login_manager.user_loader
 def load_pli_user(uid):
     return pli.PliUser.get(uid)
@@ -31,32 +30,12 @@ def hello():
 
 @application.route('/login', methods = [ "POST", "GET" ])
 def login():
-    if request.method == "GET":
-        form = pli.LoginForm()
-        return render_template("login.html", form=form)
-    if request.method == "POST":
-        form = pli.LoginForm(request.form)
-        if form.validate():
-            uid = pli.validate_login(*form.as_args())
-            if pli.perform_login(uid):
-                n = request.args.get("next")
-                to = n if n is not None else "index"
-                if to == "index":
-                    return redirect(url_for(to))
-                else:
-                    if to.endswith(".html"):
-                        return redirect(url_for('page', path=to))
-                    else:
-                        return redirect(to)
-                # TODO indicate the failure on the login page ...
-        return redirect(url_for('login'))
-    return abort(404)
+    return pli.login()
 
 @application.route('/logout')
 def logout():
-    logout_user()
-    return redirect('/')
-
+    return pli.logout()
+    
 @application.route('/')
 def index():
     question = "Choose C?"
@@ -64,12 +43,7 @@ def index():
 
 @application.route('/question', methods = ["POST"])
 def question():
-    if request.form["qotd"] == "c":
-        return_page = "correct.html"
-    else:
-        return_page = "wrong.html"
-    return render_template(return_page)
-
+    return pli.answer_question()
 
 @application.route('/page/<path:path>')
 def page(path):

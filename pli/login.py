@@ -1,6 +1,8 @@
-from werkzeug.security import check_password_hash
-from flask_login import login_user
+from flask import Flask, render_template, abort, url_for, request, current_app, redirect, flash, g
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, current_user, logout_user
 from pli_user import PliUser
+from login_form import LoginForm
 from flask import current_app
 # Returns the user_id for the given user if the login was successful
 # Otherwise returns None
@@ -25,3 +27,29 @@ def perform_login(uid):
         return True
     else:
         return False
+
+def logout():
+    logout_user()
+    return redirect('/')
+
+def login():
+    if request.method == "GET":
+        form = LoginForm()
+        return render_template("login.html", form=form)
+    if request.method == "POST":
+        form = LoginForm(request.form)
+        if form.validate():
+            uid = validate_login(*form.as_args())
+            if perform_login(uid):
+                n = request.args.get("next")
+                to = n if n is not None else "index"
+                if to == "index":
+                    return redirect(url_for(to))
+                else:
+                    if to.endswith(".html"):
+                        return redirect(url_for('page', path=to))
+                    else:
+                        return redirect(to)
+                # TODO indicate the failure on the login page ...
+        return redirect(url_for('login'))
+    return abort(404)
