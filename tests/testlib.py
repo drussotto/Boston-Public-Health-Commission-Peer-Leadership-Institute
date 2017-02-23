@@ -29,7 +29,7 @@ user2 = {
     "last_name": "Da Example",
     "confirmed": False,
     "organization": {
-    "name": "Squashbusters",
+        "name": "Squashbusters",
         "type": "Community Organization",
         "region": "Roxbury"
     }
@@ -38,7 +38,7 @@ user2 = {
 user3 = {
     "_id": 34567,
     "email_address": "iamastudent@someschool.org",
-    "real_pass":"passw0rd",
+    "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "Eve",
     "last_name": "Fakename",
@@ -48,10 +48,12 @@ user3 = {
 
 users = [user1,user2,user3]
 
+
 def mocked_users():
     db = mongomock.MongoClient().pli
     db.users.insert_many(users)
     return db
+
 
 def check_page(expected_content, *name):
         
@@ -83,13 +85,18 @@ assert_alr_reg_page, assert_not_alr_reg_page = check_page(["Already-Reg"], "alr-
 assert_bad_vtok_page, assert_not_bad_vtok_page = check_page(["Failed-Token-Valid"], "bad-token-page")
 assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid"], "good-valid-tok")
 
+
 def get_u(uid):
     return PliUser(uid, False)
+
+
 def post_login(client, user, pas, url="/login"):
     return client.post(url, data=dict(
         email=user, 
         password=pas
     ), follow_redirects=True)
+
+
 def with_login(username, passwd, to=None):
     def decorator(f):
         def actual_function(s, client):
@@ -108,11 +115,13 @@ def with_login(username, passwd, to=None):
         return actual_function
     return decorator
 
+
 def with_req_ctxt(f):
     def run_test(s):
         with pli.test_client() as client:
             f(s, client)
     return run_test
+
 
 def with_test_client(f):
     def run_test(s):
