@@ -5,14 +5,14 @@ from jinja2 import TemplateNotFound
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
+from itsdangerous import URLSafeSerializer
 import mongomock
 import pli
 import os
-import config
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
-application.config.from_object('config.Config')
+application.config.from_envvar('PLI_SETTINGS')
 mail = Mail(application)
 Bootstrap(application)
 login_manager = LoginManager()
@@ -21,6 +21,7 @@ login_manager.login_view="login"
 application.url_map.strict_slashes = False
 application.config["db"] = MongoClient().pli
 application.config["mail"] = mail
+application.config["signer"] = URLSafeSerializer(application.config["SECRET_KEY"])
 
 @login_manager.user_loader
 def load_pli_user(uid):
