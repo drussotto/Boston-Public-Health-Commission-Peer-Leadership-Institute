@@ -3,12 +3,10 @@ class PliUser(UserMixin):
 
     def __init__(self, uid, is_auth):
         self.uid = uid
-
-
+        
     def get_id(self):
         return self.uid
     
-
     @classmethod
     def get(clazz, uid):
         return PliUser(uid, False)
