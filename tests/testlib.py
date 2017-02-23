@@ -46,12 +46,49 @@ user3 = {
     "organization": None
 }
 
-users = [user1,user2,user3]
+question1 = {
+    "_id": 1,
+    "question": "What is the capital of Massachussetts?",
+    "choices": {
+        "a": "Boston",
+        "b": "Washington"
+    },
+    "answer": "a"
+}
+
+question2 = {
+    "_id": 2,
+    "question": "What does PLI stand for?",
+    "choices": {
+        "a": "Please Leave It",
+        "b": "Pop Lock I",
+        "c": "Peer Leadership Institute"
+    },
+    "answer": "c"
+}
+
+question3 = {
+    "_id": 3,
+    "question": "What is BPHC?",
+    "choices": {
+        "a": "Boston Public Health Commission",
+    },
+    "answer": "a",
+}
+
+users = [user1, user2, user3]
+questions = [question1, question2, question3]
 
 
 def mocked_users():
     db = mongomock.MongoClient().pli
     db.users.insert_many(users)
+    return db
+
+
+def mocked_questions():
+    db = mongomock.MongoClient.pli
+    db.questions.insert_nmany(questions)
     return db
 
 

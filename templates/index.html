@@ -14,9 +14,9 @@
         <h4>{{ question }}</h4>
         <form action="/question" method="post">
           <ol id="qotd-options">
-            <input type="radio" name="qotd" value="a"> a<br>
-            <input type="radio" name="qotd" value="b"> b<br>
-            <input type="radio" name="qotd" value="c"> c<br>
+            {% for letter, text in choices.iteritems() %}
+              <input type="radio" name="qotd" value="{{ letter }}"> {{ text }}<br>
+            {% endfor %}
           </ol>
           <input type="submit" value="Submit">
         </form>
