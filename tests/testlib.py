@@ -87,7 +87,7 @@ def mocked_users():
 
 
 def mocked_questions():
-    db = mongomock.MongoClient.pli
+    db = mongomock.MongoClient().pli
     db.questions.insert_nmany(questions)
     return db
 

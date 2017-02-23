@@ -27,7 +27,7 @@ class QOTDTestCase(unittest.TestCase):
 
     @with_req_ctxt
     def test_bad_answer_numbers(self, client):
-        res = post_qotd(client, "999")
+        res = post_qotd(client, 999)
         assert_wrong_page(self, res)
 
     @with_req_ctxt
