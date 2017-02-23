@@ -1,4 +1,5 @@
 from wtforms import Form, StringField, PasswordField, validators
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class PliRegistrationForm(Form):
     first_name = StringField('First Name', [validators.DataRequired()])
@@ -8,7 +9,11 @@ class PliRegistrationForm(Form):
     # TODO organization
 
     # Converts this form into a mongo document representing the
-    # user being registered. The _id field should be set to the next
-    # open UID
+    # user being registered. (No _id yet)
     def as_mongo_doc(self):
-        pass
+        return {
+            "first_name":self.first_name.data,
+            "last_name":self.last_name.data,
+            "email_address":self.email.data,
+            "password": generate_password_hash(self.password.data)
+        }
