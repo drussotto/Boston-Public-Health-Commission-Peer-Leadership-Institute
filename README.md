@@ -1,14 +1,10 @@
 ## Project Members:
 
-Alex Berberi
-
-Howard Cheung
-
-Bill Caruso
-
-Neil Locketz
-
-Daniel Russotto
+* Alex Berberi
+* Howard Cheung
+* Bill Caruso
+* Neil Locketz
+* Daniel Russotto
 
 ## Installation:
 
@@ -21,6 +17,15 @@ There is also a "test-app.py" which is the example web page given in the AWS exa
 If you aren't able to use the script you will need to create a virtual environment named 'virtenv'
 and install the requirements in 'requirements.txt' to it.
 
+## Running the application:
+
+To run a local version of the app you can run `./run-local.sh`.
+To use the full functionality of the site, you'll need to install mongodb locally so you can use it with no username or password on `localhost:27017` (this is the default).
+You'll also need a local smtp server, I'd recommend `sendmail` which is easy to get on linux & mac (the default installation works for this also).
+
+## Running the tests:
+
+To run the function & unit tests you can run the script `./run-tests.sh`. Running the tests doesn't require a local mongodb installation or a local mailserver.
 
 ## Common Problems:
 
