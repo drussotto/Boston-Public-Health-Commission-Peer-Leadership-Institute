@@ -1,6 +1,6 @@
 body {
-  background: #8ABFFF !important;
   padding-top: 60px;
+  background: #b8d8ff !important;
 }
 
 #brand-container {
@@ -12,12 +12,12 @@ body {
   display: flex;
 }
 
-.footer {
+#footer {
   background: #002a5c;
   text-align: center;
   border-top: 1px solid #27568e;
 }
 
-.footer a {
+#footer a {
   color: #d2a974;
 }

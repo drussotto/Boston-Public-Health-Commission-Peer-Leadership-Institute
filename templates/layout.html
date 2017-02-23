@@ -82,9 +82,30 @@
   {% block page_content %}
     <h1>There's nothing here...</h1>
   {% endblock %}
-  <footer class="footer navbar-fixed-bottom">
+  <footer class="footer invisible" id="footer">
     <div class="container-fluid">
       <a href="http://bphc.org" target="_blank">Boston Public Health Commission</a>
     </div>
   </footer>
+{% endblock %}
+
+{% block scripts %}
+  {{super()}}
+  <script>
+    function setFooterStyle() {
+        var docHeight = $(window).height();
+        var footerHeight = $('#footer').outerHeight();
+        var footerTop = $('#footer').position().top + footerHeight;
+        if (footerTop < docHeight) {
+            $('#footer').css('margin-top', (docHeight - footerTop) + 'px');
+        } else {
+            $('#footer').css('margin-top', '');
+        }
+        $('#footer').removeClass('invisible');
+    }
+    $(document).ready(function() {
+        setFooterStyle();
+        window.onresize = setFooterStyle;
+    });
+  </script>
 {% endblock %}
