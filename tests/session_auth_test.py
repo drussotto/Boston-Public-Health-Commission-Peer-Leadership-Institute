@@ -3,6 +3,8 @@ from application import application as pli
 from flask_login import current_user, logout_user, login_user
 import unittest
 pli.testing = True
+
+
 class LoginTestCase(unittest.TestCase):
     def assert_logged_in(self):
         self.assertTrue(current_user.is_authenticated,
@@ -37,7 +39,6 @@ class LoginTestCase(unittest.TestCase):
         self.assert_not_logged_in()
         self.assertEqual(user2["_id"],validate_login(user2["email_address"], user2["real_pass"]))
         self.assert_not_logged_in()
-
 
     @with_req_ctxt
     @with_login(32, user1["real_pass"])
