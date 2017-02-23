@@ -46,12 +46,49 @@ user3 = {
     "organization": None
 }
 
-users = [user1,user2,user3]
+question1 = {
+    "_id": 1,
+    "question": "What is the capital of Massachussetts?",
+    "choices": {
+        "a": "Boston",
+        "b": "Washington"
+    },
+    "answer": "a"
+}
+
+question2 = {
+    "_id": 2,
+    "question": "What does PLI stand for?",
+    "choices": {
+        "a": "Please Leave It",
+        "b": "Pop Lock I",
+        "c": "Peer Leadership Institute"
+    },
+    "answer": "c"
+}
+
+question3 = {
+    "_id": 3,
+    "question": "What is BPHC?",
+    "choices": {
+        "a": "Boston Public Health Commission",
+    },
+    "answer": "a",
+}
+
+users = [user1, user2, user3]
+questions = [question1, question2, question3]
 
 
 def mocked_users():
     db = mongomock.MongoClient().pli
     db.users.insert_many(users)
+    return db
+
+
+def mocked_questions():
+    db = mongomock.MongoClient().pli
+    db.questions.insert_nmany(questions)
     return db
 
 
@@ -84,6 +121,8 @@ assert_reg_page, assert_not_reg_page = check_page(["Reg-Page"], "register-page")
 assert_alr_reg_page, assert_not_alr_reg_page = check_page(["Already-Reg"], "alr-reg")
 assert_bad_vtok_page, assert_not_bad_vtok_page = check_page(["Failed-Token-Valid"], "bad-token-page")
 assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid"], "good-valid-tok")
+assert_correct_page, assert_not_correct_page = check_page(["Correct!"], "correct")
+assert_wrong_page, assert_not_wrong_page = check_page(["Wrong!"], "wrong")
 
 
 def get_u(uid):
@@ -94,6 +133,12 @@ def post_login(client, user, pas, url="/login"):
     return client.post(url, data=dict(
         email=user, 
         password=pas
+    ), follow_redirects=True)
+
+
+def post_qotd(client, answer, url="/question"):
+    return client.post(url, data=dict(
+        qotd=answer,
     ), follow_redirects=True)
 
 

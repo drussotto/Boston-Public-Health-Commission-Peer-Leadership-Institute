@@ -53,8 +53,8 @@ def validate():
     
 @application.route('/')
 def index():
-    question = "Choose C?"
-    return render_template("index.html", question=question)
+    question, choices = pli.get_question()
+    return render_template("index.html", question=question, choices=choices)
 
 @application.route('/question', methods = ["POST"])
 def question():
