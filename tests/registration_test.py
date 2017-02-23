@@ -15,10 +15,6 @@ def reg_form_from_user(d):
 class RegistrationTest(unittest.TestCase):
     def setUp(self):
         pli.config['db'] = mocked_users()
-
-    @with_app_ctxt
-    def test_not_sending_email(self):
-        send_confirmation_email("neil@nlocketz.com", 3)
     
     @with_test_client
     def test_reg_post1(self, client):
