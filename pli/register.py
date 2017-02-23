@@ -44,12 +44,16 @@ def send_confirmation_email(send_to, uid):
     msg = Message("PLI Email Confirmation",
                   sender="flask@pli-dev.nlocketz.com",
                   recipients=[send_to])
+    link = "http://%s/validate?user=%s" % (current_app.config["HOST"], encode_uid(uid))
     msg.html = '''
 Thanks for registering with the PLI!
 Please click the link below to confirm your account.
 <br/>
-<a href=%s/validate?user=%s>Click here!</a>
-    ''' % (current_app.config["HOST"], encode_uid(uid))
+<a href=%s>Click here!</a>
+<br/>
+If the link doesn't work go to this url: %s
+<br/>
+    ''' % (link, link)
     current_app.config["mail"].send(msg)
 
 
@@ -57,10 +61,16 @@ Please click the link below to confirm your account.
 # "_id" field of the given document once done.
 def create_user(user_document):
     # TODO check for re-used email...
-    lastID = current_app.config["db"].users.find({}, {"_id":1}).sort("_id",-1).limit(1).next()["_id"]
+    lastID = current_app.config["db"].users.find({}, {"_id":1}).sort("_id",-1).limit(1)
+    if lastID.count() == 0:
+        # Set to 0 so first ID is 1
+        lastID = 0
+    else:
+        lastID = lastID.next()["_id"]    
     doc = user_document.copy()
     newID = str(int(lastID)+1)
     doc["_id"] = newID
+    doc["confirmed"] = False
     current_app.config["db"].users.insert(doc)
     return newID
 
