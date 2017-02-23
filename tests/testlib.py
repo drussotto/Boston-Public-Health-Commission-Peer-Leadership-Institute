@@ -121,6 +121,8 @@ assert_reg_page, assert_not_reg_page = check_page(["Reg-Page"], "register-page")
 assert_alr_reg_page, assert_not_alr_reg_page = check_page(["Already-Reg"], "alr-reg")
 assert_bad_vtok_page, assert_not_bad_vtok_page = check_page(["Failed-Token-Valid"], "bad-token-page")
 assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid"], "good-valid-tok")
+assert_correct_page, assert_not_correct_page = check_page(["Correct!"], "correct")
+assert_wrong_page, assert_not_wrong_page = check_page(["Wrong!"], "wrong")
 
 
 def get_u(uid):
@@ -131,6 +133,12 @@ def post_login(client, user, pas, url="/login"):
     return client.post(url, data=dict(
         email=user, 
         password=pas
+    ), follow_redirects=True)
+
+
+def post_qotd(client, answer, url="/question"):
+    return client.post(url, data=dict(
+        qotd=answer,
     ), follow_redirects=True)
 
 

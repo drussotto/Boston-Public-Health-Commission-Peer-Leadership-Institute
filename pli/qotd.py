@@ -50,10 +50,11 @@ def get_question():
 def answer_question():
     db = mocked_questions()
 
-    a = db.questions.find_one({"_id": 1})
+    todays_question = db.questions.find_one({"_id": 1})
+    user_answer = todays_question['choices'].get(request.form["qotd"], "")
 
-    if request.form["qotd"] == a["answer"]:
+    if request.form["qotd"] == todays_question["answer"]:
         return_page = "correct.html"
     else:
         return_page = "wrong.html"
-    return render_template(return_page)
+    return render_template(return_page, user_answer=user_answer)

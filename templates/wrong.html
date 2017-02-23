@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
-You're wrong
-{{ a }}
-</body>
-</html>
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>Wrong!</h1>
+  <h2>Your answer, {{ user_answer }}, was wrong! Go back to try again.</h2>
+</div>
+{% endblock %}
