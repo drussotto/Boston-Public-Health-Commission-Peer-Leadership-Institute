@@ -42,14 +42,13 @@ def login():
             uid = validate_login(*form.as_args())
             if perform_login(uid):
                 n = request.args.get("next")
-                to = n if n is not None else "index"
-                if to == "index" or to.startswith('/'):
-                    return redirect(url_for(to))
+                to = n if n is not None else "/"
+                if to.startswith('/'):
+                    return redirect(str(to))
+                elif to.endswith(".html"):
+                    return redirect(url_for('page', path=str(to)))
                 else:
-                    if to.endswith(".html"):
-                        return redirect(url_for('page', path=to))
-                    else:
-                        return redirect(to)
+                    return redirect(str(to))
                 # TODO indicate the failure on the login page ...
         return redirect(url_for('login'))
     return abort(404)
