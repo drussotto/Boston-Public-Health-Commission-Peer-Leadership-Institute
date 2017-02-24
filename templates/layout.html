@@ -77,8 +77,8 @@
               <li><a href="{{ file_url_for ( 'resources.html' ) }}">Resources</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right"> 
-              <li><a href="#">Login</a></li>
-              <li><a href="#">Register</a></li>
+              <li><a href="{{ url_for('login') }}">Login</a></li>
+              <li><a href="{{ url_for('register') }}">Register</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -99,6 +99,9 @@
 {% block scripts %}
   {{super()}}
   <script>
+    // makes footer stay at the bottom of the window even when page content is short
+    // (as opposed to a normal static footer that would have extra blank space under
+    // it on a page with short content)
     function setFooterStyle() {
         var docHeight = $(window).height();
         var footerHeight = $('#footer').outerHeight();
