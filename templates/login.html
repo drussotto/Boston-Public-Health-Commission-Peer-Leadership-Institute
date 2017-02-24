@@ -2,13 +2,13 @@
 {% block page_content %}
 {% from "layout.html" import render_field %}
 <div class="container-fluid">
-  <h1>Hello</h1>
+  <h1>Log In</h1>
   <form method=post>
     <dl>
       {{ render_field(form.email) }}
       {{ render_field(form.password) }}
     </dl>
-    <p><input type=submit value=Login>
+    <p><input type="submit" value="Login">
   </form>
 </div>
 {% endblock %}
