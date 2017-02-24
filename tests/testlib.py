@@ -112,7 +112,7 @@ def check_page(expected_content, *name):
 
     return assert_page, assert_not_page
 
-assert_index_page, assert_not_index_page = check_page(["PLI has answers to all your health-related questions","Index-Page","Choose a category or search below."],"index")
+assert_index_page, assert_not_index_page = check_page(["Index-Page"],"index")
 assert_login_page, assert_not_login_page = check_page(["Email Address","Login","Password"], "login")
 assert_res_page, assert_not_res_page = check_page(["Resources-Page"], "resources")
 assert_surv_page, assert_not_surv_page = check_page(["Survey-Page"], "surveys")
