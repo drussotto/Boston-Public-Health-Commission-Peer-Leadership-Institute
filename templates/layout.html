@@ -16,6 +16,7 @@
 {{super()}}
 <link rel="stylesheet" href="{{url_for('static', filename='css/navbar.css')}}">
 <link rel="stylesheet" href="{{url_for('static', filename='css/layout.css')}}">
+<link rel="icon" href="/static/images/favicon.ico">
 {% endblock %}
 
 {% block navbar %}
@@ -42,18 +43,6 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
               <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
-              <li><a href="http://www.bphc.org/whatwedo/Teens/peer-leadership-institute/Pages/Peer-Leadership-Institute.aspx">About</a></li>
-              <li><a href="#">Workshops</a></li>
-              <li><a href="#">Surveys</a></li>
-            </ul>
-            <form class="navbar-form navbar-right">
-              <div id="search-container">
-                <input type="text" class="form-control" placeholder="Search">
-                &nbsp;
-                <button type="submit" class="btn btn-default">Search</button>
-              </div>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
                 <a href="#" 
                    class="dropdown-toggle" 
@@ -61,17 +50,36 @@
                    role="button"
                    aria-haspopup="true"
                    aria-expanded="false">
-                   Resources 
+                   About 
                    <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Substance Abuse</a></li>
-                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Sexual Health</a></li>
-                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Wellness</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="{{ file_url_for ( 'resources.html' ) }}">Clinics</a></li>
+                  <li><a href="{{ file_url_for ( 'about.html' ) }}">What We Do</a></li>
+                  <li><a href="{{ file_url_for ( 'staff.html' ) }}">Our Staff</a></li>
+                  <li><a href="{{ file_url_for ( 'contact.html' ) }}">Contact Us</a></li>
                 </ul>
               </li>
+              <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                   Workshops 
+                   <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">How It Works</a></li>
+                  <li><a href="#">Testimonials</a></li>
+                  <li><a href="{{ url_for ( 'static', filename='docs/workshop_signup.pdf' ) }}" target="_blank">Request a Workshop</a></li>
+                </ul>
+              </li>
+              <li><a href="{{ file_url_for ( 'resources.html' ) }}">Resources</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right"> 
+              <li><a href="{{ url_for('login') }}">Login</a></li>
+              <li><a href="{{ url_for('register') }}">Register</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -82,9 +90,33 @@
   {% block page_content %}
     <h1>There's nothing here...</h1>
   {% endblock %}
-  <footer class="footer navbar-fixed-bottom">
+  <footer class="footer invisible" id="footer">
     <div class="container-fluid">
       <a href="http://bphc.org" target="_blank">Boston Public Health Commission</a>
     </div>
   </footer>
+{% endblock %}
+
+{% block scripts %}
+  {{super()}}
+  <script>
+    // makes footer stay at the bottom of the window even when page content is short
+    // (as opposed to a normal static footer that would have extra blank space under
+    // it on a page with short content)
+    function setFooterStyle() {
+        var docHeight = $(window).height();
+        var footerHeight = $('#footer').outerHeight();
+        var footerTop = $('#footer').position().top + footerHeight;
+        if (footerTop < docHeight) {
+            $('#footer').css('margin-top', (docHeight - footerTop) + 'px');
+        } else {
+            $('#footer').css('margin-top', '');
+        }
+        $('#footer').removeClass('invisible');
+    }
+    $(document).ready(function() {
+        setFooterStyle();
+        window.onresize = setFooterStyle;
+    });
+  </script>
 {% endblock %}

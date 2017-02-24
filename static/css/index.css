@@ -1,28 +1,17 @@
-body {
-  padding-bottom: 2em;
-}
-
-#cards-container {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-}
-
 .card {
-  margin: 1em 0;
-  width: 92%;
+  margin: 1em 1em;
   border: 2px solid #002a5c;
   border-radius: 10px;
   box-shadow: -5px 5px 10px #d2a974;
   display: flex;
   flex-flow: column nowrap;
   color: darkslategray;
-  max-width: 750px;
+  padding: 0 !important;
 }
 
 .card .heading {
   background-color: #002a5c;
-  color: white;
+  color: white !important;
   font-size: 1.5em;
   padding: 5px;
 }
@@ -31,22 +20,30 @@ body {
   padding: 5px;
 }
 
-#qotd-options {
-  list-style-type: lower-alpha;
+#news {
+  height: 350px;
 }
 
-#resources .card-body {
+#news .card-body {
+  flex: 1;
   display: flex;
-  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: black;
+}
+
+#resources .heading a {
+  color: inherit;
 }
 
 #resources .resource-link {
+  width: 100%;
   display: flex;
   align-items: center;
   background-color: #8ABFDD;
   margin: 2px 0;
   padding: 3px;
-  max-width: 500px;
   align-self: center;
 }
 
