@@ -5,60 +5,50 @@
 {% endblock %}
 
 {% block page_content %}
-  <!-- Index-Page -->
-  <div class="container-fluid" id="cards-container">
-    <div class="card" id="qotd">
+<!-- Index-Page -->
+<div class="container-fluid" id="cards-container">
+  
+  <div class="row">
+    <div class="card col-sm-7" id="news">
+      <div class="heading">What's New</div>
+      <a class="card-body" href="{{file_url_for ( 'surveys.html' ) }}">
+        <h3>Fill out our Student Survey about marijuana usage.</h3>
+      </a>
+    </div>
+    <div class="card col-sm-3" id="qotd">
       <div class="heading">Question of the Day</div>
       <div class="card-body">
         <h4>{{ question }}</h4>
         <form action="/question" method="post">
           <ol id="qotd-options">
             {% for letter, text in choices.iteritems() %}
-              <input type="radio" name="qotd" value="{{ letter }}"> {{ text }}<br>
+            <input type="radio" name="qotd" value="{{ letter }}"> {{ text }}<br>
             {% endfor %}
           </ol>
           <input type="submit" value="Submit">
         </form>
       </div>
     </div>
-    <div class="card" id="resources">
-      <div class="heading">Learn Something New</div>
+  </div>
+  <div class="row">
+    <div class="card col" id="resources">
+      <div class="heading"><a href="{{ file_url_for ( 'resources.html' )}}">Student Resources</a></div>
       <div class="card-body">
-        <h4>PLI has answers to all your health-related questions. Choose a category or search below.</h4>
+        <h4>Search for answers to all your health-related questions, including content from workshops. Topics include substance abuse, sexual health, and general wellness, as well as finding local clinics.</h4>
         <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='subst-abuse' ) }}">
-          <div>Substance Abuse</div>
           <img src="{{url_for('static', filename='images/subst_abuse.png')}}" alt="Substance Abuse">
+          <div>Substance Abuse</div>
         </a>
         <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='sex' ) }}">
           <img src="{{url_for('static', filename='images/sexual_health.png')}}" alt="Sexual Health">
           <div>Sexual Health</div>
-    <div class="row">
-      <div class="card col-sm-7" id="news">
-        <div class="heading">What's New</div>
-        <a class="card-body" href="{{file_url_for ( 'surveys.html' ) }}">
-          <h3>Fill out our Student Survey about marijuana usage.</h3>
+        </a>
+        <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='wellness' ) }}">
+          <img src="{{url_for('static', filename='images/wellness.png')}}" alt="Wellness">
+          <div>Wellness</div>
         </a>
       </div>
     </div>
-    <div class="row">
-      <div class="card col" id="resources">
-        <div class="heading"><a href="{{ file_url_for ( 'resources.html' )}}">Student Resources</a></div>
-        <div class="card-body">
-          <h4>Search for answers to all your health-related questions, including content from workshops. Topics include substance abuse, sexual health, and general wellness, as well as finding local clinics.</h4>
-          <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='subst-abuse' ) }}">
-            <img src="{{url_for('static', filename='images/subst_abuse.png')}}" alt="Substance Abuse">
-            <div>Substance Abuse</div>
-          </a>
-          <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='sex' ) }}">
-            <img src="{{url_for('static', filename='images/sexual_health.png')}}" alt="Sexual Health">
-            <div>Sexual Health</div>
-          </a>
-          <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='wellness' ) }}">
-            <img src="{{url_for('static', filename='images/wellness.png')}}" alt="Wellness">
-            <div>Wellness</div>
-          </a>
-        </div>
-      </div>
-    </div>
   </div>
+</div>
 {% endblock %}
