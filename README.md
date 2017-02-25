@@ -26,7 +26,7 @@ You'll also need a local smtp server, I'd recommend `sendmail` which is easy to 
 ## Running the tests:
 
 To run the function & unit tests you can run the script `./run-tests.sh`. Running the tests doesn't require a local mongodb installation or a local mailserver.
-See the info about how our tests are set up [here](#about-our-testing-infrastructure:).
+See the info about how our tests are set up [here](#about-our-testing-infrastructure).
 
 ## Common Problems:
 
@@ -42,7 +42,7 @@ or any version of this with flask replaced by another module,
 You probably don't have the virtual env activated, in which case you should run 'source ./virtenv/bin/activate'.
 If you do have it activated you should install the required dependancies via `pip install -r requirements.txt`
 
-## About our testing infrastructure:
+# About our testing infrastructure
 
 
 
