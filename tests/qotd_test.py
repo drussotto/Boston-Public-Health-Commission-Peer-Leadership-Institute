@@ -2,8 +2,7 @@ from testlib import *
 import unittest
 pli.testing = True
 
-
-class QOTDTestCase(unittest.TestCase):
+class QOTDTestCase(PliQotdTestCase):
 
     @with_req_ctxt
     def test_correct_answer(self, client):

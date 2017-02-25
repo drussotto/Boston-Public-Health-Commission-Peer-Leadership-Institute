@@ -12,9 +12,7 @@ def reg_form_from_user(d):
     )
 
     
-class RegistrationTest(unittest.TestCase):
-    def setUp(self):
-        pli.config['db'] = mocked_users()
+class RegistrationTest(PliUsersTestCase):
     
     @with_test_client
     def test_reg_post1(self, client):
@@ -66,11 +64,8 @@ class RegistrationTest(unittest.TestCase):
         
 
 
-class ValidationTest(unittest.TestCase):
-
-    def setUp(self):
-        pli.config['db'] = mocked_users()
-
+class ValidationTest(PliUsersTestCase):
+    
     @with_app_ctxt
     def test_encode_decode_uid(self):
         self.assertEqual(user1["_id"], decode_uid(encode_uid(user1["_id"])))

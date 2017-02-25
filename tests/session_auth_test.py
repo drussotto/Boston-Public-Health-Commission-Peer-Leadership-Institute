@@ -1,36 +1,17 @@
 from testlib import *
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
-import unittest
 pli.testing = True
 
 
-class LoginTestCase(unittest.TestCase):
-    def assert_logged_in(self):
-        self.assertTrue(current_user.is_authenticated,
-                        "Not logged in, but should be")
+class LoginTestCase(PliUsersTestCase):
     
-    def assert_not_logged_in(self):
-        try:
-            self.assertFalse(current_user.is_authenticated,
-                             "Logged in, but should not be")
-        except AttributeError:
-            # If we get an attribute error, we are not in request context
-            # and therefore could not be logged in
-            pass
-
-    def assert_cur_uid(self, uid):
-        self.assertTrue(current_user.same_uid(uid))
-
     @classmethod
     def setUpClass(cls):
         def test_login():
             return str(current_user.is_authenticated), 200
         pli.add_url_rule("/test-login", endpoint="test_login", view_func=test_login)
         
-    def setUp(self):
-        pli.config['db'] = mocked_users()
-        self.app = pli.test_client()
 
     @with_app_ctxt
     def test_good_login(self):

@@ -4,24 +4,10 @@ from flask_login import current_user, logout_user, login_user
 import unittest
 
 
-class TestRemainingPages(unittest.TestCase):
+class TestRemainingPages(PliTestCase):
 
-    def assert_logged_in(self):
-        self.assertTrue(current_user.is_authenticated,
-                        "Not logged in, but should be")
-    
-    def assert_not_logged_in(self):
-        try:
-            self.assertFalse(current_user.is_authenticated,
-                             "Logged in, but should not be")
-        except AttributeError:
-            # If we get an attribute error, we are not in request context
-            # and therefore could not be logged in
-            pass
-
-    def assert_cur_uid(self, uid):
-        self.assertTrue(current_user.same_uid(uid))
-
+    def mocked_db(self):
+        return mocked_users()
     
     @with_req_ctxt
     @with_login(user1["email_address"], user1["real_pass"])

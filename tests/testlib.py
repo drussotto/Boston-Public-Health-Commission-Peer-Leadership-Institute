@@ -2,6 +2,7 @@ import mongomock
 import inspect
 from pli import validate_login, PliUser
 from application import application as pli
+from pli_test_case import PliTestCase, PliUsersTestCase, PliQotdTestCase
 
 # Note that the "real_pass" field for these won't be present in the actual db
 # just there for convinience during testing.
@@ -88,7 +89,7 @@ def mocked_users():
 
 def mocked_questions():
     db = mongomock.MongoClient().pli
-    db.questions.insert_nmany(questions)
+    db.questions.insert_many(questions)
     return db
 
 
