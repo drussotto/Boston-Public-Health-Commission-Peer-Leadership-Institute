@@ -1,8 +1,6 @@
 from testlib import *
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
-pli.testing = True
-
 
 class LoginTestCase(PliUsersTestCase):
     
@@ -21,31 +19,26 @@ class LoginTestCase(PliUsersTestCase):
         self.assertEqual(user2["_id"],validate_login(user2["email_address"], user2["real_pass"]))
         self.assert_not_logged_in()
 
-    @with_req_ctxt
     @with_login(32, user1["real_pass"])
     def test_bad_login1(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login(43.2, 4)
     def test_bad_login2(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login("{ $gt : \"*\" }", "{ $gt : \"*\" }")
     def test_bad_login3(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login("", "")
     def test_bad_login4(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login(None, None)
     def test_bad_logi5(self, client, res):
         self.assert_not_logged_in()
@@ -56,82 +49,69 @@ class LoginTestCase(PliUsersTestCase):
         r = self.app.get("/login")
         assert_login_page(self, r)
 
-    @with_req_ctxt
     @with_login(user1["email_address"], user1["real_pass"])
     def test_good_login_post1(self, client):
         self.assert_logged_in()
         self.assert_cur_uid(get_u(user1["_id"]))
         
-
-    @with_req_ctxt
     @with_login(user2["email_address"], user2["real_pass"])
     def test_good_login_post2(self, client):
         self.assert_logged_in()
         self.assert_cur_uid(get_u(user2["_id"]))
 
-    @with_req_ctxt
     @with_login(user3["email_address"], user3["real_pass"])
     def test_good_login_post3(self, client, res):
         self.assert_logged_in()
         self.assert_cur_uid(get_u(user3["_id"]))
         assert_index_page(self, res)
 
-    @with_req_ctxt
     @with_login(user3["email_address"], user2["real_pass"])
     def test_failed_log_in(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
-
-    @with_req_ctxt
+        
     @with_login(user1["email_address"], user1["real_pass"], to="resources.html")
     def test_good_login_post_red1(self, client, res):
         self.assert_logged_in()
         assert_res_page(self, res)
 
-    @with_req_ctxt
     @with_login(user2["email_address"], user2["real_pass"], to="surveys.html")
     def test_good_login_post_redirect1(self, client, res):
         self.assert_logged_in()
         self.assert_cur_uid(get_u(user2["_id"]))
         assert_surv_page(self, res)
 
-    @with_req_ctxt
     @with_login(user1["email_address"], user2["real_pass"], to="resources.html")
     def test_bad_login_redirect1(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login(user2["email_address"], user3["real_pass"], to="resources.html")
     def test_bad_login_redirect2(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login(32, user1["real_pass"],to="resources.html")
     def test_bad_login_redirect3(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login("", "",to="resources.html")
     def test_bad_login_redirect4(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login(None, None, to="resources.html")
     def test_bad_login_redirect5(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
     @with_login("{ $gt : \"*\" }", "{ $gt : \"*\" }", to="resources.html")
     def test_bad_login_redirect6(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_req_ctxt
+
     @with_login(user2["email_address"], user2["real_pass"])
     def test_logout1(self, client, res):
         self.assert_logged_in()
@@ -139,7 +119,7 @@ class LoginTestCase(PliUsersTestCase):
         res = client.get('/logout')
         self.assert_not_logged_in()
 
-    @with_req_ctxt
+
     @with_login(user1["email_address"], user2["real_pass"])
     def test_logout2(self, client, res):
         self.assert_not_logged_in()

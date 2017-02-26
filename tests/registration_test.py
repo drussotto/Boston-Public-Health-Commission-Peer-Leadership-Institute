@@ -1,8 +1,8 @@
-from application import application as pli, mail
+from application import mail
 from urllib import quote_plus
 from testlib import *
 from pli import validate_login, encode_uid, decode_uid, is_confirmed_uid, send_confirmation_email
-import unittest
+
 def reg_form_from_user(d):
     return dict(
         first_name=d["first_name"],
@@ -46,7 +46,8 @@ class RegistrationTest(PliUsersTestCase):
             assert_reg_page(self, r)
             self.assertEqual(0, len(outbox))
 
-    @with_req_ctxt
+    @with_app_ctxt
+    @with_test_client
     def test_new_user(self, client):
         with mail.record_messages() as outbox:
             r = client.post('/register',
