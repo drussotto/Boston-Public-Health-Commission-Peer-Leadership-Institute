@@ -2,7 +2,10 @@ import testlib
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
 import unittest
-
+# This class should be extended to create a test case for the PLI
+# site. It setups up the test db connection for each unit test
+# You must implement the mocked_db method so that it retuns
+# a mongomock for your database.
 class PliTestCase(unittest.TestCase):
     
     def setUp(self):
@@ -28,11 +31,14 @@ class PliTestCase(unittest.TestCase):
     def assert_cur_uid(self, uid):
         self.assertTrue(current_user.same_uid(uid))
 
-
+# A convinience test case containing the "mocked users"
+# From testlib in the db
 class PliUsersTestCase(PliTestCase):
     def mocked_db(self):
         return testlib.mocked_users()
 
+# A convinience test case containing the "mocked qotd's"
+# From testlib in the db
 class PliQotdTestCase(PliTestCase):
     def mocked_db(self):
         return testlib.mocked_questions()
