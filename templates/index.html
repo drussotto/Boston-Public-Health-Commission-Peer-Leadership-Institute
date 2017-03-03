@@ -18,10 +18,10 @@
     <div class="card col-sm-3" id="qotd">
       <div class="heading">Question of the Day</div>
       <div class="card-body">
-        <h4>{{ question }}</h4>
+        <h4>{{ get_todays_question().question }}</h4>
         <form action="/question" method="post">
           <ol id="qotd-options">
-            {% for letter, text in choices.iteritems() %}
+            {% for letter, text in get_todays_choices().iteritems() %}
             <input type="radio" name="qotd" value="{{ letter }}"> {{ text }}<br>
             {% endfor %}
           </ol>

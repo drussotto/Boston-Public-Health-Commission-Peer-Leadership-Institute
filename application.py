@@ -53,11 +53,11 @@ def validate():
     
 @application.route('/')
 def index():
-    question, choices = pli.get_question()
-    return render_template("index.html", question=question, choices=choices)
+    return render_template("index.html")
 
 @application.route('/question', methods = ["POST"])
-def question():
+@application.route('/question/<int:qid>', methods = ["POST"])
+def question(qid=1):
     return pli.answer_question()
 
 @application.route('/page/<path:path>')
@@ -99,6 +99,11 @@ def dated_url_for(endpoint, **values):
 def file_url_for(name, **kwargs):
     return dated_url_for("page", path=name, **kwargs)
 application.add_template_global(file_url_for, "file_url_for")
+
+# This allows the jinja templates to get todays question directly.
+application.add_template_global(pli.get_todays_question, "get_todays_question")
+application.add_template_global(pli.get_todays_choices, "get_todays_choices")
+
 
 # run the application.
 if __name__ == "__main__":

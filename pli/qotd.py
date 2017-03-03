@@ -1,60 +1,28 @@
-from flask import request, render_template
+from flask import request, render_template, current_app
+from qotd_form import QotdSubmissionForm
 import mongomock
+import datetime
 
+def question_count():
+    s = current_app.config["db"].questions.count()
+    print("Count", s)
+    return s
 
-question1 = {
-    "_id": 1,
-    "question": "What is the capital of Massachussetts?",
-    "choices": {
-        "a": "Boston",
-        "b": "Washington"
-    },
-    "answer": "a"
-}
+def current_question_number():
+    return ((datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).days) % question_count()
+def get_todays_question():
+    return current_app.config["db"].questions.find_one({"question_number":current_question_number()})
 
-question2 = {
-    "_id": 2,
-    "question": "What does PLI stand for?",
-    "choices": {
-        "a": "Please Leave It",
-        "b": "Pop Lock I",
-        "c": "Peer Leadership Institute"
-    },
-    "answer": "c"
-}
+def get_todays_choices():
+    return get_todays_question().choices
 
-question3 = {
-    "_id": 3,
-    "question": "What is BPHC?",
-    "choices": {
-        "a": "Boston Public Health Commission",
-    },
-    "answer": "a",
-}
-
-questions = [question1, question2, question3]
-
-
-def mocked_questions():
-    db = mongomock.MongoClient().pli
-    db.questions.insert_many(questions)
-    return db
-
-
-def get_question():
-    db = mocked_questions()
-    result = db.questions.find_one({"_id": 1})
-    return result['question'], result['choices']
-
+def get_question(qid):
+    return current_app.config["db"].questions.find_one({"question_number": qid})
 
 def answer_question():
-    db = mocked_questions()
-
-    todays_question = db.questions.find_one({"_id": 1})
-    user_answer = todays_question['choices'].get(request.form["qotd"], "")
-
-    if request.form["qotd"] == todays_question["answer"]:
-        return_page = "correct.html"
+    form = QotdSubmissionForm(request.form)
+    answering = get_question(form.qid.data)
+    if answering["answer"] == form.answer.data:
+        return "Correct"
     else:
-        return_page = "wrong.html"
-    return render_template(return_page, user_answer=user_answer)
+        return "Incorrect"
