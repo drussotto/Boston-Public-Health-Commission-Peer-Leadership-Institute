@@ -2,7 +2,7 @@ from testlib import *
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
 
-class LoginTestCase(PliUsersTestCase):
+class LoginTestCase(PliEntireDbTestCase):
     
     @classmethod
     def setUpClass(cls):

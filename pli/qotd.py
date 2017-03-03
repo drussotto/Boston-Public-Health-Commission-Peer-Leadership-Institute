@@ -1,17 +1,15 @@
-from flask import request, render_template, current_app
+from flask import request, render_template, current_app, abort
 from qotd_form import QotdSubmissionForm
 import mongomock
 import datetime
 
 def question_count():
-    s = current_app.config["db"].questions.count()
-    print("Count", s)
-    return s
+    return current_app.config["db"].questions.count()
 
 def current_question_number():
-    return ((datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).days) % question_count()
+    return ((datetime.datetime.now() - datetime.datetime(1970,1,1)).days) % question_count()
 def get_todays_question():
-    return current_app.config["db"].questions.find_one({"question_number":current_question_number()})
+    return current_app.config["db"].questions.find_one( {"question_number" : current_question_number() })
 
 def get_todays_choices():
     return get_todays_question().choices
@@ -19,10 +17,19 @@ def get_todays_choices():
 def get_question(qid):
     return current_app.config["db"].questions.find_one({"question_number": qid})
 
-def answer_question():
+def answer_question(qid):
     form = QotdSubmissionForm(request.form)
-    answering = get_question(form.qid.data)
-    if answering["answer"] == form.answer.data:
-        return "Correct"
-    else:
-        return "Incorrect"
+    answering = get_question(qid)
+    if form.validate() and \
+       answering is not None:
+        if form.answer.data in answering["choices"]:
+            answer = answering["choices"][form.answer.data]
+        else:
+            answer = form.answer.data
+
+        if answering["answer"] == form.answer.data:
+            return render_template("correct.html", answer=answer)
+        else:
+            return render_template("wrong.html", answer=answer)
+        
+    return abort(404)

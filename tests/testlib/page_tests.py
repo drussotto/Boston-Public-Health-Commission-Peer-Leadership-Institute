@@ -38,5 +38,5 @@ assert_alr_reg_page, assert_not_alr_reg_page = check_page(["Already-Reg"], "alr-
 assert_bad_vtok_page, assert_not_bad_vtok_page = check_page(["Failed-Token-Valid"], "bad-token-page")
 assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid"], "good-valid-tok")
 assert_correct_page, assert_not_correct_page = check_page(["Correct!"], "correct")
-assert_wrong_page, assert_not_wrong_page = check_page(["Wrong!"], "wrong")
-
+assert_incorrect_page, assert_not_incorrect_page = check_page(["Wrong!"], "wrong")
+assert_404_page, assert_not_404_page = check_page(["Sorry, there's nothing here."], "404")

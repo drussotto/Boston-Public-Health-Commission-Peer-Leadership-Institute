@@ -58,7 +58,7 @@ def index():
 @application.route('/question', methods = ["POST"])
 @application.route('/question/<int:qid>', methods = ["POST"])
 def question(qid=1):
-    return pli.answer_question()
+    return pli.answer_question(qid)
 
 @application.route('/page/<path:path>')
 def page(path):

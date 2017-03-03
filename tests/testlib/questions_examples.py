@@ -32,7 +32,5 @@ question3 = {
 
 questions = [question1, question2, question3]
 
-def mocked_questions():
-    db = mongomock.MongoClient().pli
+def add_mocked_questions(db):
     db.questions.insert_many(questions)
-    return db
