@@ -1,6 +1,5 @@
 from flask import request, render_template, current_app, abort
 from qotd_form import QotdSubmissionForm
-import mongomock
 import datetime
 
 def question_count():
