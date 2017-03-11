@@ -12,7 +12,7 @@ def reg_form_from_user(d):
     )
 
     
-class RegistrationTest(PliUsersTestCase):
+class RegistrationTest(PliEntireDbTestCase):
     
     @with_test_client
     def test_reg_post1(self, client):
@@ -65,7 +65,7 @@ class RegistrationTest(PliUsersTestCase):
         
 
 
-class ValidationTest(PliUsersTestCase):
+class ValidationTest(PliEntireDbTestCase):
     
     @with_app_ctxt
     def test_encode_decode_uid(self):

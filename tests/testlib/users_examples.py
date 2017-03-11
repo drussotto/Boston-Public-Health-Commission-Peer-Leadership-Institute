@@ -46,7 +46,6 @@ user3 = {
 
 users = [user1, user2, user3]
 
-def mocked_users():
-    db = mongomock.MongoClient().pli
+def add_mocked_users(db):
     db.users.insert_many(users)
-    return db
+

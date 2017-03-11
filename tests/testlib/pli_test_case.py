@@ -1,3 +1,4 @@
+import mongomock
 import testlib
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
@@ -9,11 +10,18 @@ import unittest
 class PliTestCase(unittest.TestCase):
     
     def setUp(self):
-        pli.config['db'] = self.mocked_db()
-        self.app = pli.test_client()
+        db = mongomock.MongoClient().pli
 
-    def mocked_db(self):
-        raise NotImplementedError("You must implement mocked_db to return a mongomock database")
+        # This function takes a collection initializing function
+        # and a DB and calls the function, returning the DB
+        def fold_cols(db, f):
+            f(db)
+            return db
+        
+        # We fold the db over the initializers, so we got all the collections
+        pli.config['db'] = reduce(fold_cols, self.db_inits(), db)
+
+        self.app = pli.test_client()
 
     def assert_logged_in(self):
         self.assertTrue(current_user.is_authenticated,
@@ -34,11 +42,17 @@ class PliTestCase(unittest.TestCase):
 # A convinience test case containing the "mocked users"
 # From testlib in the db
 class PliUsersTestCase(PliTestCase):
-    def mocked_db(self):
-        return testlib.mocked_users()
-
+    def db_inits(self):
+        return [testlib.add_mocked_users]
+    
 # A convinience test case containing the "mocked qotd's"
 # From testlib in the db
 class PliQotdTestCase(PliTestCase):
-    def mocked_db(self):
-        return testlib.mocked_questions()
+    def db_inits(self):
+        return [testlib.add_mocked_questions]
+
+# A convinience test case containing every mocked collection
+# From testlib in the db
+class PliEntireDbTestCase(PliTestCase):
+    def db_inits(self):
+        return testlib.get_db_mock_initializers()

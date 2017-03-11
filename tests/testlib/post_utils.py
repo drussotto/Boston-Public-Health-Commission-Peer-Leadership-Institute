@@ -8,7 +8,7 @@ def post_login(client, user, pas, url="/login"):
     ), follow_redirects=True)
 
 # Runs a POST against the qotd endpoint, answering the question with the given answer.
-def post_qotd(client, answer, url="/question"):
-    return client.post(url, data=dict(
-        qotd=answer,
+def post_qotd(client, answer, number=0):
+    return client.post("/question/"+str(number), data=dict(
+        answer=answer,
     ), follow_redirects=True)
