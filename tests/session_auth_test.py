@@ -44,9 +44,9 @@ class LoginTestCase(PliEntireDbTestCase):
         self.assert_not_logged_in()
         assert_login_page(self, res)
 
-    @with_app_ctxt
-    def test_login_page(self):
-        r = self.app.get("/login")
+    @with_test_client
+    def test_login_page(self, client):
+        r = client.get("/login")
         assert_login_page(self, r)
 
     @with_login(user1["email_address"], user1["real_pass"])
