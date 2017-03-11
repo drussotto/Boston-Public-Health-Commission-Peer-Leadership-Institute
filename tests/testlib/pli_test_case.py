@@ -1,5 +1,6 @@
 import mongomock
 import testlib
+from flask import g
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
 import unittest
@@ -21,7 +22,11 @@ class PliTestCase(unittest.TestCase):
         # We fold the db over the initializers, so we got all the collections
         pli.config['db'] = reduce(fold_cols, self.db_inits(), db)
 
-        self.app = pli.test_client()
+        self.ctx = pli.app_context()
+        self.ctx.push()
+        
+    def tearDown(self):
+        self.ctx.pop()
 
     def assert_logged_in(self):
         self.assertTrue(current_user.is_authenticated,

@@ -12,3 +12,19 @@ def post_qotd(client, answer, number=0):
     return client.post("/question/"+str(number), data=dict(
         answer=answer,
     ), follow_redirects=True)
+
+# Run an add role
+def post_add_role(client, role, user):
+    data = {
+        "user":user,
+        "role":role
+    }
+    return client.put("/add-role", data=data, follow_redirects=True).status_code
+
+# Run a remove role
+def post_rm_role(client, role, user):
+    data = {
+        "user":user,
+        "role":role
+    }
+    return client.delete("/rm-role", data=data, follow_redirects=True).status_code
