@@ -4,6 +4,8 @@ from flask import g
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
 import unittest
+import gridfs
+
 # This class should be extended to create a test case for the PLI
 # site. It setups up the test db connection for each unit test
 # You must implement the mocked_db method so that it retuns
@@ -21,6 +23,7 @@ class PliTestCase(unittest.TestCase):
         
         # We fold the db over the initializers, so we got all the collections
         pli.config['db'] = reduce(fold_cols, self.db_inits(), db)
+        pli.config['gridfs'] = gridfs.GridFS(pli.config['db'])
 
         self.ctx = pli.app_context()
         self.ctx.push()
@@ -55,6 +58,14 @@ class PliUsersTestCase(PliTestCase):
 class PliQotdTestCase(PliTestCase):
     def db_inits(self):
         return [testlib.add_mocked_questions]
+
+
+# A convinience test case containing the mocked "what's new"
+# cards from testlib, inside the db.
+class PliWNCardTestCase(PliTestCase):
+    def db_inits(self):
+        return [testlib.add_mocked_wn_cards]
+
 
 # A convinience test case containing every mocked collection
 # From testlib in the db

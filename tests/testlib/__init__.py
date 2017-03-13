@@ -5,7 +5,7 @@ from users_examples import *
 from questions_examples import *
 from page_tests import *
 from post_utils import *
-
+from whats_new_card_examples import *
 
 # Provides the PliUsers instance for the given uid, the returned user is
 # not "authenticated", meaning they can't be used were auth is required, they
@@ -14,4 +14,6 @@ def get_u(uid):
     return PliUser(uid, False)
 
 def get_db_mock_initializers():
-    return [add_mocked_users, add_mocked_questions]
+    return [add_mocked_users,
+            add_mocked_questions,
+            add_mocked_wn_cards]

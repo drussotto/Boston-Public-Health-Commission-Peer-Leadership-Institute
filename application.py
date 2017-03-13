@@ -8,6 +8,7 @@ from flask_login import LoginManager, login_user, login_required, current_user, 
 from flask_principal import Principal, identity_loaded
 from itsdangerous import URLSafeSerializer
 import mongomock
+import gridfs
 import pli
 import os
 
@@ -15,8 +16,10 @@ import os
 application = Flask(__name__)
 application.config.from_envvar('PLI_SETTINGS')
 
+db = MongoClient().pli
 mail = Mail(application)
 principals = Principal(application)
+gridfs = gridfs.GridFS(db)
 Bootstrap(application)
 
 login_manager = LoginManager()
@@ -25,10 +28,12 @@ login_manager.login_view="login"
 
 application.url_map.strict_slashes = False
 
-application.config["db"] = MongoClient().pli
+application.config["db"] = db
 application.config["mail"] = mail
 application.config["signer"] = URLSafeSerializer(application.config["SECRET_KEY"])
 application.config["principals"] = principals
+application.config["gridfs"] = gridfs
+
 
 @application.before_request
 def init_g():
@@ -36,6 +41,7 @@ def init_g():
     g.mail = application.config["mail"]
     g.signer = application.config["signer"]
     g.principals = application.config["principals"]
+    g.gfs = application.config["gridfs"]
 
 
 @login_manager.user_loader
