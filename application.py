@@ -87,7 +87,12 @@ def validate():
         return render_template("bad_validation_token.html")
     else:
         return pli.validate_user(request.args.get('user'))
-    
+
+@application.route('/peer-leader-resources')
+@pli.PEERLEADER_PERM.require(http_exception=403)
+def peer_leader_resources():
+    return render_template("peer_leader_resources.html")
+
 @application.route('/')
 def index():
     return render_template("index.html")
