@@ -15,5 +15,5 @@ class PliRegistrationForm(Form):
             "first_name":self.first_name.data,
             "last_name":self.last_name.data,
             "email_address":self.email.data,
-            "password": generate_password_hash(self.password.data)
+            "password": generate_password_hash(self.password.data, method='pbkdf2:sha256')
         }
