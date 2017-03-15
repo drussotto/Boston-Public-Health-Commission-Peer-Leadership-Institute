@@ -4,7 +4,7 @@ from flask import g
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
 import unittest
-import gridfs
+import mongomock.gridfs
 
 # This class should be extended to create a test case for the PLI
 # site. It setups up the test db connection for each unit test
@@ -23,7 +23,7 @@ class PliTestCase(unittest.TestCase):
         
         # We fold the db over the initializers, so we got all the collections
         pli.config['db'] = reduce(fold_cols, self.db_inits(), db)
-        pli.config['gridfs'] = gridfs.GridFS(pli.config['db'])
+        pli.config['gridfs'] = mongomock.gridfs.MockGridFS(pli.config['db'])
 
         self.ctx = pli.app_context()
         self.ctx.push()

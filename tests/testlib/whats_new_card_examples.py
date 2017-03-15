@@ -1,6 +1,6 @@
 import mongomock
 import os
-import gridfs
+from mongomock import gridfs
 #from bson.objectid import ObjectId
 
 def get_image_bytes(file_name):
@@ -16,8 +16,11 @@ def build_and_assign_cards(db, gridfs):
         "caption": "This is in mongo",
         "sub_caption": "This is the sub-caption"
     }
+    print("wn_card0", wn_card0)
+    print("Files: ", list(db.fs.files.find({})))
+    print("File: ", len(gridfs.get(wn_card0["background"]).read()))
 
 def add_mocked_wn_cards(db):
-    build_and_assign_cards(db, gridfs.GridFS(db))
+    build_and_assign_cards(db, gridfs.MockGridFS(db))
     
     
