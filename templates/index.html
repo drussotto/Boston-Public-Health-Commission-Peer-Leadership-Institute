@@ -8,13 +8,19 @@
 {% block page_content %}
 <!-- Index-Page -->
 <div class="container-fluid" id="cards-container">
-  
+
   <div class="row">
     <div class="card col-sm-7" id="news">
       <div class="heading">What's New</div>
-      <a class="card-body" href="{{file_url_for ( 'surveys.html' ) }}">
-        <h3>Fill out our Student Survey about marijuana usage.</h3>
+      {% set whatsnew = get_wn_cards() %}
+      {% for card in whatsnew %}
+      <a class="card-body" style="display:block;background: url({{url_for('get_card_img', cid=card.get_bg())}});background-repeat: no-repeat;background-size: contain;" href="{{ card.get_hyperlink() }}">
+	<h3>{{ card.get_caption() }}</h3>
+	<h4>{{ card.get_sub_caption() }}</h4>
       </a>
+      {% else %}
+      <h3>There is nothing here. Did you add any what's new things?</h3>
+      {% endfor %}
     </div>
     <div class="card col-sm-3" id="qotd">
       <div class="heading">Question of the Day</div>

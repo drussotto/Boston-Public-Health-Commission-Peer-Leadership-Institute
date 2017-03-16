@@ -35,15 +35,6 @@ application.config["principals"] = principals
 application.config["gridfs"] = gridfs
 
 
-@application.before_request
-def init_g():
-    g.db = application.config["db"]
-    g.mail = application.config["mail"]
-    g.signer = application.config["signer"]
-    g.principals = application.config["principals"]
-    g.gfs = application.config["gridfs"]
-
-
 @login_manager.user_loader
 def load_pli_user(uid):
     return pli.PliUser.get(uid)
@@ -53,16 +44,15 @@ def load_pli_user(uid):
 def on_identity_loaded(sender, identity):
     return pli.on_identity_loaded(sender, identity)
 
-@application.route('/admin-only')
-@pli.ADMIN_PERM.require()
-def admin_test():
-    return "only admins."
+@application.route('/add-wn-card', methods = [ "POST", "GET" ])
+@pli.EDITOR_PERM.require(http_exception=403)
+def add_wn_card():
+    return pli.add_wn_card()
 
-@application.route('/hello')
-@login_required
-def hello():
-    return "hello"
-
+@application.route('/set-wn-cards', methods = [ "POST" ])
+@pli.EDITOR_PERM.require(http_exception=403)
+def set_wn_cards():
+    return pli.set_wn_cards()
 
 @application.route('/add-role', methods = [ "PUT" ])
 @pli.ADMIN_PERM.require(http_exception=403)
@@ -74,7 +64,6 @@ def add_role():
 def rm_role():
     return pli.rm_role()
 
-
 @application.route('/login', methods = [ "POST", "GET" ])
 def login():
     return pli.login()
@@ -83,7 +72,7 @@ def login():
 def logout():
     return pli.logout()
 
-@application.route('/register', methods = ["POST", "GET" ])
+@application.route('/register', methods = [ "POST", "GET" ])
 def register():
     return pli.register()
 
@@ -131,8 +120,9 @@ def create_survey():
 def create_question():
     return pli.create_question()
 
-
-
+@application.route('/card-img/<string:cid>')
+def get_card_img(cid):
+    return pli.CarouselCard.send_picture(cid)
 
 # override_url_for automatically adds a timestamp query parameter to
 # static files (e.g. css) to avoid browser caching issues
@@ -166,6 +156,9 @@ application.add_template_global(file_url_for, "file_url_for")
 application.add_template_global(pli.get_todays_question, "get_todays_question")
 application.add_template_global(pli.get_todays_choices, "get_todays_choices")
 application.add_template_global(current_user, "current_user")
+
+# This allows the jinja templates to get todays whats new cards
+application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_cards")
 
 # run the application.
 if __name__ == "__main__":

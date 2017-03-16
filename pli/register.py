@@ -2,6 +2,7 @@ from flask import request, render_template, redirect, url_for, current_app
 from register_form import PliRegistrationForm
 from itsdangerous import BadSignature
 from flask_mail import Message
+from service_util import get_db, get_mail, get_signer
 
 def register():
     if request.method == "GET":
@@ -26,7 +27,7 @@ def register():
 # confirmed or not. The first entry in the tuple indicates whether the user
 # exists and is their UID if they exist. The second is True iff the user exists and the user is confirmed.
 def user_exists(email_to_check):
-    found = current_app.config["db"].users.find({ "email_address" : email_to_check }).limit(1)
+    found = get_db().users.find({ "email_address" : email_to_check }).limit(1)
     if found.count() == 0:
         return False, False
     else:
@@ -34,8 +35,8 @@ def user_exists(email_to_check):
         return (u["_id"], u["confirmed"])
 
 def uid_exists(uid):
-    return current_app.config["db"].users.find({"_id":uid}).limit(1).count() == 1
-    
+    return get_db().users.find({"_id":uid}).limit(1).count() == 1
+
 # TODO
 # Sends a confirmation email to the given email address.
 # The email should contain a confirmation link with a signed version
@@ -54,24 +55,25 @@ Please click the link below to confirm your account.
 If the link doesn't work go to this url: %s
 <br/>
     ''' % (link, link)
-    current_app.config["mail"].send(msg)
+    get_mail().send(msg)
 
 
 # Commits the new user_document to the DB, and returns the
 # "_id" field of the given document once done.
 def create_user(user_document):
     # TODO check for re-used email...
-    lastID = current_app.config["db"].users.find({}, {"_id":1}).sort("_id",-1).limit(1)
+    lastID = get_db().users.find({}, {"_id":1}).sort("_id",-1).limit(1)
     if lastID.count() == 0:
         # Set to 0 so first ID is 1
         lastID = 0
     else:
-        lastID = lastID.next()["_id"]    
+        lastID = lastID.next()["_id"]
     doc = user_document.copy()
     newID = str(int(lastID)+1)
     doc["_id"] = newID
     doc["confirmed"] = False
-    current_app.config["db"].users.insert(doc)
+    doc["roles"] = ""
+    get_db().users.insert(doc)
     return newID
 
 
@@ -83,25 +85,25 @@ def validate_user(user_tok):
     if toConfirmId is None or not uid_exists(toConfirmId):
         return render_template("bad_validation_token.html")
     else:
-        current_app.config["db"].users.update({"_id":toConfirmId}, {"$set": { "confirmed" : "true" }})
+        get_db().users.update({"_id":toConfirmId}, {"$set": { "confirmed" : "true" }})
         return render_template("good_validation_token.html")
 
 
 # returns true if the user with the given uid is "confirmed"
 def is_confirmed_uid(uid):
-    return current_app.config["db"].users.find({"_id":uid}).limit(1).next()["confirmed"]
+    return get_db().users.find({"_id":uid}).limit(1).next()["confirmed"]
 
 # returns the encoded uid (using itsdangerous)
 # this token will be used for email validation (should be ascii armored, and URL safe)
 def encode_uid(uid):
-    return current_app.config["signer"].dumps(uid)
+    return get_signer().dumps(uid)
 
 # decodes the given encoded uid, the token should have been encoded
 # by encoded_uid, and should be made with itsdangerous
 # returns None for an invalid uid
 def decode_uid(euid):
     try:
-        return current_app.config["signer"].loads(euid)
+        return get_signer().loads(euid)
     except BadSignature:
         # We return None for a bad signature
         return None

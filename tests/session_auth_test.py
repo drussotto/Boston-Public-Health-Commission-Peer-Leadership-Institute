@@ -1,15 +1,16 @@
 from testlib import *
 from application import application as pli
 from flask_login import current_user, logout_user, login_user
+from pli import validate_login
 
 class LoginTestCase(PliEntireDbTestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         def test_login():
             return str(current_user.is_authenticated), 200
         pli.add_url_rule("/test-login", endpoint="test_login", view_func=test_login)
-        
+
 
     @with_app_ctxt
     def test_good_login(self):
@@ -53,7 +54,7 @@ class LoginTestCase(PliEntireDbTestCase):
     def test_good_login_post1(self, client):
         self.assert_logged_in()
         self.assert_cur_uid(get_u(user1["_id"]))
-        
+
     @with_login(user2["email_address"], user2["real_pass"])
     def test_good_login_post2(self, client):
         self.assert_logged_in()
@@ -69,7 +70,7 @@ class LoginTestCase(PliEntireDbTestCase):
     def test_failed_log_in(self, client, res):
         self.assert_not_logged_in()
         assert_login_page(self, res)
-        
+
     @with_login(user1["email_address"], user1["real_pass"], to="resources.html")
     def test_good_login_post_red1(self, client, res):
         self.assert_logged_in()
@@ -126,7 +127,7 @@ class LoginTestCase(PliEntireDbTestCase):
         assert_login_page(self, res)
         res = client.get('/logout')
         self.assert_not_logged_in()
-    
+
     def test_saved_login(self):
         # Tests whether the login persists accross requests
         client = pli.test_client()
