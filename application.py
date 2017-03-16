@@ -45,21 +45,25 @@ def on_identity_loaded(sender, identity):
     return pli.on_identity_loaded(sender, identity)
 
 @application.route('/add-wn-card', methods = [ "POST", "GET" ])
+@login_required
 @pli.EDITOR_PERM.require(http_exception=403)
 def add_wn_card():
     return pli.add_wn_card()
 
 @application.route('/set-wn-cards', methods = [ "POST", "GET" ])
+@login_required
 @pli.EDITOR_PERM.require(http_exception=403)
 def set_wn_cards():
     return pli.set_wn_cards()
 
 @application.route('/add-role', methods = [ "PUT" ])
+@login_required
 @pli.ADMIN_PERM.require(http_exception=403)
 def add_role():
     return pli.add_role()
 
 @application.route('/rm-role', methods = [ "DELETE" ])
+@login_required
 @pli.ADMIN_PERM.require(http_exception=403)
 def rm_role():
     return pli.rm_role()
@@ -84,6 +88,7 @@ def validate():
         return pli.validate_user(request.args.get('user'))
 
 @application.route('/peer-leader-resources')
+@login_required
 @pli.PEERLEADER_PERM.require(http_exception=403)
 def peer_leader_resources():
     return render_template("peer_leader_resources.html")
