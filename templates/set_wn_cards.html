@@ -1,13 +1,32 @@
 {% extends "layout.html" %}
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+  let boxCount = 0;
+  $("#add_button").click(function(){
+  
+      var $box = $("#sbox-0").clone();
+      $box.prop("name", "cards-"+(boxCount++));
+      $box.prop("id", "sbox-"+boxCount);
+      $box.insertAfter("#sbox-"+(boxCount - 1));
+      $box.after("<br>");
+  });
+</script>
+{% endblock %}
 {% block page_content %}
 {% from "layout.html" import render_field %}
 <div class="container-fluid">
   <h1>Set cards</h1>
-  <form method=post>
-    <dl>
-      {{ render_field(form.cards) }}
-    </dl>
-    <p><input type="submit" value="Set">
+  <form id="cards_from" method=post>
+    <select id="sbox-0" name="cards-0">
+      {% for card in list_all_wn_cards() %}
+      <option value="{{ card.str_id }}">{{ card.get_caption() }}</option>
+      {% else %}
+      <option value="">None availible</option>
+      {% endfor %}
+    </select>
+    <p><input type="submit" value="Set cards"/>
   </form>
+  <button id="add_button">Add another card</button>
 </div>
 {% endblock %}

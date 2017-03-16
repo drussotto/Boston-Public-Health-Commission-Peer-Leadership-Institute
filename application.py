@@ -160,6 +160,9 @@ application.add_template_global(current_user, "current_user")
 # This allows the jinja templates to get todays whats new cards
 application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_cards")
 
+# This allows the jinja templates to get the list of all whats new cards
+application.add_template_global(pli.WhatsNewCard.list_wn_cards, "list_all_wn_cards")
+
 # run the application.
 if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be

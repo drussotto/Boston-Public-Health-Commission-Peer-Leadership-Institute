@@ -9,6 +9,12 @@ class WhatsNewCard(CarouselCard):
 
     def __init__(self, db_doc):
         super(WhatsNewCard, self).__init__(db_doc)
+        self.str_id = str(db_doc["_id"])
+
+    @classmethod
+    def store_card_id(cls, obj_id):
+        get_db().whatsnew.update_one({},
+                                     {"$addToSet" : {"cards": obj_id}})
 
     @classmethod
     def get_frontpage_cards(cls):
@@ -23,12 +29,22 @@ class WhatsNewCard(CarouselCard):
         # Map the card loading over the ids
         return map(WhatsNewCard.load, ids["show"])
 
+    @classmethod
+    def list_wn_cards(cls):
+        ids = get_db().whatsnew.find_one({})
+        if ids is None or ("cards" not in ids):
+            # Not in the db, most likely a local instance
+            return []
+
+        return map(WhatsNewCard.load, ids["cards"])
+
 def add_wn_card():
     form = WnCardInfoAddForm(request.form)
     if request.method == "POST":
         if form.validate():
             card = WhatsNewCard.new_card(form.extract())
             obj_id = card.save_to_db()
+            WhatsNewCard.add_whats_new_id(obj_id)
             return str(obj_id), 200
         else:
             return "",400
