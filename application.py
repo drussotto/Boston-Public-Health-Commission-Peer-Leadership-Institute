@@ -49,7 +49,7 @@ def on_identity_loaded(sender, identity):
 def add_wn_card():
     return pli.add_wn_card()
 
-@application.route('/set-wn-cards', methods = [ "POST" ])
+@application.route('/set-wn-cards', methods = [ "POST", "GET" ])
 @pli.EDITOR_PERM.require(http_exception=403)
 def set_wn_cards():
     return pli.set_wn_cards()

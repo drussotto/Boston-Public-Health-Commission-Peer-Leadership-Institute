@@ -1,4 +1,4 @@
-from flask import current_app, send_file
+from flask import current_app, send_file, request
 from pli import get_db
 from bson import ObjectId
 from pli.service_util import get_gridfs, get_db
@@ -34,7 +34,7 @@ class CarouselCard(object):
 
     @classmethod
     def new_card(cls, doc):
-        bg_file = add_new_img(doc["background"].data, "image/png")
+        bg_file = add_new_img(request.files["background"], "image/png")
         doc["background"] = bg_file
         return cls(doc)
 

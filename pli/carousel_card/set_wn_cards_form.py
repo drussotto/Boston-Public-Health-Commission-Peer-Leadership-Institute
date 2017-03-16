@@ -1,6 +1,4 @@
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField
-from wtforms import StringField, IntegerField, validators, FieldList
+from wtforms import Form, StringField, IntegerField, validators, FieldList
 
-class SetWnCardsForm(FlaskForm):
-    cards = FieldList(StringField("ObjIds"), min_entries=1)
+class SetWnCardsForm(Form):
+    cards = FieldList(StringField("ids"), min_entries=3)

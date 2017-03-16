@@ -25,21 +25,30 @@ class WhatsNewCard(CarouselCard):
 
 def add_wn_card():
     form = WnCardInfoAddForm(request.form)
-    if request.method == "POST" and form.validate():
-        card = WhatsNewCard.new_card(form.extract())
-        obj_id = card.save_to_db()
-        return str(obj_id)
-    return render_template('index.html')
+    if request.method == "POST":
+        if form.validate():
+            card = WhatsNewCard.new_card(form.extract())
+            obj_id = card.save_to_db()
+            return str(obj_id), 200
+        else:
+            return "",400
+    else:
+        return render_template('add_wn_card.html', form=form)
 
 def set_wn_cards():
-    form = SetWnCardsForm()
+    form = SetWnCardsForm(request.form)
     new_wn_list = []
-    if form.validate_on_submit():
-        for id_field in form.cards.data:
-            oid = ObjectId(str(id_field.data))
-            if not card_exists(oid):
-                return "", 400
-            new_wn_list.append(oid)
-        get_db().whatsnew.update({}, {"$set": { "show" : new_wn_list }})
-        return "",200
-    return "", 400
+    if request.method == "POST":
+        if form.validate():
+            for id_field in form.cards.data:
+                if len(str(id_field)) == 0:
+                    continue
+                oid = ObjectId(str(id_field))
+                if not card_exists(oid):
+                    return "", 400
+                new_wn_list.append(oid)
+                get_db().whatsnew.update({}, {"$set": { "show" : new_wn_list }})
+            return "",200
+        else:
+            return "", 400
+    return render_template("set_wn_cards.html", form=form)

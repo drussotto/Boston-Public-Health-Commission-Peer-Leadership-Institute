@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>Set cards</h1>
+  <form method=post>
+    <dl>
+      {{ render_field(form.cards) }}
+    </dl>
+    <p><input type="submit" value="Set">
+  </form>
+</div>
+{% endblock %}
