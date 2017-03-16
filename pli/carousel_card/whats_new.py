@@ -9,15 +9,12 @@ class WhatsNewCard(CarouselCard):
 
     def __init__(self, db_doc):
         super(WhatsNewCard, self).__init__(db_doc)
-<<<<<<< HEAD
         self.str_id = str(db_doc["_id"])
 
     @classmethod
     def store_card_id(cls, obj_id):
         get_db().whatsnew.update_one({},
                                      {"$addToSet" : {"cards": obj_id}})
-=======
->>>>>>> fb0b451... Cards are rendered mock stuff is a little wonkey
 
     @classmethod
     def get_frontpage_cards(cls):
@@ -31,8 +28,7 @@ class WhatsNewCard(CarouselCard):
 
         # Map the card loading over the ids
         return map(WhatsNewCard.load, ids["show"])
-
-<<<<<<< HEAD
+    
     @classmethod
     def list_wn_cards(cls):
         ids = get_db().whatsnew.find_one({})
@@ -72,25 +68,3 @@ def set_wn_cards():
         else:
             return "", 400
     return render_template("set_wn_cards.html", form=form)
-=======
-def add_wn_card():
-    form = WnCardInfoAddForm(request.form)
-    if request.method == "POST" and form.validate():
-        card = WhatsNewCard.new_card(form.extract())
-        obj_id = card.save_to_db()
-        return str(obj_id)
-    return render_template('index.html')
-
-def set_wn_cards():
-    form = SetWnCardsForm()
-    new_wn_list = []
-    if form.validate_on_submit():
-        for id_field in form.cards.data:
-            oid = ObjectId(str(id_field.data))
-            if not card_exists(oid):
-                return "", 400
-            new_wn_list.append(oid)
-        get_db().whatsnew.update({}, {"$set": { "show" : new_wn_list }})
-        return "",200
-    return "", 400
->>>>>>> fb0b451... Cards are rendered mock stuff is a little wonkey

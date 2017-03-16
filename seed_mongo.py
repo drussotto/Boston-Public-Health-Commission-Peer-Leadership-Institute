@@ -119,6 +119,8 @@ wn_card2 = {
 }
 
 db.cards.insert_many([wn_card1, wn_card0, wn_card2])
-db.whatsnew.insert({"show": [wn_card2["_id"], wn_card1["_id"]]})
+# All our whatsnew info
+db.whatsnew.insert({"show": [wn_card2["_id"], wn_card1["_id"]],
+                    "cards": [wn_card0["_id"], wn_card1["_id"], wn_card2["_id"]]})
 
 client.close()
