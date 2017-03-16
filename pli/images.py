@@ -12,4 +12,8 @@ def get_img_file(img_id):
 # and a content-type returns an ObjectId to the newly created
 # image in gridfs
 def add_new_img(stream, content_type):
+<<<<<<< HEAD
     return get_gridfs().put(stream.read(), content_type=content_type, encoding="UTF-8")
+=======
+    return get_gridfs().put(stream, content_type=content_type, encoding="UTF-8")
+>>>>>>> fb0b451... Cards are rendered mock stuff is a little wonkey

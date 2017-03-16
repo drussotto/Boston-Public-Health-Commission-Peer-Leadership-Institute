@@ -26,7 +26,6 @@ ORG_PERM = Permission(ORG_NEED)
 EDITOR_PERM = Permission(EDITOR_NEED)
 PEERLEADER_PERM = Permission(PEERLEADER_NEED)
 
-
 # Tells flask principal that we have a new identity (the user with the given uid)
 def set_identity(uid):
     identity_changed.send(current_app._get_current_object(),

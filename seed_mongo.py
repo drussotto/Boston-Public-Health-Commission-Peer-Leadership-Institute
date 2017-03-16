@@ -64,17 +64,7 @@ db.users.insert({
     "organization": None
 });
 
-db.users.insert({
-    "_id": 56789,
-    "email_address": "iamapeerleader@bphc.org",
-    "real_pass": "passw0rd",
-    "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
-    "first_name": "John",
-    "roles":"peer_leader",
-    "last_name": "Leader",
-    "confirmed": True,
-    "organization": None
-});
+
 
 db.questions.insert({
     "question_number" : 0,
@@ -129,8 +119,6 @@ wn_card2 = {
 }
 
 db.cards.insert_many([wn_card1, wn_card0, wn_card2])
-# All our whatsnew info
-db.whatsnew.insert({"show": [wn_card2["_id"], wn_card1["_id"]],
-                    "cards": [wn_card0["_id"], wn_card1["_id"], wn_card2["_id"]]})
+db.whatsnew.insert({"show": [wn_card2["_id"], wn_card1["_id"]]})
 
 client.close()
