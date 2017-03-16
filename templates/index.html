@@ -37,11 +37,11 @@
               <div class="item {{type}}">
                 <a href="{{ url }}">
                   <img src="{{imgsrc}}" alt="{{ caption }}">
+                  <div class="carousel-caption">
+                    <h3>{{ caption }}</h3>
+                    <p>{{ subcaption }}</p>
+                  </div>
                 </a>
-                <div class="carousel-caption">
-                  <h3>{{ caption }}</h3>
-                  <p>{{ subcaption }}</p>
-                </div>
               </div>
             {%- endmacro %}
             <div class="carousel-inner" role="listbox">
