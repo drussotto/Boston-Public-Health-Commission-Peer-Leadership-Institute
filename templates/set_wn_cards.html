@@ -11,7 +11,7 @@
 {% block scripts %}
   {{ super() }}
   <script>
-    let boxCount = 0;
+    let boxCount = 1;
     $("#add_button").click(function(){
         var $box = $(".card-drop").last().clone();
         $("select", $box).prop("name", "cards-"+(boxCount++));
