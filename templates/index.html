@@ -14,48 +14,46 @@
       <div class="heading">What's New</div>
         <div id="news-carousel-container">
           <div id="news-carousel" class="carousel slide" data-ride="carousel">
+            {% set wn_cards = get_wn_cards() %}
+
             <!-- Indicators -->
+            {% macro indicator(index, type='') -%}
+                <li data-target="#news-carousel" data-slide-to="{{index}}" class="{{type}}"></li>
+            {%- endmacro %}
             <ol class="carousel-indicators">
-              <li data-target="#news-carousel" data-slide-to="0" class="active"></li>
-              <li data-target="#news-carousel" data-slide-to="1"></li>
-              <li data-target="#news-carousel" data-slide-to="2"></li>
-              <li data-target="#news-carousel" data-slide-to="3"></li>
+              {% for wn_card in wn_cards %}
+                {% if loop.first %}
+                  {{ indicator(0, "active") }}
+                {% else %}
+                  {{ indicator(loop.index0) }}
+                {% endif %}
+              {% else %}
+                  {{ indicator(0, "active") }}
+              {% endfor %}
             </ol>
 
             <!-- Wrapper for slides -->
+            {% macro carousel_item(caption, subcaption, imgsrc, url, type='') -%}
+              <div class="item {{type}}">
+                <a href="{{ url }}">
+                  <img src="{{imgsrc}}" alt="{{ caption }}">
+                </a>
+                <div class="carousel-caption">
+                  <h3>{{ caption }}</h3>
+                  <p>{{ subcaption }}</p>
+                </div>
+              </div>
+            {%- endmacro %}
             <div class="carousel-inner" role="listbox">
-              <div class="item active">
-                <img src="{{url_for('static', filename='images/subst_abuse.png')}}" alt="Chania">
-                <div class="carousel-caption">
-                  <h3>Chania</h3>
-                  <p>The atmosphere in Chania has a touch of Florence and Venice.</p>
-                </div>
-              </div>
-
-              <div class="item">
-                <img src="{{url_for('static', filename='images/sexual_health.png')}}" alt="Chania">
-                <div class="carousel-caption">
-                  <h3>Chania</h3>
-                  <p>The atmosphere in Chania has a touch of Florence and Venice.</p>
-                </div>
-              </div>
-
-              <div class="item">
-                <img src="{{url_for('static', filename='images/wellness.png')}}" alt="Flower">
-                <div class="carousel-caption">
-                  <h3>Flowers</h3>
-                  <p>Beatiful flowers in Kolymbari, Crete.</p>
-                </div>
-              </div>
-
-              <div class="item">
-                <img src="{{url_for('static', filename='images/about.png')}}" alt="Flower">
-                <div class="carousel-caption">
-                  <h3>Flowers</h3>
-                  <p>Beatiful flowers in Kolymbari, Crete.</p>
-                </div>
-              </div>
-            </div>
+              {% for wn_card in wn_cards %}
+                {{ carousel_item(wn_card.caption, 
+                                 wn_card.sub_caption, 
+                                 "/card-img/" + wn_card.bg,
+                                 wn_card.hyperlink,
+                                 "active" if loop.first else "") }}
+              {% else %}
+                {{ carousel_item("", "No News Found", url_for('static', filename='images/blank.png'), "#", "active" )}}
+              {% endfor %}
 
             <!-- Left and right controls -->
             <a class="left carousel-control" href="#news-carousel" role="button" data-slide="prev">
@@ -71,6 +69,7 @@
       <!-- <a class="card-body" href="{{file_url_for ( 'surveys.html' ) }}">
         <h3>Fill out our Student Survey about marijuana usage.</h3>
       </a> -->
+      </div>
     </div>
     <div class="card col-sm-3" id="qotd">
       <div class="heading">Question of the Day</div>

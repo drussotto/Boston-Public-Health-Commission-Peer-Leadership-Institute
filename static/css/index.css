@@ -74,7 +74,12 @@
   text-align: center;
 }
 
-.carousel-inner, .carousel-inner .item img {
+.carousel-inner, .carousel-inner .item a {
   height: 100%;
   margin: 0 auto;
 }
+
+.carousel-inner .item img {
+  height: 100%;
+}
+
