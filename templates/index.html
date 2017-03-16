@@ -48,7 +48,7 @@
               {% for wn_card in wn_cards %}
                 {{ carousel_item(wn_card.caption, 
                                  wn_card.sub_caption, 
-                                 "/card-img/" + wn_card.bg,
+                                 "/card-img/" + wn_card.get_bg(),
                                  wn_card.hyperlink,
                                  "active" if loop.first else "") }}
               {% else %}

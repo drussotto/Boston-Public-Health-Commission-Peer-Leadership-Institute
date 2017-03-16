@@ -39,7 +39,7 @@ class CarouselCard(object):
         return cls(doc)
 
     def get_bg(self):
-        return self.bg
+        return str(self.bg)
 
     def get_caption(self):
         return self.caption

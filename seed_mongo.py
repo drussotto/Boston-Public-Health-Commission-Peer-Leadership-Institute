@@ -72,8 +72,8 @@ db.users.insert({
     "first_name": "John",
     "roles":"peer_leader",
     "last_name": "Leader",
-    "confirmed": true,
-    "organization": null
+    "confirmed": True,
+    "organization": None
 });
 
 db.questions.insert({
