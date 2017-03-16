@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>Submission Successful</h1>
+  <div>
+      The following document has successfully been stored to the database:
+  </div>
+  <div>
+    {{ form.as_mongo_doc() }}
+  </div>
+  <div>
+    <a href="/surveys/create">Create a Survey</a>
+  </div>
+  <div>
+    <a href="/surveys/questions/create">Create a Survey Question</a href="/surveys/questions/create">
+  </div>
+</div>
+{% endblock %}

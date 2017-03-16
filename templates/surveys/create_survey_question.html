@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>Create a Question</h1>
+  <form method=post>
+    <dl>
+      {{ render_field(form.question) }}
+      {{ render_field(form.answers) }}
+    </dl>
+    <p><input type="submit" value="CreateQuestion">
+  </form>
+</div>
+<div>
+  <button name="New Answer" onclick="newQuestion()">
+    New Answer
+  </button>
+</div>
+{% block scripts %}
+{{super()}}
+<script>
+  function newQuestion() {
+    var entryId = $("#answers").children().length;
+    var newTag = "<li><input name='answers-" + entryId + "' id='answers-" + entryId + "'></li>";
+    $(newTag).appendTo("#answers");
+  }
+</script>
+{% endblock %}
+{% endblock %}
