@@ -87,12 +87,13 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="{{ file_url_for ( 'resources.html' ) }}">Student Resources</a></li>
+                  {% if current_user.is_authenticated and "peer_leader" in current_user.get_roles() %}
                   <li><a href="{{ url_for('peer_leader_resources') }}">Peer Leader Resources</a></li>
+                  {% endif %}
                 </ul>
               </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right"> 
-              <li><a href="{{ url_for('login') }}">Login</a></li>
+            <ul class="nav navbar-nav navbar-right">
               <li><a href="{{ url_for('register') }}">Register</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
