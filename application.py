@@ -87,7 +87,12 @@ def validate():
         return render_template("bad_validation_token.html")
     else:
         return pli.validate_user(request.args.get('user'))
-    
+
+@application.route('/peer-leader-resources')
+@pli.PEERLEADER_PERM.require(http_exception=403)
+def peer_leader_resources():
+    return render_template("peer_leader_resources.html")
+
 @application.route('/')
 def index():
     return render_template("index.html")
@@ -140,6 +145,7 @@ application.add_template_global(file_url_for, "file_url_for")
 # This allows the jinja templates to get todays question directly.
 application.add_template_global(pli.get_todays_question, "get_todays_question")
 application.add_template_global(pli.get_todays_choices, "get_todays_choices")
+application.add_template_global(current_user, "current_user")
 
 
 # run the application.

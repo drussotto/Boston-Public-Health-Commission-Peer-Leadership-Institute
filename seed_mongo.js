@@ -42,7 +42,17 @@ db.users.insert({
     "organization": null
 });
 
-
+db.users.insert({
+    "_id": 56789,
+    "email_address": "iamapeerleader@bphc.org",
+    "real_pass": "passw0rd",
+    "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
+    "first_name": "John",
+    "roles":"peer_leader",
+    "last_name": "Leader",
+    "confirmed": true,
+    "organization": null
+});
 
 db.questions.insert({
     "question_number" : 0,
