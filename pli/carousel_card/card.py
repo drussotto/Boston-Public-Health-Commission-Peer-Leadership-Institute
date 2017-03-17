@@ -67,7 +67,7 @@ class CarouselCard(object):
         return str(result.inserted_id)
 
 def list_cards():
-    return get_db().cards.find({}).collect()
+    return list(get_db().cards.find({}))
 
 def card_exists(cid):
     return get_db().cards.find_one({"_id": cid}) is not None
