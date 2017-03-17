@@ -34,7 +34,8 @@ class AddPermTest(PliEntireDbTestCase):
         
         # 400 => Not added
         # That UID doesn't exist.
-        self.assertEqual(400, post_add_role(client, ORG_ROLE, 543))
+        res = post_add_role(client, ORG_ROLE, 543)
+        self.assertEqual(400, res.status_code)
 
     
     @with_login(user1["email_address"], user1["real_pass"])
@@ -42,11 +43,13 @@ class AddPermTest(PliEntireDbTestCase):
         self.assertTrue(ADMIN_PERM.can())
         
         # 200 => we added the role.
-        self.assertEqual(200, post_add_role(client, ORG_ROLE, user2["_id"]))
+        res = post_add_role(client, ORG_ROLE, user2["_id"])
+        self.assertEqual(200, res.status_code)
         self.assertEqual([PARTICIPANT_ROLE, ORG_ROLE], PliUser.get(user2["_id"]).roles)
 
         # 409 => Already added.
-        self.assertEqual(409, post_add_role(client, ORG_ROLE, user2["_id"]))
+        res = post_add_role(client, ORG_ROLE, user2["_id"])
+        self.assertEqual(409, res.status_code)
         self.assertEqual([PARTICIPANT_ROLE, ORG_ROLE], PliUser.get(user2["_id"]).roles)
 
     @with_login(user1["email_address"], user1["real_pass"])
@@ -54,7 +57,8 @@ class AddPermTest(PliEntireDbTestCase):
         self.assertTrue(ADMIN_PERM.can())
         
         # 200 => we added the role.
-        self.assertEqual(200, post_add_role(client, ORG_ROLE, user1["_id"]))
+        res = post_add_role(client, ORG_ROLE, user1["_id"])
+        self.assertEqual(200, res.status_code)
         # Check that the role caching isn't broken.
         self.assertTrue(EDITOR_PERM.can())
         self.assertEqual([ADMIN_ROLE, EDITOR_ROLE, ORG_ROLE], PliUser.get(user1["_id"]).roles)
@@ -65,7 +69,8 @@ class AddPermTest(PliEntireDbTestCase):
         self.assertTrue(ADMIN_PERM.can())
 
         # 200 => we added the role.
-        self.assertEqual(200, post_add_role(client, ADMIN_ROLE, user2["_id"]))
+        res = post_add_role(client, ADMIN_ROLE, user2["_id"])
+        self.assertEqual(200, res.status_code)
         self.assertEqual([PARTICIPANT_ROLE, ADMIN_ROLE], PliUser.get(user2["_id"]).roles)
 
         
@@ -73,7 +78,8 @@ class AddPermTest(PliEntireDbTestCase):
     def test_check_admin_add2(self, client):
         self.assertTrue(ADMIN_PERM.can())
         # 200 => we added the role.
-        self.assertEqual(200, post_add_role(client, ADMIN_ROLE, user3["_id"]))
+        res = post_add_role(client, ADMIN_ROLE, user3["_id"])
+        self.assertEqual(200, res.status_code)
         self.assertEqual([ADMIN_ROLE], PliUser.get(user3["_id"]).roles)
 
 
@@ -81,12 +87,14 @@ class AddPermTest(PliEntireDbTestCase):
     def test_check_non_admin_add(self, client):
         self.assertFalse(ADMIN_PERM.can())
         # 403 => We couldn't add the role.
-        self.assertEqual(403, post_add_role(client, ORG_ROLE, user3["_id"]))
+        res = post_add_role(client, ORG_ROLE, user3["_id"])
+        self.assertEqual(403, res.status_code)
         self.assertEqual([], PliUser.get(user3["_id"]).roles)
 
     @with_test_client
     def test_check_not_logged_in(self, client):
-        self.assertEqual(403, post_add_role(client, ORG_ROLE, user3["_id"]))
+        res = post_add_role(client, ORG_ROLE, user3["_id"])
+        self.assertEqual(200, res.status_code)
         self.assertEqual([], PliUser.get(user3["_id"]).roles)
 
 
@@ -98,21 +106,24 @@ class RemovePermTest(PliEntireDbTestCase):
         
         # 400 => Not added
         # That UID doesn't exist.
-        self.assertEqual(400, post_rm_role(client, ORG_ROLE, 543))
+        res = post_rm_role(client, ORG_ROLE, 543)
+        self.assertEqual(400, res.status_code)
 
     
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_rm(self, client):
         self.assertTrue(ADMIN_PERM.can())
         # 409 => Wasn't there.
-        self.assertEqual(409, post_rm_role(client, ORG_ROLE, user2["_id"]))
+        res = post_rm_role(client, ORG_ROLE, user2["_id"])
+        self.assertEqual(409, res.status_code)
         self.assertEqual([PARTICIPANT_ROLE], PliUser.get(user2["_id"]).roles)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_rm2(self, client):
         self.assertTrue(ADMIN_PERM.can())
         # 409 => Wasn't there.
-        self.assertEqual(409, post_rm_role(client, ORG_ROLE, user3["_id"]))
+        res = post_rm_role(client, ORG_ROLE, user3["_id"])
+        self.assertEqual(409, res.status_code)
         self.assertEqual([], PliUser.get(user3["_id"]).roles)
 
 
@@ -121,7 +132,8 @@ class RemovePermTest(PliEntireDbTestCase):
         self.assertTrue(ADMIN_PERM.can())
 
         # 200 => we added the role.
-        self.assertEqual(200, post_rm_role(client, PARTICIPANT_ROLE, user2["_id"]))
+        res = post_rm_role(client, PARTICIPANT_ROLE, user2["_id"])
+        self.assertEqual(200, res.status_code)
         self.assertEqual([], PliUser.get(user2["_id"]).roles)
 
         
@@ -129,17 +141,20 @@ class RemovePermTest(PliEntireDbTestCase):
     def test_check_admin_rm2(self, client):
         self.assertTrue(ADMIN_PERM.can())
         # 200 => we removed the role.
-        self.assertEqual(200, post_rm_role(client, EDITOR_ROLE, user1["_id"]))
+        res = post_rm_role(client, EDITOR_ROLE, user1["_id"])
+        self.assertEqual(200, res.status_code)
         self.assertEqual([ADMIN_ROLE], PliUser.get(user1["_id"]).roles)
 
     @with_test_client
     def test_check_rm_not_logged_in(self, client):
-        self.assertEqual(403, post_rm_role(client, ORG_ROLE, user3["_id"]))
+        res = post_rm_role(client, ORG_ROLE, user3["_id"])
+        self.assertEqual(200, res.status_code)
         self.assertEqual([], PliUser.get(user3["_id"]).roles)
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_check_non_admin_rm(self, client):
         self.assertFalse(ADMIN_PERM.can())
         # 403 => We couldn't rm the role.
-        self.assertEqual(403, post_rm_role(client, ORG_ROLE, user2["_id"]))
+        res = post_rm_role(client, ORG_ROLE, user2["_id"])
+        self.assertEqual(403, res.status_code)
         self.assertEqual([PARTICIPANT_ROLE], PliUser.get(user2["_id"]).roles)

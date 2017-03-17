@@ -3,7 +3,7 @@ from wn_card_form import WnCardInfoAddForm
 from card import CarouselCard, card_exists
 from set_wn_cards_form import SetWnCardsForm
 from pli.service_util import get_db
-from bson import ObjectId
+from bson import ObjectId, errors
 
 class WhatsNewCard(CarouselCard):
 
@@ -60,7 +60,11 @@ def set_wn_cards():
             for id_field in form.cards.data:
                 if len(str(id_field)) == 0:
                     continue
-                oid = ObjectId(str(id_field))
+                try:
+                    oid = ObjectId(str(id_field))
+                except errors.InvalidId:
+                    return "", 400
+                
                 if not card_exists(oid):
                     return "", 400
                 new_wn_list.append(oid)

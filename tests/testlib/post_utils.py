@@ -19,7 +19,7 @@ def post_add_role(client, role, user):
         "user":user,
         "role":role
     }
-    return client.put("/add-role", data=data, follow_redirects=True).status_code
+    return client.put("/add-role", data=data, follow_redirects=True)
 
 # Run a remove role
 def post_rm_role(client, role, user):
@@ -27,4 +27,4 @@ def post_rm_role(client, role, user):
         "user":user,
         "role":role
     }
-    return client.delete("/rm-role", data=data, follow_redirects=True).status_code
+    return client.delete("/rm-role", data=data, follow_redirects=True)
