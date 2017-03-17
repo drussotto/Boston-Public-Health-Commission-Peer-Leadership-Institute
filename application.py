@@ -114,12 +114,14 @@ def page_not_found(e):
     return page("404.html"), 404
 
 @application.route("/surveys/create", methods =["POST", "GET"])
-#@pli.ADMIN_PERM.require(http_exception=403)
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
 def create_survey():
     return pli.create_survey()
 
 @application.route("/surveys/questions/create", methods =["POST", "GET"])
-#@pli.ADMIN_PERM.require(http_exception=403)
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
 def create_question():
     return pli.create_question()
 
@@ -158,18 +160,6 @@ application.add_template_global(file_url_for, "file_url_for")
 application.add_template_global(pli.get_todays_question, "get_todays_question")
 application.add_template_global(pli.get_todays_choices, "get_todays_choices")
 application.add_template_global(current_user, "current_user")
-
-#utility for dan because it's a pain closing flask server on windows
-def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-
-@application.route('/shutdown', methods=['GET'])
-def shutdown():
-    shutdown_server()
-    return 'Server shutting down...'
 
 # run the application.
 if __name__ == "__main__":
