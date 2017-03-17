@@ -9,7 +9,8 @@ class WhatsNewCard(CarouselCard):
 
     def __init__(self, db_doc):
         super(WhatsNewCard, self).__init__(db_doc)
-        self.str_id = str(db_doc["_id"])
+        if "_id" in db_doc:
+            self.str_id = str(db_doc["_id"])
 
     @classmethod
     def store_card_id(cls, obj_id):
@@ -28,7 +29,7 @@ class WhatsNewCard(CarouselCard):
 
         # Map the card loading over the ids
         return map(WhatsNewCard.load, ids["show"])
-
+    
     @classmethod
     def list_wn_cards(cls):
         ids = get_db().whatsnew.find_one({})
@@ -44,8 +45,8 @@ def add_wn_card():
         if form.validate():
             card = WhatsNewCard.new_card(form.extract())
             obj_id = card.save_to_db()
-            WhatsNewCard.add_whats_new_id(obj_id)
-            return str(obj_id), 200
+            card.str_id = str(obj_id)
+            return render_template('redir_success.html')
         else:
             return "",400
     else:
@@ -64,7 +65,7 @@ def set_wn_cards():
                     return "", 400
                 new_wn_list.append(oid)
                 get_db().whatsnew.update({}, {"$set": { "show" : new_wn_list }})
-            return "",200
+            return render_template('redir_success.html')
         else:
             return "", 400
     return render_template("set_wn_cards.html", form=form)

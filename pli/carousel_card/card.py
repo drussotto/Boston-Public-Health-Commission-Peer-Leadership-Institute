@@ -63,7 +63,7 @@ class CarouselCard(object):
     def save_to_db(self):
         # inserted_id is the ObjectId of the newly-inserted document
         result = get_db().cards.insert_one(self._as_db_doc())
-        self.store_card_id(result)
+        self.__class__.store_card_id(result.inserted_id)
         return str(result.inserted_id)
 
 def list_cards():
