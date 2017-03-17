@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+
+<div class="container-fluid">
+  <h1>Log In</h1>
+  <form method="post" enctype="multipart/form-data" >
+    <dl>
+      {{ render_field(form.background) }}
+      {{ render_field(form.caption) }}
+      {{ render_field(form.sub_caption) }}
+      {{ render_field(form.hyperlink) }}
+    </dl>
+    <p><input type="submit" value="Add card">
+  </form>
+</div>
+{% endblock %}

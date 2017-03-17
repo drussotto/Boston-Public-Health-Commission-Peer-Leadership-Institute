@@ -1,6 +1,7 @@
 
+
 def check_page(expected_content, *name):
-    
+
     def _check_page(f, r, *msg):
         if hasattr(r, 'data'):
             data = r.data
@@ -14,7 +15,7 @@ def check_page(expected_content, *name):
             _check_page(tr.assertTrue, r, str(name[0]))
         else:
             _check_page(tr.assertTrue, r)
-            
+
     def assert_not_page(tr, r):
         if len(name) == 1:
             _check_page(tr.assertFalse, r, "Not " + str(name[0]))
@@ -34,4 +35,3 @@ assert_bad_vtok_page, assert_not_bad_vtok_page = check_page(["Failed-Token-Valid
 assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid"], "good-valid-tok")
 assert_correct_page, assert_not_correct_page = check_page(["Correct!"], "correct")
 assert_wrong_page, assert_not_wrong_page = check_page(["Wrong!"], "wrong")
-

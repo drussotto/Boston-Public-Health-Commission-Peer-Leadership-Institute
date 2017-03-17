@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+  $(document).ready(function() { 
+    setTimeout(function() {
+	window.location = "/";
+    }, 2000);
+  })
+</script>
+{% endblock %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+
+<div class="container-fluid">
+  <h1>Success!</h1>
+  <p>You should be redirected in 2 seconds, if not click <a href="/">here</a></p>
+</div>
+{% endblock %}

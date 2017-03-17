@@ -8,18 +8,73 @@
 {% block page_content %}
 <!-- Index-Page -->
 <div class="container-fluid" id="cards-container">
-  
+
   <div class="row">
     <div class="card col-sm-7" id="news">
       <div class="heading">What's New</div>
-      <a class="card-body" href="{{file_url_for ( 'surveys.html' ) }}">
+        <div id="news-carousel-container">
+          <div id="news-carousel" class="carousel slide" data-ride="carousel">
+            {% set wn_cards = get_wn_cards() %}
+
+            <!-- Indicators -->
+            {% macro indicator(index, type='') -%}
+                <li data-target="#news-carousel" data-slide-to="{{index}}" class="{{type}}"></li>
+            {%- endmacro %}
+            <ol class="carousel-indicators">
+              {% for wn_card in wn_cards %}
+                {% if loop.first %}
+                  {{ indicator(0, "active") }}
+                {% else %}
+                  {{ indicator(loop.index0) }}
+                {% endif %}
+              {% else %}
+                  {{ indicator(0, "active") }}
+              {% endfor %}
+            </ol>
+
+            <!-- Wrapper for slides -->
+            {% macro carousel_item(caption, subcaption, imgsrc, url, type='') -%}
+              <div class="item {{type}}">
+                <a href="{{ url }}">
+                  <img src="{{imgsrc}}" alt="{{ caption }}">
+                  <div class="carousel-caption">
+                    <h3>{{ caption }}</h3>
+                    <p>{{ subcaption }}</p>
+                  </div>
+                </a>
+              </div>
+            {%- endmacro %}
+            <div class="carousel-inner" role="listbox">
+              {% for wn_card in wn_cards %}
+                {{ carousel_item(wn_card.caption, 
+                                 wn_card.sub_caption, 
+                                 "/card-img/" + wn_card.get_bg(),
+                                 wn_card.hyperlink,
+                                 "active" if loop.first else "") }}
+              {% else %}
+                {{ carousel_item("", "No News Found", url_for('static', filename='images/blank.png'), "#", "active" )}}
+              {% endfor %}
+
+            <!-- Left and right controls -->
+            <a class="left carousel-control" href="#news-carousel" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#news-carousel" role="button" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+      <!-- <a class="card-body" href="{{file_url_for ( 'surveys.html' ) }}">
         <h3>Fill out our Student Survey about marijuana usage.</h3>
-      </a>
+      </a> -->
+      </div>
     </div>
     <div class="card col-sm-3" id="qotd">
       <div class="heading">Question of the Day</div>
       <div class="card-body">
-	{% set cur_q = get_todays_question() %}
+	      {% set cur_q = get_todays_question() %}
         <h4>{{ cur_q.question }}</h4>
         <form action="/question/{{cur_q.question_number}}" method="post">
           <ol id="qotd-options">

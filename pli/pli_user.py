@@ -1,15 +1,16 @@
 from flask import current_app
 from flask_login import UserMixin
+from service_util import get_db
 
 class PliUser(UserMixin):
     are_roles_valid = False
-    
+
     def __init__(self, uid, is_auth):
         self.uid = uid
-        
+
     def get_id(self):
         return self.uid
-    
+
     @classmethod
     def get(clazz, uid):
         u = PliUser(uid, False)
@@ -25,14 +26,14 @@ class PliUser(UserMixin):
             return None
         else:
             return u
-        
+
 
     def same_uid(self, them):
         return self.uid == them.uid
 
     def get_me(self):
-        return current_app.config["db"].users.find_one({"_id" : self.uid})
-    
+        return get_db().users.find_one({"_id" : self.uid})
+
     def get_roles(self, refresh=False):
         if not self.is_authenticated:
             return []
@@ -41,16 +42,16 @@ class PliUser(UserMixin):
         else:
             # Roles is a space seperated list of roles on the user.
             me = self.get_me()
-            roles = list_roles(me["roles"])
+            roles = list_roles(me["roles"]) if "roles" in me else []
             self.are_roles_valid = True
             self.role_list = roles
             return self.role_list
-        
+
     def invalidate_roles(self):
         self.are_roles_valid = False
 
     def update_roles_to(self, new_str):
-        current_app.config["db"].users.update_one({"_id" : self.uid},
+        get_db().users.update_one({"_id" : self.uid},
                                                   {"$set" : {"roles" : new_str}})
     def transform_roles(self, f, p, role_name):
         cur_roles = self.get_roles(refresh=True)
@@ -63,7 +64,7 @@ class PliUser(UserMixin):
         self.invalidate_roles()
         return True
 
-        
+
     def add_role(self, role_name):
         return self.transform_roles(
             # Add element
@@ -80,7 +81,7 @@ class PliUser(UserMixin):
             lambda e,l: e in l,
             role_name)
 
-        
+
     def __getattr__(self, name):
         if name == "roles":
             return self.get_roles()

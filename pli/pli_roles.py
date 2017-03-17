@@ -43,11 +43,11 @@ def on_identity_loaded(sender, identity):
     if current_user.is_authenticated:
         # Set the identity user object
         identity.user = current_user
-        
+
         # Add the UserNeed to the identity
         if hasattr(current_user, 'uid'):
             identity.provides.add(UserNeed(current_user.uid))
-            
+
         # Add roles to the identity
         if current_user.roles is not None:
             for role in current_user.roles:
@@ -81,7 +81,7 @@ def rm_role():
         if target is None:
             # User doesn't exist...
             return "", 400
-        
+
         ok = target.remove_role(info.role.data)
         if ok:
             return "", 200
