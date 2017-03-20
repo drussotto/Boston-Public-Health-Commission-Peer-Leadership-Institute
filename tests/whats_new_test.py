@@ -84,9 +84,10 @@ class WnSet(PliEntireDbTestCase):
         self.assertEqual(400, res.status_code)
         third_party = current_app.test_client()
 
+        get_db().whatsnew.update({}, {"$set":{"show":[], "cards":[]}})
         index = third_party.get('/')
         assert_index_page(self, index)
-        self.assertTrue("No News" in res.data)
+        self.assertTrue("No News" in index.data)
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_set_wn_card_noauth(self, client):
@@ -129,9 +130,10 @@ class WnList(PliEntireDbTestCase):
     def test_displaying_cards(self):
         cards = WhatsNewCard.list_wn_cards()
         self.assertEqual(len(cards), 3)
-        self.assertTrue(get_wn_card0() in cards)
-        self.assertTrue(get_wn_card1() in cards)
-        self.assertTrue(get_wn_card2() in cards)
+        for card in cards:
+            self.assertTrue(card.str_id == str(get_wn_card0()["_id"]) or
+                            card.str_id == str(get_wn_card1()["_id"]) or
+                            card.str_id == str(get_wn_card2()["_id"]))
 
 
 def post_add_wn_card(client, f, caption, sub_caption, hyperlink):

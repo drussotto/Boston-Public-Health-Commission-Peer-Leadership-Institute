@@ -2,8 +2,7 @@ from flask import render_template, request
 from wn_card_form import WnCardInfoAddForm
 from card import CarouselCard, card_exists
 from set_wn_cards_form import SetWnCardsForm
-from pli.service_util import get_db
-from bson import ObjectId, errors
+from pli.service_util import get_db, get_obj_id
 
 class WhatsNewCard(CarouselCard):
 
@@ -61,8 +60,8 @@ def set_wn_cards():
                 if len(str(id_field)) == 0:
                     continue
                 try:
-                    oid = ObjectId(str(id_field))
-                except errors.InvalidId:
+                    oid = get_obj_id()(str(id_field))
+                except Exception, e:
                     return "", 400
                 
                 if not card_exists(oid):

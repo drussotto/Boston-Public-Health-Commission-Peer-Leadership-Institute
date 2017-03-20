@@ -1,4 +1,4 @@
-from .service_util import get_db, get_mail, get_signer, get_gridfs
+from .service_util import get_db, get_mail, get_signer, get_gridfs, get_obj_id
 from .carousel_card import *
 from .login import *
 from .pli_user import *
@@ -7,3 +7,6 @@ from .register import *
 from .pli_roles import *
 from .surveys import *
 from .images import *
+
+# Our compatability helper (need for testing with mongomock)
+from .compat_helpers import init_help

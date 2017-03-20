@@ -24,7 +24,7 @@ class PliTestCase(unittest.TestCase):
         # We fold the db over the initializers, so we got all the collections
         pli.config['db'] = reduce(fold_cols, self.db_inits(), db)
         pli.config['gridfs'] = mongomock.gridfs.MockGridFS(pli.config['db'])
-
+        pli.config['object_id'] = mongomock.ObjectId
         self.ctx = pli.app_context()
         self.ctx.push()
         

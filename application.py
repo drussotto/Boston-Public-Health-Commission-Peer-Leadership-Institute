@@ -34,6 +34,7 @@ application.config["signer"] = URLSafeSerializer(application.config["SECRET_KEY"
 application.config["principals"] = principals
 application.config["gridfs"] = gridfs
 
+pli.init_help(application)
 
 @login_manager.user_loader
 def load_pli_user(uid):
