@@ -1,16 +1,18 @@
 from flask import request, render_template, redirect, url_for, current_app
 from register_form import PliRegistrationForm
-from itsdangerous import BadSignature
 from flask_mail import Message
-from service_util import get_db, get_mail, get_signer
-
+from service_util import get_db, get_mail
+from helpers import encode_uid, decode_uid, uid_exists
 def register():
     if request.method == "GET":
+        # Send registration form.
         form = PliRegistrationForm()
         return render_template("register.html", form=form)
     else:
+        # Validate registration form.
         form = PliRegistrationForm(request.form)
         if form.validate():
+            # Make sure they don't exist, and perform registration.
             (uid, confirmed) = user_exists(form.email.data)
             if uid and confirmed:
                 return redirect(url_for('page', path="already_register.html"))
@@ -34,10 +36,7 @@ def user_exists(email_to_check):
         u = found.next()
         return (u["_id"], u["confirmed"])
 
-def uid_exists(uid):
-    return get_db().users.find({"_id":uid}).limit(1).count() == 1
 
-# TODO
 # Sends a confirmation email to the given email address.
 # The email should contain a confirmation link with a signed version
 # of their uid, which they can use to validate their email.
@@ -63,11 +62,13 @@ If the link doesn't work go to this url: %s
 def create_user(user_document):
     # TODO check for re-used email...
     lastID = get_db().users.find({}, {"_id":1}).sort("_id",-1).limit(1)
+    # Special case for the very first user.
     if lastID.count() == 0:
         # Set to 0 so first ID is 1
         lastID = 0
     else:
         lastID = lastID.next()["_id"]
+        
     doc = user_document.copy()
     newID = str(int(lastID)+1)
     doc["_id"] = newID
@@ -92,18 +93,3 @@ def validate_user(user_tok):
 # returns true if the user with the given uid is "confirmed"
 def is_confirmed_uid(uid):
     return get_db().users.find({"_id":uid}).limit(1).next()["confirmed"]
-
-# returns the encoded uid (using itsdangerous)
-# this token will be used for email validation (should be ascii armored, and URL safe)
-def encode_uid(uid):
-    return get_signer().dumps(uid)
-
-# decodes the given encoded uid, the token should have been encoded
-# by encoded_uid, and should be made with itsdangerous
-# returns None for an invalid uid
-def decode_uid(euid):
-    try:
-        return get_signer().loads(euid)
-    except BadSignature:
-        # We return None for a bad signature
-        return None

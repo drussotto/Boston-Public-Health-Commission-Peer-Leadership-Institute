@@ -1,7 +1,8 @@
 from application import mail
 from urllib import quote_plus
 from testlib import *
-from pli import validate_login, encode_uid, decode_uid, is_confirmed_uid, send_confirmation_email
+from pli import validate_login, encode_uid, decode_uid, is_confirmed_uid
+from pli.register import send_confirmation_email
 
 def reg_form_from_user(d):
     return dict(

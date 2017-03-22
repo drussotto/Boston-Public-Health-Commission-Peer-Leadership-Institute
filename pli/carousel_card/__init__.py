@@ -1,3 +1,2 @@
-from card import *
-from whats_new import *
-from set_wn_cards_form import *
+from card import CarouselCard, list_cards, card_exists
+from whats_new import WhatsNewCard, add_wn_card, set_wn_cards
