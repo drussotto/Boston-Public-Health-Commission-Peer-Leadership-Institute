@@ -1,8 +1,8 @@
 
 import mongomock
+from mongomock import ObjectId
 import os
 from mongomock import gridfs
-from bson import ObjectId
 from pli.service_util import get_db
 
 def get_image_bytes(file_name):
@@ -41,7 +41,8 @@ def build_and_assign_cards(db, gridfs):
 
     show_list = [wn_card1, wn_card2]
     db.cards.insert_many([wn_card0, wn_card1, wn_card2])
-    db.whatsnew.insert({"show" : map((lambda x: x["_id"]), show_list) })
+    db.whatsnew.insert({"show" : map((lambda x: x["_id"]), show_list),
+                        "cards": map((lambda x: x["_id"]), [wn_card0, wn_card1, wn_card2])})
 
 
 def add_mocked_wn_cards(db):
