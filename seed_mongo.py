@@ -12,6 +12,8 @@ def get_image_bytes(file_name):
     path = os.path.join(os.path.dirname(__file__), "tests", "testlib", "examples", "res", file_name)
     return open(path, "r")
 
+def put_gridfs(name, mime_type, gridfs):
+    gridfs.put(get_image_bytes(name), content_type=mime_type)
 
 db.users.remove()
 db.questions.remove()
@@ -19,6 +21,7 @@ db.cards.remove()
 db.whatsnew.remove()
 db.fs.files.remove()
 db.fs.chunks.remove()
+db.usercontent.remove()
 
 db.users.insert({
     "_id": 12345,
@@ -132,5 +135,52 @@ db.cards.insert_many([wn_card1, wn_card0, wn_card2])
 # All our whatsnew info
 db.whatsnew.insert({"show": [wn_card2["_id"], wn_card1["_id"]],
                     "cards": [wn_card0["_id"], wn_card1["_id"], wn_card2["_id"]]})
+
+blog_page_one = {
+    "_id": ObjectId(),
+    "title":"<h1>Page one</h1>",
+    "body":"<h2>Body one</h2>",
+    "required_roles": [],
+    "owner": user3["_id"],
+    "attachments": [],
+}
+
+blog_page_two = {
+    "_id": ObjectId(),
+    "title": "<h1>Page two</h1>",
+    "body": "<h2>Body two</h2>",
+    "required_roles": ["peer_leader"],
+    "owner": user2["_id"],
+    "attachments": [
+        {"picture": put_gridfs("mongodb.png", "image/png", gridfs)}
+    ]
+}
+
+blog_page_three = {
+    "_id": ObjectId(),
+    "title": "<h1>Page three</h1>",
+    "body": "<h2>Body three</h2>",
+    "required_roles": [],
+    "owner": user1["_id"],
+    "attachments": [
+        {"picture": put_gridfs("FlaskLogo.png", "image/png", gridfs)}
+    ]
+}
+
+
+blog_page_four = {
+    "_id": ObjectId(),
+    "title": "<h1>For the public</h1>",
+    "body": "<h2>A post</h2>",
+    "required_roles": [],
+    "owner": user2["_id"],
+    "attachments": []
+}
+
+db.usercontent.insert_many(
+    [blog_page_one,
+     blog_page_two,
+     blog_page_three,
+     blog_page_four])
 
 client.close()

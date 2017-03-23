@@ -1,4 +1,4 @@
-from pli import ADMIN_ROLE, EDITOR_ROLE, PARTICIPANT_ROLE, join_roles
+from pli import ADMIN_ROLE, EDITOR_ROLE, PARTICIPANT_ROLE, PEERLEADER_ROLE,join_roles
 import mongomock
 
 # A convinience test case containing the "mocked users"
@@ -48,7 +48,19 @@ user3 = {
     "organization": None
 }
 
-users = [user1, user2, user3]
+user4 = {
+    "_id": 56789,
+    "email_address": "iamapeerleader@bphc.org",
+    "real_pass": "passw0rd",
+    "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
+    "first_name": "John",
+    "roles": PEERLEADER_ROLE,
+    "last_name": "Leader",
+    "confirmed": True,
+    "organization": None
+};
+
+users = [user1, user2, user3, user4]
 
 def add_mocked_users(db):
     db.users.insert_many(users)
