@@ -23,61 +23,65 @@ db.fs.files.remove()
 db.fs.chunks.remove()
 db.usercontent.remove()
 
-db.users.insert({
+u1={
     "_id": 12345,
     "email_address": "the.principal@gmail.com",
 #    "real_pass":"iamsecret",
     "password": 'pbkdf2:sha1:1000$FmjdX5b2$c23a5cefc39cc669f3e193670c3c122041266f26',
     "first_name": "Bob",
     "last_name": "Smith",
-    "roles": "admin editor",
+    "roles": ["admin", "editor"],
     "confirmed": True,
     "organization": {
         "name": "Boston Latin",
         "type": "School",
         "region": "Dorchester"
     }
-});
+}
+db.users.insert(u1);
 
-db.users.insert({
+u2={
     "_id": 23456,
     "email_address": "iloveindoortennis@gmail.com",
 #    "real_pass":"youcantseeme",
     "password": "pbkdf2:sha1:1000$HDOj8diN$62524eb1619b6ee167aeb1d6116ad6075a5bf3cb",
     "first_name": "Alice",
     "last_name": "Da Example",
-    "roles": "participant",
+    "roles": ["participant"],
     "confirmed": False,
     "organization": {
         "name": "Squashbusters",
         "type": "Community Organization",
         "region": "Roxbury"
     }
-});
+}
+db.users.insert(u2);
 
-db.users.insert({
+u3={
     "_id": 34567,
     "email_address": "iamastudent@someschool.org",
 #    "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "Eve",
-    "roles":"",
+    "roles":[],
     "last_name": "Fakename",
     "confirmed": True,
     "organization": None
-});
+}
+db.users.insert(u3);
 
-db.users.insert({
+u4={
     "_id": 56789,
     "email_address": "iamapeerleader@bphc.org",
 #    "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "John",
-    "roles":"peer_leader",
+    "roles":["peer_leader"],
     "last_name": "Leader",
     "confirmed": True,
     "organization": None
-});
+}
+db.users.insert(u4);
 
 db.questions.insert({
     "question_number" : 0,
@@ -141,7 +145,7 @@ blog_page_one = {
     "title":"<h1>Page one</h1>",
     "body":"<h2>Body one</h2>",
     "required_roles": [],
-    "owner": user3["_id"],
+    "owner": u3["_id"],
     "attachments": [],
 }
 
@@ -150,7 +154,7 @@ blog_page_two = {
     "title": "<h1>Page two</h1>",
     "body": "<h2>Body two</h2>",
     "required_roles": ["peer_leader"],
-    "owner": user2["_id"],
+    "owner": u2["_id"],
     "attachments": [
         {"picture": put_gridfs("mongodb.png", "image/png", gridfs)}
     ]
@@ -161,7 +165,7 @@ blog_page_three = {
     "title": "<h1>Page three</h1>",
     "body": "<h2>Body three</h2>",
     "required_roles": [],
-    "owner": user1["_id"],
+    "owner": u1["_id"],
     "attachments": [
         {"picture": put_gridfs("FlaskLogo.png", "image/png", gridfs)}
     ]
@@ -173,7 +177,7 @@ blog_page_four = {
     "title": "<h1>For the public</h1>",
     "body": "<h2>A post</h2>",
     "required_roles": [],
-    "owner": user2["_id"],
+    "owner": u2["_id"],
     "attachments": []
 }
 

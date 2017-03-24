@@ -1,3 +1,8 @@
+from ex_global import ExampleCollection
+
+import __builtin__
+__builtin__.ex = ExampleCollection()
+
 import random
 import string
 from pli import PliUser

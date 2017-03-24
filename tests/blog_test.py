@@ -1,6 +1,5 @@
 import re
 from testlib import *
-
 class AddBlogPageTest(PliEntireDbTestCase):
 
     def try_add(self, client, expect, trueFun=None, equalFun=None, **data):
@@ -21,8 +20,8 @@ class AddBlogPageTest(PliEntireDbTestCase):
         title, body, form = make_post_form()
         u = get_site(self.try_add(client, ["Success!"], form, status_code=200))
         check_page(client, u, title, body, self.assertTrue)
-        
-        
+
+
     @with_login(user2["email_address"], user2["real_pass"])
     def test_add_bad_auth(self, client):
         title, body, form = make_post_form()
@@ -47,7 +46,7 @@ class RemoveBlogPageTest(PliEntireDbTestCase):
 
     def try_remove_fail(self, client, page, logged_in=True):
         res = client.post('/uc/remove?page='+str(page))
-        if loggin_in:
+        if logged_in:
             self.assertEqual(403, res.status_code)
             self.assertTrue("Unauthorized" in res.data)
         else:
@@ -55,44 +54,44 @@ class RemoveBlogPageTest(PliEntireDbTestCase):
             self.assertEqual(304, res.status_code)
             self.assertTrue("Login" in res.data)
 
-    
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_admin_remove_all(self, client):
-        for p in [blog_page_one,
-                  blog_page_two,
-                  blog_page_three,
-                  blog_page_four]:
+        for p in [ex.blog_page_one,
+                  ex.blog_page_two,
+                  ex.blog_page_three,
+                  ex.blog_page_four]:
             self.try_remove_suc(client, p["_id"])
-            
+
         # All pages were removed.
         self.assertEqual(0, len(list_all_pages()))
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_own_remove_all(self, client):
         # User2 owns page 2 and page 4
-        self.try_remove_suc(client, blog_page_two["_id"])
-        self.try_remove_suc(client, blog_page_four["_id"])
+        self.try_remove_suc(client, ex.blog_page_two["_id"])
+        self.try_remove_suc(client, ex.blog_page_four["_id"])
         # And they don't own these
-        self.try_remove_fail(client, blog_page_three["_id"])
-        self.try_remove_fail(client, blog_page_one["_id"])
+        self.try_remove_fail(client, ex.blog_page_three["_id"])
+        self.try_remove_fail(client, ex.blog_page_one["_id"])
 
         # The only pages that are left are 1 & 3
         pleft = map(lambda x: str(x["_id"]), list_all_pages())
         self.assertEqual(2, len(pleft))
-        self.assertTrue(str(blog_page_three["_id"]) in pleft)
-        self.assertTrue(str(blog_page_one["_id"]) in pleft)
+        self.assertTrue(str(ex.blog_page_three["_id"]) in pleft)
+        self.assertTrue(str(ex.blog_page_one["_id"]) in pleft)
 
     @with_test_client
     def test_remove_not_logged_in(self, client):
-        self.try_remove_fail(client, blog_page_one["_id"], logged_in=False)
-        self.try_remove_fail(client, blog_page_two["_id"], logged_in=False)
-        self.try_remove_fail(client, blog_page_three["_id"], logged_in=False)
-        self.try_remove_fail(client, blog_page_four["_id"], logged_in=False)
+        self.try_remove_fail(client, ex.blog_page_one["_id"], logged_in=False)
+        self.try_remove_fail(client, ex.blog_page_two["_id"], logged_in=False)
+        self.try_remove_fail(client, ex.blog_page_three["_id"], logged_in=False)
+        self.try_remove_fail(client, ex.blog_page_four["_id"], logged_in=False)
         # We've been redirected to login for each call,
         # so all the content should still be there.
         self.assertEqual(4, len(list_all_pages()))
 
-    
+
 
 class ShowBlogPageTest(PliEntireDbTestCase):
     # Users can always see their own posts
@@ -101,7 +100,7 @@ class ShowBlogPageTest(PliEntireDbTestCase):
     # they must have permissions to view the page
     # unless the page doesn't require any permissions,
     # in which case you don't need to be logged in.
-    
+
     def try_show(self, client, expect, blog_id, status_code=200):
         res = client.get("/uc/show?page="+str(blog_id))
         self.assertEqual(status_code, res.status_code)
@@ -111,26 +110,29 @@ class ShowBlogPageTest(PliEntireDbTestCase):
     def show_blog_four(self, client):
         self.try_show(client,
                       ["For the public", "A post"],
-                      blog_page_four["_id"])
+                      ex.blog_page_four["_id"])
 
     def show_blog_one(self, client, pg=["Page one", "Body one"], status_code=200):
         self.try_show(client,
                       pg,
-                      blog_page_one["_id"],
+                      ex.blog_page_one["_id"],
                       status_code=status_code)
 
     def show_blog_two(self, client, pg=["Page two", "Body two", "mongodb.png"], status_code=200):
         self.try_show(client,
                       pg,
-                      blog_page_two["_id"],
+                      ex.blog_page_two["_id"],
                       status_code=status_code)
 
-    def show_blog_three(self, client, pg=["Page three", "Body three", "FlaskLogo.png"], status_code=200):
+    def show_blog_three(self,
+                        client,
+                        pg=["Page three", "Body three", "FlaskLogo.png"],
+                        status_code=200):
         self.try_show(client,
                       pg,
-                      blog_page_two["_id"],
+                      ex.blog_page_two["_id"],
                       status_code=status_code)
-        
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_good_with_auth(self, client):
         self.show_blog_four(client)
@@ -170,12 +172,12 @@ class ShowBlogPageTest(PliEntireDbTestCase):
         # site should ask them to log in to view the post
         self.show_blog_one(client, pg=["Login"], status_code=304)
         self.show_blog_two(client, pg=["Login"], status_code=304)
-        
+
 
 
 
 def post_add_blog(client, **kwargs):
-    return client.post('/custom/add',
+    return client.post('/uc/add',
                        data=kwargs,
                        follow_redirects=True)
 
@@ -197,4 +199,3 @@ def check_page(client, url, title, body, check):
     page = client.get('/'+url, follow_redirects=True)
     check(title in page.data)
     check(body in page.data)
-    

@@ -42,7 +42,7 @@ class PliUser(UserMixin):
         else:
             # Roles is a space seperated list of roles on the user.
             me = self.get_me()
-            roles = list_roles(me["roles"]) if "roles" in me else []
+            roles = me["roles"]
             self.are_roles_valid = True
             self.role_list = roles
             return self.role_list
@@ -50,16 +50,15 @@ class PliUser(UserMixin):
     def invalidate_roles(self):
         self.are_roles_valid = False
 
-    def update_roles_to(self, new_str):
+    def update_roles_to(self, new_roles):
         get_db().users.update_one({"_id" : self.uid},
-                                                  {"$set" : {"roles" : new_str}})
+                                  {"$set" : {"roles" : new_roles}})
     def transform_roles(self, f, p, role_name):
-        cur_roles = self.get_roles(refresh=True)
+        cur_roles = list(self.get_roles(refresh=True))
         if not p(role_name, cur_roles):
             return False
         f(role_name, cur_roles)
-        roles_as_str = join_roles(*cur_roles)
-        self.update_roles_to(roles_as_str)
+        self.update_roles_to(cur_roles)
         # We want to force-load the roles again so they get they updated version.
         self.invalidate_roles()
         return True
@@ -87,14 +86,3 @@ class PliUser(UserMixin):
             return self.get_roles()
         else:
             raise AttributeError("No name %s in PliUser" % name)
-
-def join_roles(*roles):
-    return " ".join(roles)
-
-def list_roles(role_list_str):
-    r = role_list_str.split()
-    if len(r) == 0 or \
-       (len(r) == 1 and r[0] == ""):
-        return []
-    else:
-        return r

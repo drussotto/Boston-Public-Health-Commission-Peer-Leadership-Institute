@@ -10,18 +10,18 @@ def get_image_bytes(file_name):
     return open(path, "r")
 
 blog_page_one = None
-blog_page_two = None 
+blog_page_two = None
 blog_page_three = None
 blog_page_four = None
+
 def get_image_bytes(file_name):
     path = os.path.join(os.path.dirname(__file__), "res", file_name)
     return open(path, "r")
 
 def put_gridfs(name, mime_type, gridfs):
     gridfs.put(get_image_bytes(name), content_type=mime_type)
-    
+
 def build_and_assign_blogs(db, gridfs):
-    global blog_page_one, blog_page_two, blog_page_three, blog_page_four
 
     blog_page_one = {
         "_id": ObjectId(),
@@ -62,15 +62,19 @@ def build_and_assign_blogs(db, gridfs):
         "owner": user2["_id"],
         "attachments": []
     }
-    
+
     db.usercontent.insert_many(
         [blog_page_one,
          blog_page_two,
          blog_page_three,
          blog_page_four])
+    ex.add(blog_page_one=blog_page_one,
+           blog_page_two=blog_page_two,
+           blog_page_three=blog_page_three,
+           blog_page_four=blog_page_four)
 
 def add_mocked_blogs(db):
     build_and_assign_blogs(db, gridfs.MockGridFS(db))
-    
+
 def list_all_pages():
     return list(get_db().usercontent.find({}))

@@ -1,4 +1,4 @@
-from pli import ADMIN_ROLE, EDITOR_ROLE, PARTICIPANT_ROLE, PEERLEADER_ROLE,join_roles
+from pli import ADMIN_ROLE, EDITOR_ROLE, PARTICIPANT_ROLE, PEERLEADER_ROLE
 import mongomock
 
 # A convinience test case containing the "mocked users"
@@ -11,7 +11,7 @@ user1 = {
     "password": 'pbkdf2:sha1:1000$FmjdX5b2$c23a5cefc39cc669f3e193670c3c122041266f26',
     "first_name": "Bob",
     "last_name": "Smith",
-    "roles": join_roles(ADMIN_ROLE, EDITOR_ROLE),
+    "roles": [ADMIN_ROLE, EDITOR_ROLE],
     "confirmed": True,
     "organization": {
         "name": "Boston Latin",
@@ -27,7 +27,7 @@ user2 = {
     "password": "pbkdf2:sha1:1000$HDOj8diN$62524eb1619b6ee167aeb1d6116ad6075a5bf3cb",
     "first_name": "Alice",
     "last_name": "Da Example",
-    "roles": PARTICIPANT_ROLE,
+    "roles": [PARTICIPANT_ROLE],
     "confirmed": False,
     "organization": {
         "name": "Squashbusters",
@@ -42,7 +42,7 @@ user3 = {
     "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "Eve",
-    "roles":"",
+    "roles":[],
     "last_name": "Fakename",
     "confirmed": True,
     "organization": None
@@ -54,7 +54,7 @@ user4 = {
     "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "John",
-    "roles": PEERLEADER_ROLE,
+    "roles": [PEERLEADER_ROLE],
     "last_name": "Leader",
     "confirmed": True,
     "organization": None
@@ -62,6 +62,11 @@ user4 = {
 
 users = [user1, user2, user3, user4]
 
+ex.add(user1=user1,
+       user2=user2,
+       user3=user3,
+       user4=user4,
+       users=users)
+
 def add_mocked_users(db):
     db.users.insert_many(users)
-

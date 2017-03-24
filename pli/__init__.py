@@ -1,9 +1,7 @@
 
 # User stuff
 from .pli_user import \
-    PliUser, \
-    join_roles, \
-    list_roles
+    PliUser
 
 # Our compatability helper (need for testing with mongomock)
 from .helpers import \
