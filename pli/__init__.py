@@ -34,6 +34,9 @@ from .service_util import \
     get_gridfs, \
     get_obj_id
 
+# Blog stuff
+from blog import *
+
 from .carousel_card import *
 from .login import validate_login, logout, login
 from .surveys import *

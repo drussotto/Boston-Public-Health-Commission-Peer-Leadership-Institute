@@ -8,10 +8,35 @@
   <script type="text/javascript" src="{{ url_for('static', filename='js/setup_tinymce.js') }}"></script>
 {% endblock %}
 {% block page_content %}
-
-<form method="post">
-        <textarea id="page-content" name="content" class="tinymce"></textarea>
-	{# $('#page-content').html() #}
-</form>
+<div class="container-fluid">
+  <form id="editor-form" method="post" enctype="multipart/form-data">
+    <dl>
+      <dt>Title</dt>
+      <dd>
+	<input type="text" name="title">
+      </dd>
+      <dt>Page content:</dt>
+      <dd>
+	<textarea id="body" name="body" class="tinymce"></textarea>
+      </dd>
+      <br>
+      <dt>Attach</dt>
+      <dd>
+	<input type="file" name="attachments-0" accept="image/*"/>
+      </dd>
+      <br>
+      {% if get_all_roles()|length > 0 %}
+      <dt>Allow users with roles to view:</dt>
+      {% endif %}
+      {% for role in get_all_roles() %}
+      <dd>
+	<input type="checkbox" name="requiredPerms-{{ loop.index }}" value="{{ role }}">{{ role }}</input>
+	<br>
+      </dd>
+      {% endfor %}
+    </dl>
+  </form>
+  <button onclick="submitEditor()">Create Page</button>
+</div>
 
 {% endblock %}

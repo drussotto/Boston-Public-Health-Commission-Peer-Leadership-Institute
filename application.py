@@ -57,6 +57,12 @@ def add_wn_card():
 def set_wn_cards():
     return pli.set_wn_cards()
 
+@application.route('/uc/add', methods = [ "POST", "GET" ])
+# TODO perms for this page
+def add_user_content():
+    return pli.add_blog_page()
+
+
 @application.route('/add-role', methods = [ "PUT" ])
 @login_required
 @pli.ADMIN_PERM.require(http_exception=403)
@@ -171,6 +177,9 @@ application.add_template_global(pli.WhatsNewCard.list_wn_cards, "list_all_wn_car
 
 # This allows the jinja templates to get todays whats new cards
 application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_cards")
+
+# This allows the jinja templates to get the lists of all roles.
+application.add_template_global(pli.all_roles, "get_all_roles")
 
 # run the application.
 if __name__ == "__main__":
