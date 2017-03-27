@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block styles %}
+  {{ super() }}
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.tinymce.min.js') }}" ></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/setup_tinymce.js') }}"></script>
+{% endblock %}
+{% block page_content %}
+
+<form method="post">
+        <textarea id="page-content" name="content" class="tinymce"></textarea>
+	{# $('#page-content').html() #}
+</form>
+
+{% endblock %}
