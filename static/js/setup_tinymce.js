@@ -1,6 +1,5 @@
 $(function() {
     $('textarea.tinymce').tinymce({
-	padding: '50px',
 	// width: '500px',
         // height: '100px',
         // Location of TinyMCE script

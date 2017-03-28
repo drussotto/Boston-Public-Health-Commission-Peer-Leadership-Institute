@@ -12,27 +12,29 @@ class AddBlogPageTest(PliEntireDbTestCase):
         if stat_code is not None:
             equalFun(stat_code, res.status_code)
         for s in expect:
-            trueFun(s in res.data)
+            trueFun(s, s in res.data)
         return res
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_add_good_auth(self, client):
         title, body, form = make_post_form()
-        u = get_site(self.try_add(client, ["Success!"], form, status_code=200))
-        check_page(client, u, title, body, self.assertTrue)
+        self.try_add(client, ["Success!"], status_code=200, **form)
+        u = get_site(title)
+        check_page(u, title, body, self.assertTrue)
 
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_add_bad_auth(self, client):
         title, body, form = make_post_form()
-        u = get_site(self.try_add(client, ["Unauthorized"], form, status_code=403))
-        check_page(client, u, title, body, self.assertFalse)
+        self.try_add(client, ["Unauthorized"], status_code=403, **form)
+        self.assertIsNone(get_site(title))
 
     @with_test_client
     def test_add_no_auth(self, client):
         title, body, form = make_post_form()
-        u = get_site(self.try_add(client, ["Login"], form, status_code=200))
-        check_page(client, u, title, body, self.assertFalse)
+        self.try_add(client, ["Login"], status_code=200, **form)
+        self.assertIsNone(get_site(title))
+
 
 
 class RemoveBlogPageTest(PliEntireDbTestCase):
@@ -166,7 +168,7 @@ class ShowBlogPageTest(PliEntireDbTestCase):
     @with_test_client
     def test_not_logged_in(self, client):
         self.show_blog_four(client)
-        self.show_blog_three(client)
+        self.show_blog_three(client, status_code=403, pg=[])
         # TODO Check redirect code
         # Since we aren't logged in
         # site should ask them to log in to view the post
@@ -190,12 +192,9 @@ def make_post_form(**kwargs):
         data["body"] = rand_string(100)
     return data["title"], data["body"], data
 
-def get_site(res):
-    re.search(
-        'At this link: (?:http[s]?://([a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+)\w+',
-        res.data).group(0)
+def get_site(title):
+    return get_db().usercontent.find_one({"title":title})
 
-def check_page(client, url, title, body, check):
-    page = client.get('/'+url, follow_redirects=True)
-    check(title in page.data)
-    check(body in page.data)
+def check_page(doc, title, body, check):
+    check(title == doc["title"])
+    check(body == doc["body"])

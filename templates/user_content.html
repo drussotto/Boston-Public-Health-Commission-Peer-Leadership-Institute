@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+<title>{{ page["title"]|safe }}</title>
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid">
+  <h1>{{ page["title"]|safe }}</h1>
+  {{ page["body"]|safe }}
+</div>
+{% endblock %}

@@ -4,4 +4,3 @@ class AddBlogPageForm(Form):
     title = StringField("title")
     body = StringField("body")
     requiredPerms = FieldList(StringField("perms"))
-    attachments = FieldList(StringField("files"))

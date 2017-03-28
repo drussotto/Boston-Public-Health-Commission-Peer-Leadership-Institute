@@ -58,10 +58,14 @@ def set_wn_cards():
     return pli.set_wn_cards()
 
 @application.route('/uc/add', methods = [ "POST", "GET" ])
-# TODO perms for this page
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
 def add_user_content():
     return pli.add_blog_page()
 
+@application.route('/uc/show', methods = [ "GET" ])
+def show_blog_page():
+    return pli.show_blog_page()
 
 @application.route('/add-role', methods = [ "PUT" ])
 @login_required

@@ -16,24 +16,23 @@ def _post_add_page():
             "owner": current_user.get_id(),
             "required_roles": form.requiredPerms.data,
             # Construct the attachments from the form attachments
-            "attachments": _build_file_list(form.attachments.data)
+            "attachments": _build_file_list(request.files)
         }
-        print("Got doc", new_doc)
         # Now that we've made the new doc
         # we can add it
         blog_db.add_new_document(new_doc)
         return render_template("redir_success.html")
     else:
         return "", 400
-    
+
 # Constructs a list of ObjectIds for the files in the current request
-def _build_file_list(filenames):
+def _build_file_list(files):
     output = []
     # For all the files they add, we add them to gridfs
     # and include the objectid
-    for name in filenames:
+    for name in files:
         mtype = mimetypes.guess_type(name)
-        output.append({name: add_new_img(request.files[name], mtype)})
+        output.append({name: add_new_img(files[name], mtype)})
     return output
 
 # Just render the editor page.
@@ -45,4 +44,3 @@ def add_blog_page():
         return _post_add_page()
     else:
         return _get_add_page()
-
