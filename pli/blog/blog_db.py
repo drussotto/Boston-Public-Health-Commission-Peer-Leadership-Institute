@@ -88,3 +88,17 @@ def get_page_to_delete(id):
 
     # Otherwise NO
     return None
+
+def get_deletable_pages():
+    if ADMIN_PERM.can():
+        return get_db().usercontent.find({})
+    else:
+        return get_my_pages()
+
+def get_my_pages():
+    if current_user.is_authenticated:
+        return get_db().usercontent.find({"owner": current_user.get_id()})
+    else:
+        return []
+
+        

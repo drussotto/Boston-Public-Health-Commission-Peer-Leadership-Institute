@@ -5,7 +5,7 @@ from flask_login import current_user
 import urllib
 
 def _remove_blog_page_get():
-    return render_page("remove_user_content.html")
+    return render_template("remove_user_content.html")
 
 def _remove_blog_page_post():
     page_str = request.args.get("page")

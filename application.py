@@ -71,6 +71,12 @@ def show_blog_page():
 def remove_blog_page():
     return pli.remove_blog_page()
 
+@application.route('/uc/manage/mine', methods = [ "GET", "POST" ])
+@login_required
+def view_my_pages():
+    return pli.view_my_pages()
+
+
 @application.route('/add-role', methods = [ "PUT" ])
 @login_required
 @pli.ADMIN_PERM.require(http_exception=403)
@@ -188,6 +194,13 @@ application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_ca
 
 # This allows the jinja templates to get the lists of all roles.
 application.add_template_global(pli.all_roles, "get_all_roles")
+
+# This allows the jinja templates to get the list of all deletable user content pages.
+application.add_template_global(pli.get_deletable_pages, "get_deletable_pages")
+
+# This allows the jinja templates to get the list of user content pages the current user owns.
+application.add_template_global(pli.get_my_pages, "get_my_pages")
+
 
 # run the application.
 if __name__ == "__main__":
