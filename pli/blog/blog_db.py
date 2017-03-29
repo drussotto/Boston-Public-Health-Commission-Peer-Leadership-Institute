@@ -1,5 +1,5 @@
 from pli.service_util import get_db, get_obj_id
-from pli import PliUser
+from pli import PliUser, ADMIN_PERM
 from flask_login import current_user
 
 def add_new_document(doc):
@@ -23,6 +23,12 @@ def is_allowed_to_view(id):
         return False
 
     page = get_page_with_id(id)
+
+    if current_user.is_authenticated and \
+       (page["owner"] == current_user.get_id()) or \
+       ADMIN_PERM.can():
+        # Owners can always see their own pages.
+        return True
 
     # No requirements => everyone is allowed
     if len(page["required_roles"]) == 0:
