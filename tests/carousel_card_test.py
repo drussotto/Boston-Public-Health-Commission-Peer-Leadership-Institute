@@ -7,7 +7,7 @@ from pli import list_cards
 class CardImg(PliEntireDbTestCase):
     @with_test_client
     def test_card_image_from_url(self, client):
-        res = client.get('/card-img/' + str(get_wn_card0()["background"]))
+        res = client.get('/card-img/' + str(ex.wn_card0["background"]))
         with open(os.path.join(os.path.dirname(__file__), "testlib", "examples", "res", "mongodb.png"), "r") as img:
           self.assertEquals(res.data, img.read()) # not the correct way to compare image data from response
 
@@ -26,6 +26,6 @@ class CardList(PliEntireDbTestCase):
     def test_list_all_cards(self, client):
         cards = list_cards()
         self.assertEqual(len(cards), 3)
-        self.assertTrue(get_wn_card0() in cards)
-        self.assertTrue(get_wn_card1() in cards)
-        self.assertTrue(get_wn_card2() in cards)
+        self.assertTrue(ex.wn_card0 in cards)
+        self.assertTrue(ex.wn_card1 in cards)
+        self.assertTrue(ex.wn_card2 in cards)
