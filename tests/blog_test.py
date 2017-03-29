@@ -36,6 +36,23 @@ class AddBlogPageTest(PliEntireDbTestCase):
         self.try_add(client, ["Login"], status_code=200, **form)
         self.assertIsNone(get_site(title))
 
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_add_get_auth(self, client):
+        res = client.get("/uc/add")
+        self.assertEqual(200, res.status_code)
+        self.assertTrue("Title" in res.data)
+        self.assertTrue("Attach" in res.data)
+
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_add_get_no_auth(self, client):
+        res = client.get("/uc/add")
+        self.assertEqual(403, res.status_code)
+
+    @with_test_client
+    def test_add_get_not_logged_in(self, client):
+        res = client.get("/uc/add")
+        self.assertEqual(302, res.status_code)
+        self.assertTrue("login" in res.data)
 
 
 class RemoveBlogPageTest(PliEntireDbTestCase):
@@ -149,10 +166,10 @@ class ShowBlogPageTest(PliEntireDbTestCase):
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_good_no_auth(self, client):
-        # self.show_blog_four(client)
-        # self.show_blog_three(client)
-        # # This user cannot see blog one
-        # self.show_blog_one(client, pg=["Unauthorized"], status_code=403)
+        self.show_blog_four(client)
+        self.show_blog_three(client)
+        # This user cannot see blog one
+        self.show_blog_one(client, pg=["Unauthorized"], status_code=403)
 
         # This user doesn't have perms to see this post
         # But they own it, so they should see it anyways
