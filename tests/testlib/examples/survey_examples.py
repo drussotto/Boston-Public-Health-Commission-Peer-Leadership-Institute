@@ -94,11 +94,20 @@ survey_question4 = {
 
 survey_questions = [survey_question1, survey_question2, survey_question3, survey_question4]
 
+ex.add(survey_question1=survey_question1,
+        survey_question2=survey_question2,
+        survey_question3=survey_question3,
+        survey_question4=survey_question4)
+
 survey1 = dict(_id="survey1", qids=["survey_question1", "survey_question2"])
 survey2 = dict(_id="survey2", qids=["survey_question3","survry_question4"])
 survey3 = dict(_id="survey3", qids=["survey_question1", "survey_question2", "survey_question3","survey_question4"])
 
 surveys = [survey1, survey2, survey3]
+
+ex.add(survey1=survey1,
+        survey2=survey2,
+        survey3=survey3)
 
 response1 = {
     "_id": "response1",
@@ -116,6 +125,8 @@ response2 = {
 
 responses = [response1, response2]
 
+ex.add(response1=response1,
+        response2=response2)
 
 def add_mocked_surveys(db):
     db.surveys.insert_many(surveys)
