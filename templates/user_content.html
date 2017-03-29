@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block head %}
 {{ super() }}
+{# we have to filter by safe so it will build the text into the webpage #}
 <title>{{ page["title"]|safe }}</title>
 {% endblock %}
 {% block page_content %}

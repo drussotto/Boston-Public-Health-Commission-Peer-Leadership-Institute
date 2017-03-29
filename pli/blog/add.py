@@ -39,6 +39,8 @@ def _build_file_list(files):
 def _get_add_page():
     return render_template("editor.html")
 
+# Endpoint to add an actual user content page
+# accepts POST and GET
 def add_blog_page():
     if request.method == "POST":
         return _post_add_page()

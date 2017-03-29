@@ -129,25 +129,13 @@ class ShowBlogPageTest(PliEntireDbTestCase):
                       ex.blog_page_four["_id"])
 
     def show_blog_one(self, client, pg=["Page one", "Body one"], status_code=200):
-        self.try_show(client,
-                      pg,
-                      ex.blog_page_one["_id"],
-                      status_code=status_code)
+        self.try_show(client, pg, ex.blog_page_one["_id"], status_code=status_code)
 
     def show_blog_two(self, client, pg=["Page two", "Body two", "mongodb.png"], status_code=200):
-        self.try_show(client,
-                      pg,
-                      ex.blog_page_two["_id"],
-                      status_code=status_code)
+        self.try_show(client, pg, ex.blog_page_two["_id"], status_code=status_code)
 
-    def show_blog_three(self,
-                        client,
-                        pg=["Page three", "Body three"],
-                        status_code=200):
-        self.try_show(client,
-                      pg,
-                      ex.blog_page_three["_id"],
-                      status_code=status_code)
+    def show_blog_three(self, client, pg=["Page three", "Body three"], status_code=200):
+        self.try_show(client, pg, ex.blog_page_three["_id"], status_code=status_code)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_good_with_auth(self, client):
