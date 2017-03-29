@@ -1,3 +1,5 @@
+
+
 import mongomock
 
 question1 = {
@@ -34,3 +36,8 @@ questions = [question1, question2, question3]
 
 def add_mocked_questions(db):
     db.questions.insert_many(questions)
+
+ex.add(question1=question1,
+       question2=question2,
+       question3=question3,
+       questions=questions)

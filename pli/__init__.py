@@ -1,9 +1,7 @@
 
 # User stuff
 from .pli_user import \
-    PliUser, \
-    join_roles, \
-    list_roles
+    PliUser
 
 # Our compatability helper (need for testing with mongomock)
 from .helpers import \
@@ -35,6 +33,9 @@ from .service_util import \
     get_signer, \
     get_gridfs, \
     get_obj_id
+
+# Blog stuff
+from blog import *
 
 from .carousel_card import *
 from .login import validate_login, logout, login

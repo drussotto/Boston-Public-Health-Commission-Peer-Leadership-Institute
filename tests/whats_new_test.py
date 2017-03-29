@@ -2,7 +2,7 @@ import os
 from testlib import *
 from pli.service_util import get_db, get_gridfs
 from bson import ObjectId
-from flask import current_app 
+from flask import current_app
 from pli.carousel_card import WhatsNewCard
 
 class WnDisplay(PliEntireDbTestCase):
@@ -11,13 +11,13 @@ class WnDisplay(PliEntireDbTestCase):
     def test_displaying_cards(self, client):
         index = client.get('/')
         assert_index_page(self, index)
-        for card in get_show_list():
+        for card in ex.show_list:
             self.assertTrue(card["caption"] in index.data)
             self.assertTrue(card["sub_caption"] in index.data)
             self.assertTrue(str(card["background"]) in index.data)
             self.assertTrue(card["hyperlink"] in index.data)
 
-            
+
 class WnAdd(PliEntireDbTestCase):
 
     @with_login(user1["email_address"], user1["real_pass"])
@@ -62,17 +62,17 @@ class WnAdd(PliEntireDbTestCase):
 
 
 class WnSet(PliEntireDbTestCase):
-    
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_set_wn_card(self, client):
-        res = post_set_wn_cards(client, [get_wn_card1(), get_wn_card0()])
+        res = post_set_wn_cards(client, [ex.wn_card1, ex.wn_card0])
         self.assertEqual(200, res.status_code)
         third_party = current_app.test_client()
-        
+
         index = third_party.get('/')
         assert_index_page(self, index)
-        
-        for card in [get_wn_card1(), get_wn_card0()]:
+
+        for card in [ex.wn_card1, ex.wn_card0]:
             self.assertTrue(card["caption"] in index.data)
             self.assertTrue(card["sub_caption"] in index.data)
             self.assertTrue(str(card["background"]) in index.data)
@@ -91,12 +91,12 @@ class WnSet(PliEntireDbTestCase):
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_set_wn_card_noauth(self, client):
-        res = post_set_wn_cards(client, [get_wn_card1(), get_wn_card0(), get_wn_card2()])
+        res = post_set_wn_cards(client, [ex.wn_card1, ex.wn_card0, ex.wn_card2])
         self.assertEqual(403, res.status_code)
 
     @with_test_client
     def test_set_wn_card_not_logged_in(self, client):
-        res = post_set_wn_cards(client, [get_wn_card0(), get_wn_card2(), get_wn_card1()])
+        res = post_set_wn_cards(client, [ex.wn_card0, ex.wn_card2, ex.wn_card1])
         self.assertEqual(200, res.status_code)
 
     @with_login(user1["email_address"], user1["real_pass"])
@@ -131,9 +131,9 @@ class WnList(PliEntireDbTestCase):
         cards = WhatsNewCard.list_wn_cards()
         self.assertEqual(len(cards), 3)
         for card in cards:
-            self.assertTrue(card.str_id == str(get_wn_card0()["_id"]) or
-                            card.str_id == str(get_wn_card1()["_id"]) or
-                            card.str_id == str(get_wn_card2()["_id"]))
+            self.assertTrue(card.str_id == str(ex.wn_card0["_id"]) or
+                            card.str_id == str(ex.wn_card1["_id"]) or
+                            card.str_id == str(ex.wn_card2["_id"]))
 
 
 def post_add_wn_card(client, f, caption, sub_caption, hyperlink):

@@ -44,6 +44,11 @@ def build_and_assign_cards(db, gridfs):
     db.whatsnew.insert({"show" : map((lambda x: x["_id"]), show_list),
                         "cards": map((lambda x: x["_id"]), [wn_card0, wn_card1, wn_card2])})
 
+    ex.add(wn_card0=wn_card0,
+           wn_card1=wn_card1,
+           wn_card2=wn_card2,
+           show_list=show_list)
+
 
 def add_mocked_wn_cards(db):
     build_and_assign_cards(db, gridfs.MockGridFS(db))
@@ -65,4 +70,3 @@ def get_wn_card2():
 
 def get_show_list():
     return show_list
-    
