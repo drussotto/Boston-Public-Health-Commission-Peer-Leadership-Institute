@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 import gridfs
 import os
+from datetime import datetime
 client = MongoClient()
 db = client.pli
 gridfs = gridfs.GridFS(db)
@@ -19,6 +20,9 @@ db.cards.remove()
 db.whatsnew.remove()
 db.fs.files.remove()
 db.fs.chunks.remove()
+db.survey_questions.remove()
+db.surveys.remove()
+db.responses.remove()
 
 db.users.insert({
     "_id": 12345,
@@ -132,5 +136,129 @@ db.cards.insert_many([wn_card1, wn_card0, wn_card2])
 # All our whatsnew info
 db.whatsnew.insert({"show": [wn_card2["_id"], wn_card1["_id"]],
                     "cards": [wn_card0["_id"], wn_card1["_id"], wn_card2["_id"]]})
+
+
+survey_question1 = {
+    "_id": "survey_question1",
+    "question": "When did you last...",
+    "answers": [
+        {
+        "ans_id": 1,
+        "answer": "within the past week"
+        },
+        {
+        "ans_id": 2,
+        "answer": "within the past month"
+        },
+        {
+            "ans_id": 3,
+            "answer": "within the past year"
+        },
+        {
+            "ans_id": 4,
+            "answer": "Never"
+        }
+    ]
+}
+
+survey_question2 = {
+    "_id": "survey_question2",
+    "question": "Which best describes...",
+    "answers": [
+        {
+            "ans_id": 1,
+            "answer": "Asian/Pacific Islander"
+        },
+        {
+            "ans_id": 2,
+            "answer": "African American"
+        },
+        {
+            "ans_id": 3,
+            "answer": "White"
+        },
+        {
+            "ans_id": 4,
+            "answer": "Latin American"
+        }
+    ]
+}
+
+survey_question3 = {
+    "_id": "survey_question3",
+    "question": "How much do you agree with...",
+    "answers": [
+        {
+            "ans_id": 1,
+            "answer": "Strongly Agree"
+        },
+        {
+            "ans_id": 2,
+            "answer": "Agree"
+        },
+        {
+            "ans_id": 3,
+            "answer": "Disagree"
+        },
+        {
+            "ans_id": 4,
+            "answer": "Strongly Disagree"
+        }
+    ]
+}
+
+survey_question4 = {
+    "_id": "survey_question4",
+    "question": "Which do you prefer?",
+    "answers": [
+        {
+            "ans_id": 1,
+            "answer": "Strongly Prefer X"
+        },
+        {
+            "ans_id": 2,
+            "answer": "Slightly Prefer X"
+        },
+        {
+            "ans_id": 3,
+            "answer": "Slightly Prefer Y"
+        },
+        {
+            "ans_id": 4,
+            "answer": "Strongly Prefer Y"
+        }
+    ]
+}
+
+survey_questions = [survey_question1, survey_question2, survey_question3, survey_question4]
+
+db.survey_questions.insert_many(survey_questions)
+
+survey1 = dict(_id="survey1", qids=["survey_question1", "survey_question2"])
+survey2 = dict(_id="survey2", qids=["survey_question3","survry_question4"])
+survey3 = dict(_id="survey3", qids=["survey_question1", "survey_question2", "survey_question3","survey_question4"])
+
+surveys = [survey1, survey2, survey3]
+
+db.surveys.insert_many(surveys)
+
+response1 = {
+    "_id": "response1",
+    "survey_id": "survey1",
+    "date_taken": datetime.utcnow(),
+    "ans_ids": [1, 3]
+}
+
+response2 = {
+    "_id": "response2",
+    "survey_id": "survey3",
+    "date_taken": datetime.utcnow(),
+    "ans_ids": [2, 1, 3, 4]
+}
+
+responses = [response1, response2]
+
+db.responses.insert_many(responses)
+
 
 client.close()

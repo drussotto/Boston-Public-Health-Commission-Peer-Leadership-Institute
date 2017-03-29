@@ -1,15 +1,16 @@
+from datetime import datetime
 
-question1 = {
-    "_id": 0001,
+survey_question1 = {
+    "_id": "survey_question1",
     "question": "When did you last...",
     "answers": [
         {
-        "ans_id": 1,
-        "answer": "within the past week"
+            "ans_id": 1,
+            "answer": "within the past week"
         },
         {
-        "ans_id": 2,
-        "answer": "within the past month"
+            "ans_id": 2,
+            "answer": "within the past month"
         },
         {
             "ans_id": 3,
@@ -22,8 +23,8 @@ question1 = {
     ]
 }
 
-question2 = {
-    "_id": 0002,
+survey_question2 = {
+    "_id": "survey_question2",
     "question": "Which best describes...",
     "answers": [
         {
@@ -45,8 +46,8 @@ question2 = {
     ]
 }
 
-question3 = {
-    "_id": 0003,
+survey_question3 = {
+    "_id": "survey_question3",
     "question": "How much do you agree with...",
     "answers": [
         {
@@ -68,8 +69,8 @@ question3 = {
     ]
 }
 
-question3 = {
-    "_id": 0004,
+survey_question4 = {
+    "_id": "survey_question4",
     "question": "Which do you prefer?",
     "answers": [
         {
@@ -91,26 +92,26 @@ question3 = {
     ]
 }
 
-questions = [question1, question2, question3, question4]
+survey_questions = [survey_question1, survey_question2, survey_question3, survey_question4]
 
-survey1 = dict(_id=1111, qids: [0001,0002])
-survey2 = dict(_id=2222, qids: [0003,0004])
-survey3 = dict(_id=3333, qids: [0001, 0002, 0003,0004])
+survey1 = dict(_id="survey1", qids=["survey_question1", "survey_question2"])
+survey2 = dict(_id="survey2", qids=["survey_question3","survry_question4"])
+survey3 = dict(_id="survey3", qids=["survey_question1", "survey_question2", "survey_question3","survey_question4"])
 
-surveys = [survey1, survey2]
+surveys = [survey1, survey2, survey3]
 
 response1 = {
-    "_id": 9876,
-    "survey_id": 12345
-    "date_taken": ISODate("2017-09-24"),
-    "ans_ids": [1, 3, 2]
+    "_id": "response1",
+    "survey_id": "survey1",
+    "date_taken": datetime.utcnow(),
+    "ans_ids": [1, 3]
 }
 
 response2 = {
-    "_id": 98765,
-    "survey_id": 23456
-    "date_taken": ISODate("2017-10-31"),
-    "ans_ids": [2, 1, 3]
+    "_id": "response2",
+    "survey_id": "survey3",
+    "date_taken": datetime.utcnow(),
+    "ans_ids": [2, 1, 3, 4]
 }
 
 responses = [response1, response2]
@@ -119,8 +120,8 @@ responses = [response1, response2]
 def add_mocked_surveys(db):
     db.surveys.insert_many(surveys)
 
-def add_mocked_survey_qs(db):
-    db.survey_questions.insert_many(questions)
+def add_mocked_survey_questions(db):
+    db.survey_questions.insert_many(survey_questions)
 
 def add_mocked_responses(db):
     db.responses.insert_many(responses)

@@ -50,7 +50,7 @@ def add_mocked_wn_cards(db):
 
 def _card_from_id(others, id):
     return others + [get_db().cards.find_one({"_id": id})]
-    
+
 def get_show_list():
     return reduce(_card_from_id, get_db().whatsnew.find_one({})["show"], [])
 
@@ -65,4 +65,4 @@ def get_wn_card2():
 
 def get_show_list():
     return show_list
-
+    

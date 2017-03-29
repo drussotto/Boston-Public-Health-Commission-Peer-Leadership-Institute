@@ -8,7 +8,7 @@ import inspect
 # the test is considered negative
 # The last argument is an optional name for the test.
 def check_page(expected_content, *name):
-        
+
     def _check_page(f, d, *msg):
         for s in expected_content:
             f(s in d, *msg)
@@ -18,7 +18,7 @@ def check_page(expected_content, *name):
             _check_page(tr.assertTrue, r.data, str(name[0]))
         else:
             _check_page(tr.assertTrue, r.data)
-            
+
     def assert_not_page(tr, r):
         if len(name) == 1:
             _check_page(tr.assertFalse, r.data, "Not " + str(name[0]))
@@ -40,3 +40,6 @@ assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid
 assert_correct_page, assert_not_correct_page = check_page(["Correct!"], "correct")
 assert_incorrect_page, assert_not_incorrect_page = check_page(["Wrong!"], "wrong")
 assert_404_page, assert_not_404_page = check_page(["Sorry, there's nothing here."], "404")
+assert_create_survey_question_page, assert_not_create_survey_question_page = check_page(["Create a Question"], "create_survey_question")
+assert_create_success_page, assert_create_failed_page = check_page(["Submission Successful"], "create post")
+assert_redirect_page, assert_not_redirect_page = check_page(["Redirecting"], "redirect")

@@ -1,5 +1,5 @@
 from pli import PliUser
-from .pli_test_case import PliTestCase, PliUsersTestCase, PliQotdTestCase, PliEntireDbTestCase
+from .pli_test_case import PliTestCase, PliUsersTestCase, PliQotdTestCase, PliEntireDbTestCase, PliSurveyQuestionsTestCase, PliSurveysTestCase
 from .context_decorators import with_login, with_test_client, with_app_ctxt
 from .examples import *
 from .page_tests import *

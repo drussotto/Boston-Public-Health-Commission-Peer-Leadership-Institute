@@ -48,8 +48,19 @@ user3 = {
     "organization": None
 }
 
-users = [user1, user2, user3]
+user_editor = {
+    "_id": "user_editor",
+    "email_address": "iamaneditor@bphc.org",
+    "real_pass": "passw0rd",
+    "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
+    "first_name": "Blue",
+    "roles":EDITOR_ROLE,
+    "last_name": "Steel",
+    "confirmed": True,
+    "organization": None
+}
+
+users = [user1, user2, user3, user_editor]
 
 def add_mocked_users(db):
     db.users.insert_many(users)
-
