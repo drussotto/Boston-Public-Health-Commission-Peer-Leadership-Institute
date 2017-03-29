@@ -2,9 +2,14 @@ from pli.service_util import get_db, get_obj_id
 from pli import PliUser, ADMIN_PERM
 from flask_login import current_user
 
+# Updates the document with the given ID
+def update_document(id, doc):
+    get_db().usercontent.update_one({"_id": id}, {"$set": doc})
+
 # Adds the document (doc) to the database
+# returns the id of the new document.
 def add_new_document(doc):
-    get_db().usercontent.insert_one(doc)
+    return get_db().usercontent.insert_one(doc).inserted_id
 
 # Removes one document with the given id
 def remove_document(doc_id):
@@ -63,6 +68,10 @@ def get_page_to_view(id):
     # We've reached here if they don't meet any of the role reqs
     # or they aren't authenticated
     return None
+
+def get_page_to_edit(id):
+    # Editting a page has the same rules as deleting the page
+    return get_page_to_delete(id)
 
 # Safely collects the blog page with the given id, will return None
 # if current_user does not have permission to delete.

@@ -20,7 +20,7 @@ class AddBlogPageTest(PliEntireDbTestCase):
     def test_add_good_auth(self, client):
         title, body, form = make_post_form()
         self.try_add(client, ["Success!"], status_code=200, **form)
-        u = get_site(title)
+        u = get_site_title(title)
         check_page(u, title, body, self.assertTrue)
 
 
@@ -28,13 +28,13 @@ class AddBlogPageTest(PliEntireDbTestCase):
     def test_add_bad_auth(self, client):
         title, body, form = make_post_form()
         self.try_add(client, ["Unauthorized"], status_code=403, **form)
-        self.assertIsNone(get_site(title))
+        self.assertIsNone(get_site_title(title))
 
     @with_test_client
     def test_add_no_auth(self, client):
         title, body, form = make_post_form()
         self.try_add(client, ["Login"], status_code=200, **form)
-        self.assertIsNone(get_site(title))
+        self.assertIsNone(get_site_title(title))
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_add_get_auth(self, client):
@@ -208,6 +208,80 @@ class ShowBlogPageTest(PliEntireDbTestCase):
         self.try_show(client, ["Forbidden"], "abc3498943", status_code=403)
         self.try_show(client, ["Forbidden"], uuid.uuid1(), status_code=403)
 
+
+class EditBlogPageTest(PliEntireDbTestCase):
+
+    def try_edit_suc(self, client, page):
+        new_body = rand_string(1000)
+        new_title = rand_string(1000)
+        form = {"title": new_title, "body": new_body}
+        res = client.post('/uc/edit?page='+str(page["_id"]), data=form)
+
+        # We get redirected to the page.
+        self.assertEqual(302, res.status_code)
+        check_page(get_site_id(page["_id"]), new_title, new_body, self.assertTrue)
+
+    def try_edit_fail(self, client, page, status_code=403, do_chk=True):
+        new_body = rand_string(1000)
+        new_title = rand_string(1000)
+        form = {"title": new_title, "body": new_body}
+        res = client.post('/uc/edit?page='+str(page["_id"]), data=form)
+
+        # We get redirected to the page.
+        self.assertEqual(status_code, res.status_code)
+        if do_chk:
+            check_page(get_site_id(page["_id"]), new_title, new_body, self.assertFalse)
+
+
+        
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_admin_edit_all(self, client):
+        for p in [ex.blog_page_one,
+                  ex.blog_page_two,
+                  ex.blog_page_three,
+                  ex.blog_page_four]:
+            self.try_edit_suc(client, p)
+            
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_own_edit_all(self, client):
+        # User2 owns page 2 and page 4
+        self.try_edit_suc(client, ex.blog_page_two)
+        self.try_edit_suc(client, ex.blog_page_four)
+        # # And they don't own these
+        self.try_edit_fail(client, ex.blog_page_three)
+        self.try_edit_fail(client, ex.blog_page_one)
+
+    @with_test_client
+    def test_remove_not_logged_in(self, client):
+        self.try_edit_fail(client, ex.blog_page_one, status_code=302)
+        self.try_edit_fail(client, ex.blog_page_two, status_code=302)
+        self.try_edit_fail(client, ex.blog_page_three, status_code=302)
+        self.try_edit_fail(client, ex.blog_page_four, status_code=302)
+
+    def spoof_doc(self, id):
+        return {
+            "_id": id,
+            "title": rand_string(1000),
+            "body": rand_string(1000)
+        }
+    
+    def do_bad_reqs(self, client, status_code=302):
+        self.try_edit_fail(client, self.spoof_doc("abc3498943"), status_code=status_code, do_chk=False)
+        self.try_edit_fail(client, self.spoof_doc(str(uuid.uuid1())), status_code=status_code, do_chk=False)
+
+    @with_test_client
+    def test_remove_bad_page_no_login(self, client):
+        self.do_bad_reqs(client)
+
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_remove_bad_page_logged_in_not_admin(self, client):
+        self.do_bad_reqs(client, status_code=403)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_remove_bad_page_logged_in_admin(self, client):
+        self.do_bad_reqs(client, status_code=403)
+
+    
 def post_add_blog(client, **kwargs):
     return client.post('/uc/add',
                        data=kwargs,
@@ -222,8 +296,11 @@ def make_post_form(**kwargs):
         data["body"] = rand_string(100)
     return data["title"], data["body"], data
 
-def get_site(title):
+def get_site_title(title):
     return get_db().usercontent.find_one({"title":title})
+
+def get_site_id(id):
+    return get_db().usercontent.find_one({"_id":id})
 
 def check_page(doc, title, body, check):
     check(title == doc["title"])

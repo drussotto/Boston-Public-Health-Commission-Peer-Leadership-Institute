@@ -76,6 +76,14 @@ def remove_blog_page():
 def view_my_pages():
     return pli.view_my_pages()
 
+@application.route('/uc/manage/getpage', methods = [ "GET" ])
+def get_page_json():
+    return pli.get_page_dict()
+
+@application.route('/uc/edit', methods = [ "GET", "POST" ])
+@login_required
+def edit_my_page():
+    return pli.edit_blog_page()
 
 @application.route('/add-role', methods = [ "PUT" ])
 @login_required
