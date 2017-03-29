@@ -67,6 +67,10 @@ def add_user_content():
 def show_blog_page():
     return pli.show_blog_page()
 
+@application.route('/uc/remove', methods = [ "GET", "POST" ])
+def remove_blog_page():
+    return pli.remove_blog_page()
+
 @application.route('/add-role', methods = [ "PUT" ])
 @login_required
 @pli.ADMIN_PERM.require(http_exception=403)

@@ -1,5 +1,6 @@
-import re
 from testlib import *
+import uuid
+
 class AddBlogPageTest(PliEntireDbTestCase):
 
     def try_add(self, client, expect, trueFun=None, equalFun=None, **data):
@@ -42,7 +43,7 @@ class RemoveBlogPageTest(PliEntireDbTestCase):
     # Otherwise you can only remove your own content
 
     def try_remove_suc(self, client, page):
-        res = client.post('/uc/remove?page='+str(page))
+        res = client.post('/uc/remove?page='+str(page), follow_redirects=True)
         self.assertEqual(200, res.status_code)
         self.assertTrue("Success" in res.data)
 
@@ -50,11 +51,10 @@ class RemoveBlogPageTest(PliEntireDbTestCase):
         res = client.post('/uc/remove?page='+str(page))
         if logged_in:
             self.assertEqual(403, res.status_code)
-            self.assertTrue("Unauthorized" in res.data)
+            self.assertTrue("Forbidden" in res.data)
         else:
-            # TODO right status code for redirect?
-            self.assertEqual(304, res.status_code)
-            self.assertTrue("Login" in res.data)
+            self.assertEqual(302, res.status_code)
+            self.assertTrue("login" in res.data)
 
 
     @with_login(user1["email_address"], user1["real_pass"])
@@ -93,7 +93,21 @@ class RemoveBlogPageTest(PliEntireDbTestCase):
         # so all the content should still be there.
         self.assertEqual(4, len(list_all_pages()))
 
+    def do_bad_reqs(self, client, logged_in=True):
+        self.try_remove_fail(client, "abc3498943", logged_in=logged_in)
+        self.try_remove_fail(client, uuid.uuid1(), logged_in=logged_in)
 
+    @with_test_client
+    def test_remove_bad_page_no_login(self, client):
+        self.do_bad_reqs(client, logged_in=False)
+
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_remove_bad_page_logged_in_not_admin(self, client):
+        self.do_bad_reqs(client)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_remove_bad_page_logged_in_admin(self, client):
+        self.do_bad_reqs(client)
 
 class ShowBlogPageTest(PliEntireDbTestCase):
     # Users can always see their own posts
@@ -174,8 +188,20 @@ class ShowBlogPageTest(PliEntireDbTestCase):
         self.show_blog_one(client, pg=["Login"], status_code=302)
         self.show_blog_two(client, pg=["Login"], status_code=302)
 
+    @with_test_client
+    def test_show_bad_ids(self, client):
+        self.try_show(client, ["login"], "abc3498943", status_code=302)
+        self.try_show(client, ["login"], uuid.uuid1(), status_code=302)
 
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_show_bad_ids_not_admin(self, client):
+        self.try_show(client, ["Forbidden"], "abc3498943", status_code=403)
+        self.try_show(client, ["Forbidden"], uuid.uuid1(), status_code=403)
 
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_show_bad_ids_admin(self, client):
+        self.try_show(client, ["Forbidden"], "abc3498943", status_code=403)
+        self.try_show(client, ["Forbidden"], uuid.uuid1(), status_code=403)
 
 def post_add_blog(client, **kwargs):
     return client.post('/uc/add',
