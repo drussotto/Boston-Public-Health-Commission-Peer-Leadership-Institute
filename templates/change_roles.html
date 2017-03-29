@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block scripts %}
+  {{ super() }}
+  <script>
+  $("#add-role-button").click(function(){
+     $.ajax('/add-role',
+         {
+             "type": 'PUT',
+             "data": {
+                 "user": $('#users').val(),
+                 "role": $('#roles').val()
+             },
+             "dataType": "json",
+              "complete": function(data) {
+                alert("Successfully Added Role");
+             }
+         });
+  });
+  </script>
+
+  <script>
+  $("#remove-role-button").click(function(){
+     $.ajax('/rm-role',
+         {
+             "type": 'DELETE',
+             "data": {
+                 "user": $('#users').val(),
+                 "role": $('#roles').val()
+             },
+             "dataType": "json",
+              "complete": function(data) {
+                alert("Successfully Removed Role");
+             }
+         });
+  });
+  </script>
+
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid col-lg-4">
+  <h1>Edit User Roles</h1>
+  <h2>Edit User Roles </h2>
+  <select class="form-control" id="roles">
+    {% for role in get_all_roles() %}
+    <option value="{{ role }}">{{ role }}</option>
+    {% else %}
+    <option value="">None availible</option>
+    {% endfor %}
+  </select>
+  <select class="form-control" id="users">
+    {% for user in users %}
+      <option value="{{ user['_id'] }}">
+        {{ user['last_name'] }}, {{ user['first_name'] }}  &lt{{ user['email_address'] }}&gt
+      </option>
+    {% endfor %}
+  </select>
+  <a id="add-role-button" class="btn btn-success btn-block">
+    Add Role
+  </a>
+  <a id="remove-role-button" class="btn btn-danger btn-block">
+    Remove Role
+  </a>
+{% for user in users %}
+{{ user }}
+{% endfor %}
+</div>
+{% endblock %}

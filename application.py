@@ -89,6 +89,7 @@ def edit_my_page():
 @login_required
 @pli.ADMIN_PERM.require(http_exception=403)
 def add_role():
+    print("Received a message")
     return pli.add_role()
 
 @application.route('/rm-role', methods = [ "DELETE" ])
@@ -121,6 +122,12 @@ def validate():
 @pli.PEERLEADER_PERM.require(http_exception=403)
 def peer_leader_resources():
     return render_template("peer_leader_resources.html")
+
+@application.route('/change-roles')
+@login_required
+@pli.ADMIN_PERM.require(http_exception=403)
+def change_roles():
+    return render_template("change_roles.html", users=db.users.find({}, {"_id": 1, "last_name": 1, "first_name": 1, "email_address": 1}))
 
 @application.route('/')
 def index():
