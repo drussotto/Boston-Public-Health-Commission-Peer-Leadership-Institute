@@ -48,6 +48,18 @@ user3 = {
     "organization": None
 }
 
+user_editor = {
+    "_id": 123568,
+    "email_address": "iamaneditor@bphc.org",
+    "real_pass": "passw0rd",
+    "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
+    "first_name": "Blue",
+    "roles": [EDITOR_ROLE],
+    "last_name": "Steel",
+    "confirmed": True,
+    "organization": None
+}
+
 user4 = {
     "_id": 56789,
     "email_address": "iamapeerleader@bphc.org",
@@ -58,14 +70,15 @@ user4 = {
     "last_name": "Leader",
     "confirmed": True,
     "organization": None
-};
+}
 
-users = [user1, user2, user3, user4]
+users = [user1, user2, user3, user4, user_editor]
 
 ex.add(user1=user1,
        user2=user2,
        user3=user3,
        user4=user4,
+       user_editor=user_editor,
        users=users)
 
 def add_mocked_users(db):
