@@ -6,6 +6,11 @@
 {{ super() }}
   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.tinymce.min.js') }}" ></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/setup_tinymce.js') }}"></script>
+  {% if edit is defined %}
+  <script type="text/javascript">
+    $(document).ready(setupEdit("{{ edit }}"));
+  </script>
+  {% endif %}
 {% endblock %}
 {% block page_content %}
 <div class="container-fluid">
@@ -13,7 +18,7 @@
     <dl>
       <dt>Title</dt>
       <dd>
-	<input type="text" name="title">
+	<input id="title-box" type="text" name="title">
       </dd>
       <dt>Page content:</dt>
       <dd>
@@ -26,11 +31,11 @@
       </dd>
       <br>
       {% if get_all_roles()|length > 0 %}
-      <dt>Allow users with roles to view:</dt>
+      <dt>Restrict viewing to users with roles:</dt>
       {% endif %}
       {% for role in get_all_roles() %}
       <dd>
-	<input type="checkbox" name="requiredPerms-{{ loop.index }}" value="{{ role }}">{{ role }}</input>
+	<input class="rolebox" type="checkbox" name="requiredPerms-{{ loop.index }}" value="{{ role }}">{{ role }}</input>
 	<br>
       </dd>
       {% endfor %}

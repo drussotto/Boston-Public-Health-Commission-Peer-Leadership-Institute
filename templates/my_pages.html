@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block page_content %}
+<div class="container-fluid">
+  <h1>Your pages</h1>
+  <ul>
+    {% for page in get_my_pages() %}
+    <li>{{ page["title"]|safe }}</li>
+    <ul>
+      <li>
+	<a href="/uc/show?page={{ page["_id"]|urlencode }}">Page here</a>
+      </li>
+    </ul>
+    {% else %}
+    <div>You don't have any!</div>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

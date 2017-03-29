@@ -1,7 +1,9 @@
-from flask import request, render_template
+from flask import request, render_template, redirect
 from flask_login import current_user
 from new_blog_page_form import AddBlogPageForm
 from pli.images import add_new_img
+from util import build_file_list, dict_from_page_form
+
 import mimetypes
 import blog_db
 
@@ -9,31 +11,15 @@ import blog_db
 def _post_add_page():
     form = AddBlogPageForm(request.form)
     if form.validate():
-        new_doc = {
-            "title": form.title.data,
-            "body" : form.body.data,
-            # Owner is the current user (the one making it)
-            "owner": current_user.get_id(),
-            "required_roles": form.requiredPerms.data,
-            # Construct the attachments from the form attachments
-            "attachments": _build_file_list(request.files)
-        }
+        new_doc = dict_from_page_form(form)
+        
         # Now that we've made the new doc
         # we can add it
-        blog_db.add_new_document(new_doc)
-        return render_template("redir_success.html")
+        new_id = blog_db.add_new_document(new_doc)
+        return redirect("/uc/show?page="+str(new_id))
     else:
-        return "", 400
+        return abort(400)
 
-# Constructs a list of ObjectIds for the files in the current request
-def _build_file_list(files):
-    output = []
-    # For all the files they add, we add them to gridfs
-    # and include the objectid
-    for name in files:
-        mtype = mimetypes.guess_type(name)
-        output.append({name: add_new_img(files[name], mtype)})
-    return output
 
 # Just render the editor page.
 def _get_add_page():
