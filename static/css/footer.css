@@ -1,0 +1,12 @@
+#footer {
+  background-color: #00255e;
+  color: white;
+  padding: 20px 30px;
+}
+
+@media(min-width:768px) {
+  #footer .sitemap-heading {
+      border-top: none;
+      border-bottom: 1px solid orange;
+  }
+}
