@@ -143,3 +143,68 @@ class LoginTestCase(PliEntireDbTestCase):
         assert_login_page(self, r)
         r = client.get("/test-login")
         self.assertTrue(r.data == "False")
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_logout_button_exists(self, client, res):
+        self.assert_logged_in()
+        assert_logout_in_index(self, res)
+
+    @with_login(None, None)
+    def test_not_logout_button_exists(self, client, res):
+        self.assert_not_logged_in()
+        assert_not_logout_in_index(self, res)
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_not_login_button_exists(self, client, res):
+        self.assert_logged_in()
+        assert_not_login_in_index(self, res)
+
+    @with_login(None, None)
+    def test_login_button_exists(self, client, res):
+        self.assert_not_logged_in()
+        assert_login_in_index(self, res)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_admin_dropdown_visible(self, client, res):
+        self.assert_logged_in()
+        assert_admin_dropdown_visible(self, res)
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_logged_in_not_admin_dropdown_visible(self, client, res):
+        self.assert_logged_in()
+        assert_not_admin_dropdown_visible(self, res)
+
+    @with_login(None, None)
+    def test_logged_out_not_admin_dropdown_visible(self, client, res):
+        self.assert_not_logged_in()
+        assert_not_admin_dropdown_visible(self, res)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_editor_dropdown_visible(self, client, res):
+        self.assert_logged_in()
+        assert_editor_dropdown_visible(self, res)
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_logged_in_not_editor_dropdown_visible(self, client, res):
+        self.assert_logged_in()
+        assert_not_editor_dropdown_visible(self, res)
+
+    @with_login(None, None)
+    def test_logged_out_not_editor_dropdown_visible(self, client, res):
+        self.assert_not_logged_in()
+        assert_not_editor_dropdown_visible(self, res)
+
+    @with_login(user4["email_address"], user4["real_pass"])
+    def test_peerleader_resources_visible(self, client, res):
+        self.assert_logged_in()
+        assert_peerleader_resources_visible(self, res)
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_logged_in_not_peerleader_resources_visible(self, client, res):
+        self.assert_logged_in()
+        assert_not_peerleader_resources_visible(self, res)
+
+    @with_login(None, None)
+    def test_logged_out_not_peerleader_resources_visible(self, client, res):
+        self.assert_not_logged_in()
+        assert_not_peerleader_resources_visible(self, res)

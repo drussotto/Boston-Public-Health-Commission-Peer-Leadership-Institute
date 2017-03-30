@@ -1,5 +1,5 @@
 from testlib import *
-from pli import ADMIN_PERM, PARTICIPANT_PERM, ORG_PERM, EDITOR_PERM, \
+from pli import ADMIN_PERM, PARTICIPANT_PERM, ORG_PERM, EDITOR_PERM, PEERLEADER_PERM, \
     ADMIN_ROLE, PARTICIPANT_ROLE, ORG_ROLE, EDITOR_ROLE, PliUser
 
 
@@ -158,3 +158,64 @@ class RemovePermTest(PliEntireDbTestCase):
         res = post_rm_role(client, ORG_ROLE, user2["_id"])
         self.assertEqual(403, res.status_code)
         self.assertEqual([PARTICIPANT_ROLE], PliUser.get(user2["_id"]).roles)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_check_admin_edit_role_page(self, client):
+        self.assertTrue(ADMIN_PERM.can())
+
+        res = client.get('/change-roles')
+        self.assertEqual(200, res.status_code)
+
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_check_non_admin_edit_role_page(self, client):
+        self.assertFalse(ADMIN_PERM.can())
+
+        # 403 => Participant cannot access page
+        res = client.get('/change-roles')
+        self.assertEqual(403, res.status_code)    \
+
+    @with_login(user4["email_address"], user4["real_pass"])
+    def test_check_peer_leader_pl_resource_page(self, client):
+        self.assertTrue(PEERLEADER_PERM.can())
+
+        res = client.get('/peer-leader-resources')
+        self.assertEqual(200, res.status_code)
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_check_non_admin_edit_role_page(self, client):
+        self.assertFalse(PEERLEADER_PERM.can())
+
+        # 403 => Participant cannot access page
+        res = client.get('/peer-leader-resources')
+        self.assertEqual(403, res.status_code)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_check_editor_create_survey_page(self, client):
+        self.assertTrue(EDITOR_PERM.can())
+
+        res = client.get('/surveys/create')
+        self.assertEqual(200, res.status_code)
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_check_non_editor_create_survey_page(self, client):
+        self.assertFalse(EDITOR_PERM.can())
+
+        # 403 => Participant cannot access page
+        res = client.get('/surveys/create')
+        self.assertEqual(403, res.status_code)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_check_editor_create_question_page(self, client):
+        self.assertTrue(EDITOR_PERM.can())
+
+        res = client.get('/surveys/questions/create')
+        self.assertEqual(200, res.status_code)
+
+    @with_login(user3["email_address"], user3["real_pass"])
+    def test_check_non_editor_create_question_page(self, client):
+        self.assertFalse(EDITOR_PERM.can())
+
+        # 403 => Participant cannot access page
+        res = client.get('/surveys/questions/create')
+        self.assertEqual(403, res.status_code)
+
