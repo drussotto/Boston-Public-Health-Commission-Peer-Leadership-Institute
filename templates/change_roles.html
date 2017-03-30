@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+{% block scripts %}
+  {{ super() }}
+  <script>
+  $("#error-message-has").hide();
+  $("#error-message-not-has").hide();
+  $("#success-message-has").hide();
+  $("#success-message-not-has").hide();
+  $("#add-role-button").click(function(){
+      $("#success-message-has").hide();
+      $("#success-message-not-has").hide();
+      $("#error-message-has").hide();
+      $("#error-message-not-has").hide();
+     $.ajax('/add-role',
+         {
+             "type": 'PUT',
+             "data": {
+                 "user": $('#users').val(),
+                 "role": $('#roles').val()
+             },
+             "dataType": "json",
+               statusCode: {
+                   409: function() {
+                       $("#error-message-has").show();
+                   },
+                   200: function() {
+                       $("#success-message-has").show();
+                   }
+               }
+         });
+  });
+  </script>
+
+  <script>
+  $("#remove-role-button").click(function(){
+      $("#error-message-has").hide();
+      $("#error-message-not-has").hide();
+      $("#success-message-has").hide();
+      $("#success-message-not-has").hide();
+     $.ajax('/rm-role',
+         {
+             "type": 'DELETE',
+             "data": {
+                 "user": $('#users').val(),
+                 "role": $('#roles').val()
+             },
+             "dataType": "json",
+             statusCode: {
+                 409: function () {
+                     $("#error-message-not-has").show();
+                 },
+                 200: function () {
+                     $("#success-message-not-has").show();
+                 },
+             }
+         });
+  });
+  </script>
+
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid col-lg-4">
+  <h1>Edit User Roles</h1>
+  <div id="error-message-has" class="alert alert-danger" role="alert">
+    That user already has that role.
+  </div>
+  <div id="error-message-not-has" class="alert alert-danger" role="alert">
+    That user does not have that role.
+  </div>
+  <div id="success-message-has" class="alert alert-success" role="alert">
+    Successfully added role.
+  </div>
+  <div id="success-message-not-has" class="alert alert-success" role="alert">
+    Successfully removed role.
+  </div>
+  <h2>Roles</h2>
+  <select class="form-control" id="roles">
+    {% for role in get_all_roles() %}
+    <option value="{{ role }}">{{ role }}</option>
+    {% else %}
+    <option value="">None availible</option>
+    {% endfor %}
+  </select>
+  <h2>Users</h2>
+  <select class="form-control" id="users">
+    {% for user in users %}
+      <option value="{{ user['_id'] }}">
+        {{ user['last_name'] }}, {{ user['first_name'] }}  &lt{{ user['email_address'] }}&gt
+      </option>
+    {% endfor %}
+  </select>
+  <br>
+  <a id="add-role-button" class="btn btn-success btn-block">
+    Add Role
+  </a>
+  <br>
+  <a id="remove-role-button" class="btn btn-danger btn-block">
+    Remove Role
+  </a>
+{% for user in users %}
+{{ user }}
+{% endfor %}
+</div>
+{% endblock %}
