@@ -9,6 +9,11 @@ html, body {
   min-height: 100%;
 }
 
+#content-column {
+  margin: 0 auto;
+  max-width: 1000px;
+}
+
 /* SiteMap Styles (sidebar & footer) */
 .sitemap-list {
   list-style: none;
