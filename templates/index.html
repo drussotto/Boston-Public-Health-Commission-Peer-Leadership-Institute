@@ -1,110 +1,123 @@
 {% extends "layout.html" %}
 {% from "layout.html" import render_field %}
+
 {% block styles %}
 {{super()}}
 <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
 {% endblock %}
 
 {% block page_content %}
-<!-- Index-Page -->
-<div class="container-fluid" id="cards-container">
+<div id="content-column">
 
-  <div class="row">
-    <div class="card col-sm-7" id="news">
-      <div class="heading">What's New</div>
-        <div id="news-carousel-container">
-          <div id="news-carousel" class="carousel slide" data-ride="carousel">
-            {% set wn_cards = get_wn_cards() %}
+  <!-- Carousel -->
+  <div id="news-carousel" class="carousel slide" data-ride="carousel">
+    <!-- Get whats new cards -->
+    {% set wn_cards = get_wn_cards() %}
 
-            <!-- Indicators -->
-            {% macro indicator(index, type='') -%}
-                <li data-target="#news-carousel" data-slide-to="{{index}}" class="{{type}}"></li>
-            {%- endmacro %}
-            <ol class="carousel-indicators">
-              {% for wn_card in wn_cards %}
-                {% if loop.first %}
-                  {{ indicator(0, "active") }}
-                {% else %}
-                  {{ indicator(loop.index0) }}
-                {% endif %}
-              {% else %}
-                  {{ indicator(0, "active") }}
-              {% endfor %}
-            </ol>
+    <!-- Create Indicators -->
+    {% macro indicator(index, type='') -%}
+        <li data-target="#news-carousel" data-slide-to="{{index}}" class="{{type}}"></li>
+    {%- endmacro %}
+    <ol class="carousel-indicators">
+      {% for wn_card in wn_cards %}
+        {% if loop.first %}
+          {{ indicator(0, "active") }}
+        {% else %}
+          {{ indicator(loop.index0) }}
+        {% endif %}
+      {% else %}
+          {{ indicator(0, "active") }}
+      {% endfor %}
+    </ol>
 
-            <!-- Wrapper for slides -->
-            {% macro carousel_item(caption, subcaption, imgsrc, url, type='') -%}
-              <div class="item {{type}}">
-                <a href="{{ url }}">
-                  <img src="{{imgsrc}}" alt="{{ caption }}">
-                  <div class="carousel-caption">
-                    <h3>{{ caption }}</h3>
-                    <p>{{ subcaption }}</p>
-                  </div>
-                </a>
-              </div>
-            {%- endmacro %}
-            <div class="carousel-inner" role="listbox">
-              {% for wn_card in wn_cards %}
-                {{ carousel_item(wn_card.caption, 
-                                 wn_card.sub_caption, 
-                                 "/card-img/" + wn_card.get_bg(),
-                                 wn_card.hyperlink,
-                                 "active" if loop.first else "") }}
-              {% else %}
-                {{ carousel_item("", "No News Found", url_for('static', filename='images/blank.png'), "#", "active" )}}
-              {% endfor %}
-            <!-- Left and right controls -->
-            <a class="left carousel-control" href="#news-carousel" role="button" data-slide="prev">
-              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#news-carousel" role="button" data-slide="next">
-              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-            </a>
+    <!-- Create cards -->
+    {% macro carousel_item(caption, subcaption, imgsrc, url, type='') -%}
+      <div class="item {{type}}"
+           style="background-image: url({{imgsrc}});">
+        <a href="{{ url }}">
+          <!-- <img src="{{imgsrc}}" alt="{{ caption }}"> -->
+          <div class="carousel-caption">
+            <h3>{{ caption }}</h3>
+            <p>{{ subcaption }}</p>
           </div>
-        </div>
-      <!-- <a class="card-body" href="{{file_url_for ( 'surveys.html' ) }}">
-        <h3>Fill out our Student Survey about marijuana usage.</h3>
-      </a> -->
-      </div>
-    </div>
-    <div class="card col-sm-3" id="qotd">
-      <div class="heading">Question of the Day</div>
-      <div class="card-body">
-	      {% set cur_q = get_todays_question() %}
-        <h4>{{ cur_q.question }}</h4>
-        <form action="/question/{{cur_q.question_number}}" method="post">
-          <ol id="qotd-options">
-            {% for letter, text in cur_q.choices.iteritems() %}
-            <input type="radio" name="answer" value="{{ letter }}"> {{ text }}<br>
-            {% endfor %}
-          </ol>
-          <input type="submit" value="Submit">
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="card col" id="resources">
-      <div class="heading"><a href="{{ file_url_for ( 'resources.html' )}}">Student Resources</a></div>
-      <div class="card-body">
-        <h4>Search for answers to all your health-related questions, including content from workshops. Topics include substance abuse, sexual health, and general wellness, as well as finding local clinics.</h4>
-        <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='subst-abuse' ) }}">
-          <img src="{{url_for('static', filename='images/subst_abuse.png')}}" alt="Substance Abuse">
-          <div>Substance Abuse</div>
-        </a>
-        <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='sex' ) }}">
-          <img src="{{url_for('static', filename='images/sexual_health.png')}}" alt="Sexual Health">
-          <div>Sexual Health</div>
-        </a>
-        <a class="resource-link" href="{{ file_url_for ( 'resources.html', _anchor='wellness' ) }}">
-          <img src="{{url_for('static', filename='images/wellness.png')}}" alt="Wellness">
-          <div>Wellness</div>
         </a>
       </div>
+    {%- endmacro %}
+    <div class="carousel-inner" role="listbox">
+      {% for wn_card in wn_cards %}
+        {{ carousel_item(wn_card.caption, 
+                         wn_card.sub_caption, 
+                         "/card-img/" + wn_card.get_bg(),
+                         wn_card.hyperlink,
+                         "active" if loop.first else "") }}
+      {% else %}
+        {{ carousel_item("", "There's no news!", url_for('static', filename='images/blank.png'), "#", "active" )}}
+      {% endfor %}
+
+      <!-- Left and right controls -->
+      <a class="left carousel-control" href="#news-carousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#news-carousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
     </div>
   </div>
+  <!-- /Carousel -->
+
+  <!-- QOTD -->
+  <div class="section">
+    <h1 class='section-heading'>
+      <img class="section-bubbles" src="{{ url_for('static', filename='images/bubbles.png') }}">
+      Question of the Day&nbsp;<span id="qotd-heading-date"></span>
+    </h1>
+    <p>Test your trivia skills against other students with today's Question of the Day:</p>
+
+    <!-- Get today's question -->
+    {% set cur_q = get_todays_question() %}
+
+    <!-- Display today's question -->
+    <h4>{{ cur_q.question }}</h4>
+    <form action="/question/{{cur_q.question_number}}" method="post">
+      <ol id="qotd-options">
+        {% for letter, text in cur_q.choices.iteritems() %}
+        <input type="radio" name="answer" value="{{ letter }}"> {{ text }}<br>
+        {% endfor %}
+      </ol>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+  <!-- /QOTD -->
+
+  <!-- Resources -->
+  <div class="section">
+    <h1 class='section-heading'>
+      <img class="section-bubbles" src="{{ url_for('static', filename='images/bubbles.png') }}">
+      Student Resources
+    </h1>
+    <p>Find answers to all your health-related questions, including content from PLI workshops.</p>
+    {% macro resource_link(text, imagename) -%}
+        <a class="resource-link" href="{{ file_url_for ( 'resources.html' ) }}">
+          <div>
+            <img src="{{ url_for('static', filename='images/' + imagename) }}" alt="{{text}}" width="60px" height="60px">
+            <p>{{text}}</p>
+          </div>
+        </a>
+    {%- endmacro %}
+    {{ resource_link("Substance Abuse", "subst_abuse.png") }}
+    {{ resource_link("Sexual Health", "sexual_health.png") }}
+    {{ resource_link("Wellness", "wellness.png") }}
+  </div>
+  <!-- /Resources -->
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script>
+  $("#qotd-heading-date").text("- " + Date.today().toString("MMMM ddS"))
+</script>
 {% endblock %}

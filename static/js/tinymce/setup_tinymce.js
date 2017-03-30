@@ -3,7 +3,7 @@ $(function() {
 	// width: '500px',
         // height: '100px',
         // Location of TinyMCE script
-        script_url : "/static/js/tinymce.min.js",
+        script_url : "/static/js/tinymce/tinymce.min.js",
 
         // General options
         plugins : "image,emoticons,autoresize,pagebreak,save,preview,media,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,textcolor,colorpicker,advlist,lists",

@@ -1,23 +1,55 @@
-body {
-  padding-top: 60px;
-  background: #b8d8ff !important;
-}
-
-#brand-container {
+html, body {
   height: 100%;
-  display: flex;
+  font-family: Helvetica;
+  overflow-x: hidden;
 }
 
-#search-container {
-  display: flex;
+#page-content {
+  padding-top: 46px;
+  min-height: 100%;
 }
 
-#footer {
-  background: #002a5c;
-  text-align: center;
-  border-top: 1px solid #27568e;
+#content-column {
+  margin: 0 auto;
+  max-width: 1000px;
 }
 
-#footer a {
-  color: #d2a974;
+/* SiteMap Styles (sidebar & footer) */
+.sitemap-list {
+  list-style: none;
+  width: 250px;
 }
+
+.sitemap-list li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.sitemap-list li a {
+    display: block;
+    text-decoration: none;
+    color: #999999;
+}
+
+.sitemap-list li a:hover {
+  color: white;
+  background: rgba(255,255,255,0.2);
+}
+
+.sitemap-list li.sitemap-heading {
+    color: white;
+    font-size: 1.1em;
+    border-top: 1px solid orange;
+}
+
+.sitemap-list li a.sitemap-sublink {
+    padding-left: 20px;
+}
+
+.sitemap-list li a:active,
+.sitemap-list li a:focus {
+    text-decoration: none;
+}
+
+/* /SiteMap Styles */
+

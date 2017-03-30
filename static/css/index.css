@@ -1,92 +1,83 @@
-.card {
-  margin: 1em 1em;
-  border: 2px solid #002a5c;
-  border-radius: 10px;
-  box-shadow: -5px 5px 10px #d2a974;
-  display: flex;
-  flex-flow: column nowrap;
-  color: darkslategray;
-  padding: 0 !important;
+#content-column {
+  color: #00255e;
 }
 
-.card .heading {
-  background-color: #002a5c;
-  color: white !important;
-  font-size: 1.5em;
-  padding: 5px;
+#news-carousel {
+  background-color: gray;
+  height: 378px;
 }
 
-.card .card-body {
-  padding: 5px;
-}
-
-#news {
-  height: 350px;
-}
-
-#news .card-body {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: black;
-}
-
-#resources .heading a {
-  color: inherit;
-}
-
-#resources .resource-link {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  background-color: #8ABFDD;
-  margin: 2px 0;
-  padding: 3px;
-  align-self: center;
-}
-
-#resources .resource-link > div {
-  flex: 1;
-  text-align: center;
-  color: white;
-  font-style: italic;
-  font-size: 1.1em;
-}
-
-#resources a {
-  width: 100%;
-}
-
-#resources img {
-  height: 60px;
-}
-
-#news-carousel-container {
-  flex: 1;
-  max-height: calc(100% - 40px);
-}
-
-#news-carousel, .carousel-inner .item {
-  height: 100%;
-  max-height: 100%;
-  text-align: center;
-}
-
-.carousel-inner {
+#news-carousel .carousel-inner, #news-carousel .item {
   height: 100%;
 }
-.carousel-inner .item a {
-  display: block;
-  height: 100%;
-}
-.carousel-inner .item img {
-  height: 100% !important;
-  margin: 0 auto;
+
+#news-carousel .item {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
 }
 
 .carousel-caption {
   text-shadow: 0px 0px 10px black;
 }
 
+.section {
+  padding: 20px 30px;
+}
+
+.section-heading {
+  border-bottom: 1px solid #FA3800;
+  font-size: 2em;
+  margin-top: 0px;
+  position: relative;
+}
+
+.section-bubbles {
+  position: absolute;
+  top: 0;
+  left: -40px;
+  height: 30px;
+}
+
+#qotd-heading-date {
+  display: none;
+}
+
+@media(min-width:768px) {
+  #qotd-heading-date {
+    display: inline-block;
+  }
+}
+
+.resource-link {
+  color: white;
+  font-style: italic;
+  font-size: 1.1em;
+  width: 100%;
+}
+
+.resource-link:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.resource-link > div {
+  background-color: #8ABFDD;
+  margin: 2px 0;
+  padding: 3px;
+  padding-right: 63px;
+  height: 66px;
+  text-align: center;
+}
+
+.resource-link > div:hover {
+  border: 1px solid #FA3800;
+}
+
+.resource-link img {
+  float: left;
+}
+
+.resource-link p {
+  margin-top: 22.5px;
+}
