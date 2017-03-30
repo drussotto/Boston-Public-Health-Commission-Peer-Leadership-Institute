@@ -40,14 +40,11 @@ assert_good_vtok_page, assert_not_good_vtok_page = check_page(["Good-Token-Valid
 assert_correct_page, assert_not_correct_page = check_page(["Correct!"], "correct")
 assert_incorrect_page, assert_not_incorrect_page = check_page(["Wrong!"], "wrong")
 assert_404_page, assert_not_404_page = check_page(["Sorry, there's nothing here."], "404")
-<<<<<<< HEAD
 assert_create_survey_question_page, assert_not_create_survey_question_page = check_page(["Create a Question"], "create_survey_question")
 assert_create_success_page, assert_create_failed_page = check_page(["Submission Successful"], "create post")
 assert_redirect_page, assert_not_redirect_page = check_page(["Redirecting"], "redirect")
-=======
 assert_logout_in_index, assert_not_logout_in_index = check_page(["Logout"], "index")
 assert_login_in_index, assert_not_login_in_index = check_page(["Login"], "index")
 assert_admin_dropdown_visible, assert_not_admin_dropdown_visible = check_page(["Admin"], "index")
-assert_editor_dropdown_visible, assert_not_editor_dropdown_visible = check_page(["Editor"], "index")
+assert_editor_dropdown_visible, assert_not_editor_dropdown_visible = check_page(["Manage", "Users"], "index")
 assert_peerleader_resources_visible, assert_not_peerleader_resources_visible = check_page(["Peer Leader Resources"], "index")
->>>>>>> 9b1257a... Complete BPHC-116

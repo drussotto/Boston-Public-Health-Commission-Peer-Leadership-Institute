@@ -89,7 +89,6 @@ def edit_my_page():
 @login_required
 @pli.ADMIN_PERM.require(http_exception=403)
 def add_role():
-    print("Received a message")
     return pli.add_role()
 
 @application.route('/rm-role', methods = [ "DELETE" ])

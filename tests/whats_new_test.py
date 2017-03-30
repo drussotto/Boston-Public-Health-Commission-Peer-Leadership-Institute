@@ -87,7 +87,7 @@ class WnSet(PliEntireDbTestCase):
         get_db().whatsnew.update({}, {"$set":{"show":[], "cards":[]}})
         index = third_party.get('/')
         assert_index_page(self, index)
-        self.assertTrue("No News" in index.data)
+        self.assertTrue("no news" in index.data)
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_set_wn_card_noauth(self, client):

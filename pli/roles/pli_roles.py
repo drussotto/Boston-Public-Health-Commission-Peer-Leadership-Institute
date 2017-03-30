@@ -35,8 +35,6 @@ def on_identity_loaded(sender, identity):
 
 def add_role():
     info = RoleInfoForm(request.form)
-    print info.user.data
-    print info.role.data
     if not info.validate():
         return "", 400
     else:
