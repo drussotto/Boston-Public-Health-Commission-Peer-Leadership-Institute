@@ -72,7 +72,7 @@
         	{{ sitemap_link("Manage Users","","", url_for('change_roles')) }} 
         {% endif %}
         {% if "editor" in current_user.roles %}
-          {{ sitemap_link("Manage Surveys","","", url_for('surveys')) }} 
+          {{ sitemap_link("Manage Surveys","","", url_for('show_surveys')) }} 
         {% endif %}
       {% endif %}
 
