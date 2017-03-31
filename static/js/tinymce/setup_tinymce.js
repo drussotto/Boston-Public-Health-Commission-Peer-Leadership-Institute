@@ -15,3 +15,23 @@ function submitEditor() {
     tinyMCE.triggerSave();
     $('#editor-form').submit();
 }
+
+		
+function setupEdit(id) {		
+    $.ajax("/uc/manage/getpage",		
+	   {		
+	       "data":{		
+		   "page":id		
+	       },		
+	       "dataType": "json",		
+	       "success": function(data) {		
+		   console.log("running")		
+		   $('#body').val(data["body"]);		
+		   $('#title-box').val(data["title"]);		
+		   console.log(data);		
+		   $('.rolebox').each(function(idx, ele){		
+		       ele.checked = ($.inArray(ele.value, data["required_roles"]) !== -1);		
+		   });		
+	       } 		
+	   });		
+}
