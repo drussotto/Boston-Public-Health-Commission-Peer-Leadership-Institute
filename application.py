@@ -80,6 +80,11 @@ def view_my_pages():
 def get_page_json():
     return pli.get_page_dict()
 
+@application.route('/uc/manage/pageofpages', methods = [ "GET" ])
+def get_segmented_page_list():
+    return pli.get_segmented_page_list()
+
+
 @application.route('/uc/edit', methods = [ "GET", "POST" ])
 @login_required
 def edit_my_page():
@@ -131,6 +136,11 @@ def change_roles():
 @application.route('/')
 def index():
     return render_template("index.html")
+
+
+@application.route('/uc/manage/count')
+def blog_page_count():
+    return pli.blog_page_count()
 
 @application.route('/question', methods = ["POST"])
 @application.route('/question/<int:qid>', methods = ["POST"])
@@ -215,6 +225,7 @@ application.add_template_global(pli.get_deletable_pages, "get_deletable_pages")
 # This allows the jinja templates to get the list of user content pages the current user owns.
 application.add_template_global(pli.get_my_pages, "get_my_pages")
 
+application.add_template_global(pli.blog_page_count, "blog_page_count")
 
 # run the application.
 if __name__ == "__main__":

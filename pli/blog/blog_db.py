@@ -1,6 +1,7 @@
 from pli.service_util import get_db, get_obj_id
 from pli import PliUser, ADMIN_PERM
 from flask_login import current_user
+from flask import jsonify, request
 
 # Updates the document with the given ID
 def update_document(id, doc):
@@ -111,3 +112,39 @@ def get_my_pages():
         return []
 
         
+def get_segmented_page_list():
+    total = get_db().usercontent.count()
+    def get(x, y):
+        return list(get_db().usercontent
+                    .find({})
+                    .sort("_id", -1)
+                    .skip(x * 10)
+                    .limit(y))
+    
+    def clear_not_allowed(l):
+        out = []
+        for x in l:
+            y = get_page_to_view(x["_id"])
+            if y is not None:
+                out.append(x)
+        return out
+        
+    skip = int(request.args.get("skip", 0))
+    number = int(request.args.get("number", 10))
+    pgs = clear_not_allowed(get(skip, number))
+    count = len(pgs)
+    
+    while len(pgs) != number and count < total:
+        skip += 1
+        tmp = clear_not_allowed(get(skip, number - len(pgs)))
+        pgs += tmp
+        count += number
+
+    for x in pgs:
+        x["_id"] = str(x["_id"])
+        
+    return jsonify(pgs)
+    
+    
+def blog_page_count():
+    return range(get_db().usercontent.count())

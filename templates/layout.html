@@ -102,11 +102,9 @@
 
     <!-- Page Content -->
     <div id='page-content'>
-      <div id="content-column">
-        {% block page_content %}
-          <h1>Something went wrong, <a href="/">click here</a> to return to the site.</h1>
-        {% endblock %}        
-      </div>
+      {% block page_content %}
+        <h1>Something went wrong, <a href="/">click here</a> to return to the site.</h1>
+      {% endblock %}
     </div>
     <!-- /Page Content -->
 
