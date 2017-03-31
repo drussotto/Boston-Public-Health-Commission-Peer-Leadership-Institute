@@ -18,4 +18,6 @@ from edit import edit_blog_page
 from blog_db import \
     get_deletable_pages, \
     get_my_pages, \
-    get_page_to_edit
+    get_page_to_edit, \
+    get_segmented_page_list, \
+    blog_page_count
