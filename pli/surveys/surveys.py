@@ -1,4 +1,5 @@
 from flask import request, render_template, redirect, url_for, current_app
+from pli import get_db
 from create_survey_form import CreateSurveyForm, CreateQuestionForm
 from survey_response_form import SubmitResponseForm
 
@@ -33,7 +34,7 @@ def create_question():
 def complete_survey(sid):
     if request.method == "GET":
         form = SubmitResponseForm()
-        survey = form.get_survey(sid, current_app.config["db"])
+        survey = form.get_survey(sid, get_db())
         return render_template("surveys/survey.html", survey=survey)
 
     else:

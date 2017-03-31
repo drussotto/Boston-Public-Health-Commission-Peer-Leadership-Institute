@@ -11,38 +11,3 @@ class SubmitResponseForm():
         survey["questions"] = [db.survey_questions.find({"_id": qid})[0] for qid in survey["qids"]]
 
         return survey
-
-"""
-
-{
-    name: "survey_name",
-    questions: [
-        {
-            question: "Oh?",
-            answers: [
-                {
-                    "ans_id": 0,
-                    "answer": "Yes"
-                },
-                {
-                    "ans_id": 1,
-                    "answer": "No"
-                }
-            ]
-        },
-        {
-            question: "No?",
-            answers: [
-                {
-                    "ans_id": 0,
-                    "answer": "Yes"
-                },
-                {
-                    "ans_id": 1,
-                    "answer": "No"
-                }
-            ]
-        }
-    ]
-}
-"""

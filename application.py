@@ -161,7 +161,7 @@ def get_card_img(cid):
 @application.route('/surveys')
 def show_surveys():
 
-    surveys = [(s["_id"], s["name"]) for s in current_app.config["db"].surveys.find()]
+    surveys = [(s["_id"], s["name"]) for s in pli.get_db().surveys.find()]
 
     return render_template("surveys/survey_list.html", surveys=surveys)
 
