@@ -6,8 +6,8 @@ RadioField, SelectMultipleField, validators
 class SubmitResponseForm():
 
     def get_survey(self, sid, db):
-        survey = db.surveys.find({"_id": sid})[0]
+        survey = db.surveys.find_one({"_id": sid})
 
-        survey["questions"] = [db.survey_questions.find({"_id": qid})[0] for qid in survey["qids"]]
+        survey["questions"] = [db.survey_questions.find_one({"_id": qid}) for qid in survey["qids"]]
 
         return survey
