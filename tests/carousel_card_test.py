@@ -4,7 +4,7 @@ from pli.service_util import get_db, get_gridfs, get_obj_id
 from flask import current_app
 from pli import list_cards
 
-class CardImg(PliEntireDbTestCase):
+class CardImgTest(PliEntireDbTestCase):
     @with_test_client
     def test_card_image_from_url(self, client):
         res = client.get('/card-img/' + str(ex.wn_card0["background"]))
@@ -21,7 +21,7 @@ class CardImg(PliEntireDbTestCase):
         res = client.get('/card-image/DEADBEEF')
         self.assertEqual(404, res.status_code)
 
-class CardList(PliEntireDbTestCase):
+class CardListTest(PliEntireDbTestCase):
     @with_test_client
     def test_list_all_cards(self, client):
         cards = list_cards()

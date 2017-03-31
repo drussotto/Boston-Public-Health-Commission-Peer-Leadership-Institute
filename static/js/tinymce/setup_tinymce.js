@@ -6,9 +6,8 @@ $(function() {
         script_url : "/static/js/tinymce/tinymce.min.js",
 
         // General options
-        plugins : "image,emoticons,autoresize,pagebreak,save,preview,media,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,textcolor,colorpicker,advlist,lists",
-	toolbar : "undo,redo,|,styleselect,|,formats,|,bold,italic,|,alighleft,aligncenter,alignright,|,bullist,numlist,outdent,indent,|,fontsizeselect,|,emoticons,|,image,|,preview,|,forecolor,backcolor",
-	contextmenu: "image,formats,undo,redo",
+        plugins : "emoticons,autoresize,pagebreak,table,save,preview,media,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking",
+	toolbar : "undo,redo,|,styleselect,|,formats,|,bold,italic,|,alighleft,aligncenter,alignright,alignjustify,|,bullist,numlist,outdent,indent,|,table,|,fontsizeselect,|,emoticons",
         theme_modern_resizing : true,
 	autoresize_overflow_padding: 50,
     });
@@ -17,23 +16,4 @@ $(function() {
 function submitEditor() {
     tinyMCE.triggerSave();
     $('#editor-form').submit();
-}
-
-function setupEdit(id) {
-    $.ajax("/uc/manage/getpage",
-	   {
-	       "data":{
-		   "page":id
-	       },
-	       "dataType": "json",
-	       "success": function(data) {
-		   console.log("running")
-		   $('#body').val(data["body"]);
-		   $('#title-box').val(data["title"]);
-		   console.log(data);
-		   $('.rolebox').each(function(idx, ele){
-		       ele.checked = ($.inArray(ele.value, data["required_roles"]) !== -1);
-		   });
-	       } 
-	   });
 }
