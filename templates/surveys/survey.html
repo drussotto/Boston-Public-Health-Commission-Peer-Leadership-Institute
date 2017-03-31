@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>Complete Survey</h1>
+  <h2>{{survey["name"]}}</h2>
+  <form method=post>
+    {% for q in survey["questions"] %}
+      {{q["question"]}}
+      <ul>
+        {% for ans in q["answers"] %}
+          <li>
+            <input type="radio" id={{"{q}-{ans_id}".format(q=q["_id"],ans_id=ans["ans_id"])}}
+              name={{q["_id"]}} value={{ans["ans_id"]}}>
+            <label for={{"{q}-ans{ans_id}".format(q=q["_id"],ans_id=ans["ans_id"])}}>
+              {{ans["answer"]}}
+            </label>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% endblock %}

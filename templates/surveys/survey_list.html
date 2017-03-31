@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>Surveys</h1>
+  <ul>
+    {% for survey_id,survey_name in surveys %}
+      <li>
+      <a href={{"/surveys/{sid}".format(sid=survey_id)}}>{{survey_name}}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
