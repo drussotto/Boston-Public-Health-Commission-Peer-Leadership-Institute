@@ -174,6 +174,19 @@ def create_question():
 def get_card_img(cid):
     return pli.CarouselCard.send_picture(cid)
 
+@application.route('/surveys')
+def show_surveys():
+
+    surveys = [(s["_id"], s["name"]) for s in pli.get_db().surveys.find()]
+
+    return render_template("surveys/survey_list.html", surveys=surveys)
+
+@application.route('/surveys/<string:sid>', methods=["GET", "POST"])
+def complete_survey(sid):
+    return pli.complete_survey(sid)
+
+
+
 # override_url_for automatically adds a timestamp query parameter to
 # static files (e.g. css) to avoid browser caching issues
 @application.context_processor
