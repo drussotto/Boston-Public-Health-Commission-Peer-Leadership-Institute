@@ -37,7 +37,12 @@ from .service_util import \
 # Blog stuff
 from blog import *
 
+# Staff management
+from .staff import *
+
 from .carousel_card import *
 from .login import validate_login, logout, login
 from .surveys import *
 from .images import *
+
+

@@ -84,6 +84,9 @@ def get_page_json():
 def get_segmented_page_list():
     return pli.get_segmented_page_list()
 
+@application.route('/staff/add', methods = [ "POST", "GET" ])
+def add_staff():
+    return pli.add_staff()
 
 @application.route('/uc/edit', methods = [ "GET", "POST" ])
 @login_required

@@ -86,7 +86,7 @@ def post_add_staff(client, name, title, bio, picture, email, phone, active):
         "phone": phone,
         "active": active
     }
-    return client.post("/add-staff", data=data, follow_redirects=True)
+    return client.post("/staff/add", data=data, follow_redirects=True)
 
 def post_edit_staff(client, data):
-    return client.post("/edit-staff", data=data, follow_redirects=True)
+    return client.post("/staff/edit", data=data, follow_redirects=True)
