@@ -1,37 +1,37 @@
 from testlib import *
 from datetime import date
+from bson import ObjectId
 
-
-#Not yet implemented - will not pass
 class RetrieveSurveyTest(PliEntireDbTestCase):
 
 
     @with_test_client
     def test_retreive_valid_survey(self, client):
-        res = client.get("/surveys/survey1")
+        res = client.get("/surveys/survey000001")
         assert_survey_page(self, res)
 
     @with_test_client
     def test_retreive_invalid_survey(self, client):
-        res = client.get("/surveys/survey1bajillion")
+        res = client.get("/surveys/surveyxxx003")
         assert_not_survey_page(self, res)
         assert_404_page(self, res)
 
-#Not yet implemented - will not pass
 class SubmitResponseTest(PliSurveysTestCase):
     def db_inits(self):
         #hack because this test case should not depend on qotd but it does
         #because of the with_login decorator
-        return PliUsersTestCase.db_inits(self) + [add_mocked_questions]
+        return PliSurveysTestCase.db_inits(self) + [add_mocked_questions]
 
     @with_test_client
     def test_submit_valid_response1(self, client):
 
         form_data = {
-            "ans_ids": [1, 2]
+            "survey_question1": 1,
+            "survey_question2": 2,
         }
 
-        res = client.post("surveys/survey1", data=form_data)
+        sid = str(ObjectId("survey000001"))
+        res = client.post("/surveys/{sid}".format(sid=sid), data=form_data)
         assert_response_submitted_page(self, res)
 
 
@@ -39,51 +39,70 @@ class SubmitResponseTest(PliSurveysTestCase):
     def test_submit_valid_response2(self, client):
 
         form_data = {
-            "ans_ids": [1, 0, 2, 3]
+            "survey_question1": 1,
+            "survey_question2": 2,
+            "survey_question3": 4,
+            "survey_question4": 3,
         }
 
-        res = client.post("surveys/survey3", data=form_data)
+        sid = str(ObjectId("survey000003"))
+
+        res = client.post("/surveys/{sid}".format(sid=sid), data=form_data)
         assert_response_submitted_page(self, res)
 
+    #invalid id
     @with_test_client
     def test_submit_invalid_response1(self, client):
         form_data = {
-            "ans_ids": [1, 2]
+            "survey_question1": 1,
+            "survey_question2": 2,
         }
 
-        res = client.post("surveys/survey1bajillion", data=form_data)
+        sid = str(ObjectId("surveyxxx003"))
+        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
         assert_response_failed_page(self, res)
 
     #too many questions
     @with_test_client
     def test_submit_invalid_response2(self, client):
         form_data = {
-            "ans_ids": [1, 2, 3]
+            "survey_question1": 1,
+            "survey_question2": 2,
+            "survey_question3": 1
         }
 
         #2 questions on this survey
-        res = client.post("surveys/survey1", data=form_data)
+        sid = "survey000001"
+        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
         assert_response_failed_page(self, res)
 
     #Not enough questions
     @with_test_client
     def test_submit_invalid_response3(self, client):
         form_data = {
-            "ans_ids": [1, 2, 3]
+            "survey_question1": 1,
+            "survey_question2": 2,
+            "survey_question3": 1
         }
 
         #4 questions on this survey
-        res = client.post("surveys/survey3", data=form_data)
+        sid = str(ObjectId("survey000003"))
+        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
         assert_response_failed_page(self, res)
 
     #invalid ans_id for a questoin
     @with_test_client
     def test_submit_invalid_response4(self, client):
         form_data = {
-            "ans_ids": [1, 2, 3, 7]
+            "survey_question1": 1,
+            "survey_question2": 2,
+            "survey_question3": 1,
+            "survey_question4": 7,
+
         }
 
-        res = client.post("surveys/survey3", data=form_data)
+        sid = str(ObjectId("survey000003"))
+        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
         assert_response_failed_page(self, res)
 
 

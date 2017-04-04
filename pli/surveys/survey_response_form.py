@@ -9,13 +9,13 @@ class SubmitResponseForm():
 
     def __init__(self, sid, db):
         self.db = db
-        self.sid = sid
+        self.sid = str(sid)
         self.survey = self.get_survey(sid)
         self.ans_ids = None
         self.ts = None
 
     def get_survey(self, sid):
-        survey = self.db.surveys.find_one({"_id": ObjectId(sid)})
+        survey = self.db.surveys.find_one({"_id": ObjectId(self.sid)})
 
         if survey is None:
             abort(404)
@@ -25,7 +25,7 @@ class SubmitResponseForm():
         return survey
 
     def set_ans_ids(self, request):
-        self.ans_ids = [ans for ans in request.form.itervalues()]
+        self.ans_ids = [int(ans) for ans in request.form.itervalues()]
 
     def set_timestamp(self):
         self.ts = datetime.utcnow()
@@ -42,8 +42,9 @@ class SubmitResponseForm():
 
         if correct_length:
             for i,question in enumerate(self.survey["questions"]):
-                if len(question["answers"]) < int(self.ans_ids[i]): #out of bounds ans id
-                    return False, "Out of bounds answer id: {id},len={l}".format(id=self.ans_ids[i],l=len(question["answers"]))
+                if len(question["answers"]) < self.ans_ids[i]: #out of bounds ans id
+                    return False, "Out of bounds answer id: {id},len={l}"\
+                        .format(id=self.ans_ids[i],l=len(question["answers"]))
         else:
             return False, "Incorrect number of answers to the survey"
 
