@@ -158,6 +158,11 @@ def page(path):
 def page_not_found(e):
     return page("404.html"), 404
 
+@application.errorhandler(400)
+def bad_request(e): #to-do: Make more generic
+    return e.description, 400
+    #return render_template("surveys/error_page.html", error=e.description), 400
+
 @application.route("/surveys/create", methods =["POST", "GET"])
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)

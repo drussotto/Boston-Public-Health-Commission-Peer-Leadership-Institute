@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, current_app
+from flask import request, render_template, redirect, url_for, current_app, abort
 from pli import get_db
 from create_survey_form import CreateSurveyForm, CreateQuestionForm
 from survey_response_form import SubmitResponseForm
@@ -12,7 +12,7 @@ def create_survey():
     else:
         form = CreateSurveyForm(request.form)
         form.populate_survey_questions(current_app.config["db"])
-        # short circuits if invalid form
+        # short circuits if invalid form                                        ??
         if form.validate() and store_survey(form, current_app.config["db"]) != -1:
                 return render_template("surveys/successfully_created.html", form=form)
         else:
@@ -25,20 +25,30 @@ def create_question():
 
     else:
         form = CreateQuestionForm(request.form)
-        # short circuits if invalid form
+        # short circuits if invalid form                                        ??
         if form.validate() and store_question(form, current_app.config["db"]) != -1:
                 return render_template("surveys/successfully_created.html", form=form)
         else:
             return render_template("surveys/error_page.html", form=form)
 
 def complete_survey(sid):
+    db = get_db()
+    form = SubmitResponseForm(sid, db)
+
     if request.method == "GET":
-        form = SubmitResponseForm()
-        survey = form.get_survey(sid, get_db())
-        return render_template("surveys/survey.html", survey=survey)
+        return render_template("surveys/survey.html", survey=form.survey)
 
     else:
-        return str(form)
+        form.set_timestamp()
+        form.set_ans_ids(request)
+
+        validated, error_msg = form.validate()
+
+        if validated:
+            store_response(form, get_db())
+            return render_template("surveys/successfully_created.html", form=form)
+        else:
+            abort(400, error_msg)
 
 
 
@@ -48,3 +58,6 @@ def store_question(form, db):
 
 def store_survey(form, db):
     return db.surveys.insert_one(form.as_mongo_doc())
+
+def store_response(form, db):
+    return db.responses.insert_one(form.as_mongo_doc())
