@@ -1,4 +1,25 @@
 {% extends "layout.html" %}
+{% block styles %}
+{{ super() }}
+<style>
+ .staff-box {
+     padding: 10px;
+ }
+</style>
+{% endblock %}
 {% block page_content %}
-<h1>Staff goes here :)</h1>
+<div class="container-fluid">
+    {% for staff in list_active_staff() %}
+    <div class="staff-box">
+	<image src="/card-img/{{staff['picture']}}"/>
+	<div>{{staff['name']}}</div>
+	<div>{{staff['title']}}</div>
+	<div>{{staff['bio']}}</div>
+	<div>Email: {{staff['email']}}</div>
+	<div>Phone: {{staff['name']}}</div>
+    </div>
+    {% else %}
+    <h3>Looks like you don't have any. Did you remember to add them?</h3>
+    {% endfor%}
+</div>
 {% endblock%}

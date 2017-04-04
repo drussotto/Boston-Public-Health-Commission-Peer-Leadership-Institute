@@ -84,9 +84,18 @@ def get_page_json():
 def get_segmented_page_list():
     return pli.get_segmented_page_list()
 
+
 @application.route('/staff/add', methods = [ "POST", "GET" ])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
 def add_staff():
     return pli.add_staff()
+
+@application.route('/staff/edit', methods = [ "POST", "GET" ])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def edit_staff():
+    return pli.edit_staff()
 
 @application.route('/uc/edit', methods = [ "GET", "POST" ])
 @login_required
@@ -247,10 +256,11 @@ application.add_template_global(pli.get_deletable_pages, "get_deletable_pages")
 application.add_template_global(pli.get_my_pages, "get_my_pages")
 
 application.add_template_global(pli.blog_page_count, "blog_page_count")
+application.add_template_global(pli.list_active_staff, "list_active_staff")
 
 # run the application.
 if __name__ == "__main__":
     # Setting debug to True enables debug output. This line should be
     # removed before deploying a production app.
     application.debug = True
-    application.run(port=8000)
+    application.run(port=8001)
