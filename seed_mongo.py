@@ -240,9 +240,9 @@ survey_questions = [survey_question1, survey_question2, survey_question3, survey
 
 db.survey_questions.insert_many(survey_questions)
 
-survey1 = dict(_id="survey1", name="Survey One", qids=["survey_question1", "survey_question2"])
-survey2 = dict(_id="survey2", name="Survey Two", qids=["survey_question3","survry_question4"])
-survey3 = dict(_id="survey3", name="survey Three", qids=["survey_question1", "survey_question2", "survey_question3","survey_question4"])
+survey1 = dict(_id=ObjectId("survey000001"), name="Survey One", qids=["survey_question1", "survey_question2"])
+survey2 = dict(_id=ObjectId("survey000002"), name="Survey Two", qids=["survey_question3","survey_question4"])
+survey3 = dict(_id=ObjectId("survey000003"), name="survey Three", qids=["survey_question1", "survey_question2", "survey_question3","survey_question4"])
 
 surveys = [survey1, survey2, survey3]
 
@@ -250,14 +250,14 @@ db.surveys.insert_many(surveys)
 
 response1 = {
     "_id": "response1",
-    "survey_id": "survey1",
+    "survey_id": "survey00001",
     "date_taken": datetime.utcnow(),
     "ans_ids": [1, 3]
 }
 
 response2 = {
     "_id": "response2",
-    "survey_id": "survey3",
+    "survey_id": "survey000003",
     "date_taken": datetime.utcnow(),
     "ans_ids": [2, 1, 3, 4]
 }
