@@ -66,9 +66,14 @@
       {{ sitemap_link("Testimonials", "", "coming-soon") }}
       {{ sitemap_link("Request a Workshop", "", "", url_for('static', filename='docs/workshop_signup.pdf')) }}
 
-      {% if current_user.is_authenticated and "admin" in current_user.roles %}
+      {% if current_user.is_authenticated and ("admin" in current_user.roles or "editor" in current_user.roles) %}
       	{{ sitemap_heading("Admin") }}
-      	{{ sitemap_link("Manage Users","","", url_for('change_roles')) }} 
+        {% if "admin" in current_user.roles %}
+        	{{ sitemap_link("Manage Users","","", url_for('change_roles')) }} 
+        {% endif %}
+        {% if "editor" in current_user.roles %}
+          {{ sitemap_link("Manage Surveys","","", url_for('show_surveys')) }} 
+        {% endif %}
       {% endif %}
 
       {{ sitemap_heading("About") }}
@@ -76,6 +81,15 @@
       {{ sitemap_link("Our Staff", "", "coming-soon") }}
       {{ sitemap_link("Contact Us", "contact") }}
       {{ sitemap_link("BPHC", "", "", "http://bphc.org") }}
+
+      {{ sitemap_heading("Account") }}
+      {% if current_user.is_authenticated %}
+      {{ sitemap_link("Logout","","", url_for('logout')) }} 
+      {% else %}
+      {{ sitemap_link("Login","","", url_for('login')) }} 
+      {{ sitemap_link("Register","","", url_for('register')) }} 
+      {% endif %}
+
     </ul>
   </div>
   <!-- /Sidebar -->
@@ -102,9 +116,11 @@
 
     <!-- Page Content -->
     <div id='page-content'>
-      {% block page_content %}
-        <h1>Something went wrong, <a href="/">click here</a> to return to the site.</h1>
-      {% endblock %}
+      <div id="content-column">
+        {% block page_content %}
+          <h1>Something went wrong, <a href="/">click here</a> to return to the site.</h1>
+        {% endblock %}
+      </div>
     </div>
     <!-- /Page Content -->
 

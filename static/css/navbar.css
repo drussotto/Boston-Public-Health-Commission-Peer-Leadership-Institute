@@ -46,6 +46,10 @@
   cursor: pointer;
 }
 
+.hamburger:hover {
+  background-color: rgba(255, 255, 255, .1);
+}
+
 .hamburger-layer {
   border-color: white;
   border-top-width: 2px;
