@@ -1,7 +1,8 @@
 <!-- Macros -->
 {% macro render_field(field) %}
-  <dt>{{ field.label }}
-  <dd>{{ field(**kwargs)|safe }}
+<div class=form-field>
+  <h4>{{ field.label }}</h4>
+  <div>{{ field(**kwargs)|safe }}</div>
   {% if field.errors %}
     <ul class=errors>
     {% for error in field.errors %}
@@ -10,6 +11,7 @@
     </ul>
   {% endif %}
   </dd>
+</div>
 {% endmacro %}
 
 {% macro sitemap_heading(text) -%}
