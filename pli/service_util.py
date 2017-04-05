@@ -26,5 +26,11 @@ def get_gridfs():
 # Returns the current "ObjectId" constructor that the app should use.
 # During a real instance of the site this will correspond to bson.ObjectId
 # During testing this will correspond to mongomock.ObjectId
-def get_obj_id():
-    return _get_cache_cfg_val("object_id")
+def get_obj_id(arg=None):
+    if arg is not None:
+        try:
+            return _get_cache_cfg_val("object_id")(arg)
+        except:
+            return None
+    else:
+        return _get_cache_cfg_val("object_id")

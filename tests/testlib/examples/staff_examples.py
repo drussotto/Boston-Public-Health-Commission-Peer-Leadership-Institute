@@ -57,5 +57,7 @@ def init(db, gridfs):
            staff3=staff3,
            staff_inactive=staff_inactive)
 
+    db.staff.insert_many(staff)
+
 def add_mocked_staff(db):
     init(db, gridfs.MockGridFS(db))
