@@ -14,7 +14,7 @@ def add_new_staff(staff_doc, picture):
 
 
 def update_staff(id, doc):
-    get_db().staff.update_one({"_id": id}, {"$set": doc})
+    get_db().staff.update_one({"_id": get_obj_id(id)}, {"$set": doc})
 
 def list_active_staff():
     return get_db().staff.find({"active": True})

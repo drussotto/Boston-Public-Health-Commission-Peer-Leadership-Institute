@@ -35,8 +35,10 @@ class StaffTest(PliEntireDbTestCase):
         res = post_edit_staff(client, ex.staff1["_id"], {"active": False})
         self.assertEqual(200, res.status_code)
         staff_page = client.get('/page/staff.html')
+#        print(staff_page.data)
         self.assertFalse(ex.staff1["name"] in staff_page.data)
-        self.assertFalse(ex.staff1["active"])
+        editted = get_db().staff.find_one({"_id": ex.staff1["_id"]})
+        self.assertFalse(editted["active"])
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_activate_staff(self, client):
@@ -49,13 +51,13 @@ class StaffTest(PliEntireDbTestCase):
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_edit_staff(self, client):
-        res = post_edit_staff(client, ex.staff1["_id"], {"name": "Dummy", "Title": "Dummy Title"})
+        res = post_edit_staff(client, ex.staff1["_id"], {"name": "Dummy", "title": "Dummy Title"})
         self.assertEqual(200, res.status_code)
         staff_page = client.get('/page/staff.html')
         editted = get_db().staff.find_one({"_id": ex.staff1["_id"]})
         self.assertEqual(editted["name"], "Dummy")
         self.assertEqual(editted["title"], "Dummy Title")
-        self.assertFalse("Dummy" in staff_page.data)
+        self.assertTrue("Dummy" in staff_page.data)
 
     @with_login(user3["email_address"], user3["real_pass"])
     def test_add_staff_unauthorized(self, client):
@@ -82,7 +84,7 @@ class StaffTest(PliEntireDbTestCase):
         # bad staff _id
         res = post_edit_staff(client, ObjectId(), {"active": True})
         self.assertEqual(400, res.status_code)
-
+        
 def post_add_staff(client, name, title, bio, picture, email, phone, active):
     data = {}
     if name:
