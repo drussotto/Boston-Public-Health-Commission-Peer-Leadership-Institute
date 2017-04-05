@@ -30,8 +30,8 @@ class SubmitResponseTest(PliSurveysTestCase):
             "survey_question2": 2,
         }
 
-        sid = str(ObjectId("survey000001"))
-        res = client.post("/surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("/surveys/{sid}".format(sid=objectId_str("survey000001")),
+                            data=form_data)
         assert_response_submitted_page(self, res)
 
 
@@ -45,9 +45,7 @@ class SubmitResponseTest(PliSurveysTestCase):
             "survey_question4": 3,
         }
 
-        sid = str(ObjectId("survey000003"))
-
-        res = client.post("/surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("/surveys/{sid}".format(sid=objectId_str("survey000003")), data=form_data)
         assert_response_submitted_page(self, res)
 
     #invalid id
@@ -58,8 +56,7 @@ class SubmitResponseTest(PliSurveysTestCase):
             "survey_question2": 2,
         }
 
-        sid = str(ObjectId("surveyxxx003"))
-        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("surveys/{sid}".format(sid=objectId_str("surveyxxx003")), data=form_data)
         assert_response_failed_page(self, res)
 
     #too many questions
@@ -86,8 +83,7 @@ class SubmitResponseTest(PliSurveysTestCase):
         }
 
         #4 questions on this survey
-        sid = str(ObjectId("survey000003"))
-        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("surveys/{sid}".format(sid=objectId_str("survey000003")), data=form_data)
         assert_response_failed_page(self, res)
 
     #invalid ans_id for a questoin
@@ -101,8 +97,7 @@ class SubmitResponseTest(PliSurveysTestCase):
 
         }
 
-        sid = str(ObjectId("survey000003"))
-        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("surveys/{sid}".format(sid=objectId_str("survey000003")), data=form_data)
         assert_response_failed_page(self, res)
 
 
@@ -273,3 +268,65 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
 
         res = client.post("/surveys/create", data=form_data)
         assert_create_failed_page(self, res)
+
+class RetrieveResponsesTest(PliEntireDbTestCase):
+    @with_app_ctx
+    def test_retrieve_response_data(self):
+        """
+        {
+            "sid": "survey000003",
+            "questions": [
+                {
+                    "question": "When did you last...",
+                    "answers": [
+                        {
+                            "answer": "Within the past week",
+                            "answered": 25
+                        }
+                        ...
+                    ]
+                }
+                ...
+            ]
+        }
+        """
+        response_data = retrieve_response_data(objectId_str("survey000003"))
+        self.assertEqual(len(response_data["questions"]), 4)
+        self.assertEqual(len(response_data["questions"][0]["answers"]), 4)
+        self.assertEqual(response_data["questions"][0]["answers"])[0]["answered"], 100) ##?
+        self.assertEqual(response_data["questions"][0]["answers"])[0]["answer"], "Within the past week")
+
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_get_survey_results_page1(self, client):
+        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("survey000003")))
+
+        assert_surveys_results_page(self, res)
+
+    @with_login(user_editor["email_address"], user_editor["real_pass"])
+    def test_get_survey_results_page2(self, client):
+        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("survey000001")))
+
+        assert_surveys_results_page(self, res)
+
+    #participant privilege (forbidden)
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_get_survey_results_page_forbidden(self, client):
+        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("survey000002")))
+
+        self.assertEqual(res.status_code, 404)
+        assert_not_surveys_results_page(self, res)
+        assert_404_page(self, res)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_get_survey_results_invalid(self, client):
+        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("surveyxxxx03")))
+
+        assert_not_surveys_results_page(self, res)
+        self.assertEqual(res.status_code, 404)
+        assert_404_page(self, res)
+
+
+#Allows for prettier object ids, represented as a string
+def objectId_str(name):
+    return str(ObjectId(name))

@@ -262,9 +262,49 @@ response2 = {
     "ans_ids": [2, 1, 3, 4]
 }
 
+response_list = []
+
+for i in range(20):
+    response_list.append({
+        "_id": ObjectId(),
+        "survey_id": "survey000003",
+        "date_taken": datetime.utcnow(),
+        "ans_ids": [2, 1, 3, 4]
+    })
+
+    response_list.append({
+        "_id": ObjectId(),
+        "survey_id": "survey000003",
+        "date_taken": datetime.utcnow(),
+        "ans_ids": [1, 3, 2, 4]
+    })
+
+    response_list.append({
+        "_id": ObjectId(),
+        "survey_id": "survey000003",
+        "date_taken": datetime.utcnow(),
+        "ans_ids": [1, 3, 2, 4]
+    })
+
+for i in range(10):
+    response_list.append({
+        "_id": ObjectId(),
+        "survey_id": "survey000003",
+        "date_taken": datetime.utcnow(),
+        "ans_ids": [4, 2, 1, 1]
+    })
+
+    response_list.append({
+        "_id": ObjectId(),
+        "survey_id": "survey000003",
+        "date_taken": datetime.utcnow(),
+        "ans_ids": [3, 4, 4, 2]
+    })
+
 responses = [response1, response2]
 
 db.responses.insert_many(responses)
+db.responses.insert_many(response_list)
 
 blog_page_one = {
     "_id": ObjectId(),
