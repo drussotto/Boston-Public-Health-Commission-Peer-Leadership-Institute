@@ -4,14 +4,14 @@ from pli import ADMIN_PERM, PARTICIPANT_PERM, ORG_PERM, EDITOR_PERM, PEERLEADER_
 
 
 class PermTest(PliEntireDbTestCase):
-    
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin(self, client):
         self.assertTrue(EDITOR_PERM.can())
         self.assertTrue(ADMIN_PERM.can())
         self.assertFalse(PARTICIPANT_PERM.can())
         self.assertFalse(ORG_PERM.can())
-        
+
     @with_login(user2["email_address"], user2["real_pass"])
     def test_check_participant(self, client):
         self.assertFalse(EDITOR_PERM.can())
@@ -31,17 +31,17 @@ class AddPermTest(PliEntireDbTestCase):
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_not_add_bad_uid(self, client):
         self.assertTrue(ADMIN_PERM.can())
-        
+
         # 400 => Not added
         # That UID doesn't exist.
         res = post_add_role(client, ORG_ROLE, 543)
         self.assertEqual(400, res.status_code)
 
-    
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_add(self, client):
         self.assertTrue(ADMIN_PERM.can())
-        
+
         # 200 => we added the role.
         res = post_add_role(client, ORG_ROLE, user2["_id"])
         self.assertEqual(200, res.status_code)
@@ -55,7 +55,7 @@ class AddPermTest(PliEntireDbTestCase):
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_add_self(self, client):
         self.assertTrue(ADMIN_PERM.can())
-        
+
         # 200 => we added the role.
         res = post_add_role(client, ORG_ROLE, user1["_id"])
         self.assertEqual(200, res.status_code)
@@ -73,7 +73,7 @@ class AddPermTest(PliEntireDbTestCase):
         self.assertEqual(200, res.status_code)
         self.assertEqual([PARTICIPANT_ROLE, ADMIN_ROLE], PliUser.get(user2["_id"]).roles)
 
-        
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_add2(self, client):
         self.assertTrue(ADMIN_PERM.can())
@@ -103,13 +103,13 @@ class RemovePermTest(PliEntireDbTestCase):
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_not_rm_bad_uid(self, client):
         self.assertTrue(ADMIN_PERM.can())
-        
+
         # 400 => Not added
         # That UID doesn't exist.
         res = post_rm_role(client, ORG_ROLE, 543)
         self.assertEqual(400, res.status_code)
 
-    
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_rm(self, client):
         self.assertTrue(ADMIN_PERM.can())
@@ -136,7 +136,7 @@ class RemovePermTest(PliEntireDbTestCase):
         self.assertEqual(200, res.status_code)
         self.assertEqual([], PliUser.get(user2["_id"]).roles)
 
-        
+
     @with_login(user1["email_address"], user1["real_pass"])
     def test_check_admin_rm2(self, client):
         self.assertTrue(ADMIN_PERM.can())
@@ -218,4 +218,3 @@ class RemovePermTest(PliEntireDbTestCase):
         # 403 => Participant cannot access page
         res = client.get('/surveys/questions/create')
         self.assertEqual(403, res.status_code)
-

@@ -16,6 +16,8 @@ import os
 application = Flask(__name__)
 application.config.from_envvar('PLI_SETTINGS')
 
+# Don't use these directly.
+# See service_util.get_db ... etc. for how to get these...
 db = MongoClient().pli
 mail = Mail(application)
 principals = Principal(application)
@@ -143,7 +145,7 @@ def peer_leader_resources():
 @login_required
 @pli.ADMIN_PERM.require(http_exception=403)
 def change_roles():
-    return render_template("change_roles.html", users=db.users.find({}, {"_id": 1, "last_name": 1, "first_name": 1, "email_address": 1}))
+    return render_template("change_roles.html")
 
 @application.route('/')
 def index():
@@ -188,6 +190,7 @@ def create_question():
     return pli.create_question()
 
 @application.route('/card-img/<string:cid>')
+@application.route('/img/<string:cid>')
 def get_card_img(cid):
     return pli.CarouselCard.send_picture(cid)
 
@@ -257,6 +260,9 @@ application.add_template_global(pli.get_my_pages, "get_my_pages")
 
 application.add_template_global(pli.blog_page_count, "blog_page_count")
 application.add_template_global(pli.list_active_staff, "list_active_staff")
+application.add_template_global(pli.list_all_users, "list_all_users")
+
+
 
 # run the application.
 if __name__ == "__main__":

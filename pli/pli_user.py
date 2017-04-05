@@ -86,3 +86,6 @@ class PliUser(UserMixin):
             return self.get_roles()
         else:
             raise AttributeError("No name %s in PliUser" % name)
+
+def list_all_users():
+    return get_db().users.find({}, {"password": -1})

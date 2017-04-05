@@ -83,7 +83,7 @@
   </select>
   <h2>Users</h2>
   <select class="form-control" id="users">
-    {% for user in users %}
+    {% for user in list_all_users() %}
       <option value="{{ user['_id'] }}">
         {{ user['last_name'] }}, {{ user['first_name'] }}  &lt{{ user['email_address'] }}&gt
       </option>

@@ -1,7 +1,8 @@
 
 # User stuff
 from .pli_user import \
-    PliUser
+    PliUser, \
+    list_all_users
 
 # Our compatability helper (need for testing with mongomock)
 from .helpers import \
@@ -44,5 +45,3 @@ from .carousel_card import *
 from .login import validate_login, logout, login
 from .surveys import *
 from .images import *
-
-
