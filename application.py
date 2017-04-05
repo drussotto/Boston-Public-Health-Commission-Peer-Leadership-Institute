@@ -99,6 +99,10 @@ def add_staff():
 def edit_staff():
     return pli.edit_staff()
 
+@application.route('/staff', methods = [ "GET" ])
+def staff():
+    return render_template("staff.html")
+
 @application.route('/uc/edit', methods = [ "GET", "POST" ])
 @login_required
 def edit_my_page():

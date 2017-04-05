@@ -4,6 +4,10 @@
   padding: 20px 30px;
 }
 
+#footer .footer-col:first-child .sitemap-heading {
+  border-top: none;
+}
+
 @media(min-width:768px) {
   #footer .sitemap-heading {
       border-top: none;

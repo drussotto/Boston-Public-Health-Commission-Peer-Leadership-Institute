@@ -2,24 +2,81 @@
 {% block styles %}
 {{ super() }}
 <style>
- .staff-box {
-     padding: 10px;
- }
+    #content-column {
+        color: #00255e;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .staff {
+        margin: 0 auto;
+        text-align: center;
+        max-width: 600px;
+        padding: 1em 10px;
+        border-top: 1px solid #FA3800;
+    }
+
+    .staff .staff-profile {
+        margin: 0 auto;
+        width: 200px;
+        height: 200px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-radius: 100%;
+    }
+
+    .staff p {
+        margin: 0;
+    }
+
+    .staff .staff-name {
+        font-size: 2em;
+    }
+
+    .staff .staff-title {
+        font-style: italic;
+        font-size: 1.2em;
+    }
+
+    .staff .staff-bio {
+        margin-top: 0.5em;
+        color: black;
+    }
 </style>
 {% endblock %}
 {% block page_content %}
-<div class="container-fluid">
+    <h1>Our Staff</h1>
     {% for staff in list_active_staff() %}
-    <div class="staff-box">
-	<image src="/card-img/{{staff['picture']}}"/>
-	<div>{{staff['name']}}</div>
-	<div>{{staff['title']}}</div>
-	<div>{{staff['bio']}}</div>
-	<div>Email: {{staff['email']}}</div>
-	<div>Phone: {{staff['name']}}</div>
+    <div class="staff">
+        {% set picture = staff['picture'] %}
+        {% set email = staff['email'] %}
+        {% set phone = staff['phone'] %}
+	    <div class="staff-profile"
+             style="background-image: url({{ ('/card-img/' + picture|string) if picture else url_for('static', filename='images/no_image_staff.jpg') }});"></div>
+    	<p class="staff-name">{{staff['name']}}</p>
+    	<p class="staff-title">{{staff['title']}}</p>
+        <p class="staff-contact">
+            {% if email %}
+                <a href="mailto:{{email}}">{{email}}</a>
+            {% endif %}
+        </p>
+        <p class="staff-contact">
+            {% if phone %}
+                {{phone}}
+            {% endif %}
+        </p>
+    	<p class="staff-bio">{{staff['bio']}}</p>
     </div>
     {% else %}
-    <h3>Looks like you don't have any. Did you remember to add them?</h3>
+    <div class="staff">
+        <p>No staff information found.</p>
+        {% if current_user.is_authenticated and "editor" in current_user.roles %}
+            <a href="/manage/staff">Click here to manage staff information.</a>
+        {% endif %}
+    </div>
     {% endfor%}
-</div>
+    
 {% endblock%}
