@@ -11,12 +11,14 @@ def add_new_staff(staff_doc, picture):
     staff_doc["picture"] = pic_id
     return get_db().staff.insert_one(staff_doc).inserted_id
 
-
 def update_staff(id, doc):
     get_db().staff.update_one({"_id": get_obj_id(id)}, {"$set": doc})
 
 def list_active_staff():
     return get_db().staff.find({"active": True})
+
+def list_inactive_staff():
+    return get_db().staff.find({"active": False})
 
 def get_staff_by_id(id):
     if id is None:

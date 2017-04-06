@@ -289,6 +289,7 @@ application.add_template_global(pli.get_my_pages, "get_my_pages")
 
 application.add_template_global(pli.blog_page_count, "blog_page_count")
 application.add_template_global(pli.list_active_staff, "list_active_staff")
+application.add_template_global(pli.list_inactive_staff, "list_inactive_staff")
 application.add_template_global(pli.list_all_users, "list_all_users")
 
 
