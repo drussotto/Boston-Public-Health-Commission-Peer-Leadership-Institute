@@ -1,9 +1,8 @@
 from flask_mail import Message
 from pli import get_mail, user_by_email, get_db
-from flask import request, abort, current_app, redirect
+from flask import request, abort, current_app, redirect, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import passwd_reset_for, decode_passwd_reset
-#from datetime import datetime, timedelta
 from time import time
 
 DEFAULT_RESET_TIMEOUT = 5
