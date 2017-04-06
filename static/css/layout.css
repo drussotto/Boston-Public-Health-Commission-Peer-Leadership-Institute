@@ -12,6 +12,8 @@ html, body {
 #content-column {
   margin: 0 auto;
   max-width: 1000px;
+  color: #00255e;
+  
 }
 
 /* SiteMap Styles (sidebar & footer) */

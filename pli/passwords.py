@@ -57,7 +57,7 @@ def _post_reset_password():
         return abort(400)
 
 def _get_init_reset_password():
-    return render_template("init_reset_pass.html")
+    return render_template("init_pass_reset.html")
 
 def _post_init_reset_password():
     email = request.form.get("email", None)
@@ -69,7 +69,7 @@ def _post_init_reset_password():
                   recipients=[email])
     usr = user_by_email(email)
     if usr is None:
-        return None
+        return abort(400)
 
     rst = passwd_reset_for(usr)
     link = "http://%s/pass-reset?token=%s" % (current_app.config["HOST"], rst)
@@ -82,7 +82,7 @@ If the link doesn't work go to this url: %s
 <br/>
 ''' % (link, link)
     get_mail().send(msg)
-    return render_template("redir_success.html")
+    return "", 200 #render_template("redir_success.html")
 
 def init_reset_password():
     if request.method == "GET":

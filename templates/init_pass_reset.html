@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block styles %}
+{{ super() }}
+<style>
+  #content-column {
+    text-align: center;
+  }
+
+  hr {
+    border-color: #FA3800;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .reset-section {
+    margin: 0 20px;
+  }
+
+  label {
+    font-size: 1.2em;
+  }
+
+  #email {
+    min-width: 200px;
+    width: 30%;
+    border-radius: 3px;
+    padding: 5px;
+  }
+</style>
+{% endblock %}
+
+{% block page_content %}
+  <h1>Reset Password</h1>
+  <hr>
+  <div id="ask-reset" class="reset-section">
+    <p>Enter your email and we'll send you a link to reset your password.</p>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <br>
+      <input type="text" id="email" name="email" placeholder="Enter your email">
+      <br>
+      <br>
+      <button type="submit" id="submit-btn" class="btn btn-success">Submit</button>
+      <div id="loading-reset" class="hidden">
+        <p>Submitting...</p>
+        <img src="{{ url_for('static', filename='images/loading.gif') }}" width="50" height="50">
+      </div>
+    </div>
+    <div id="bad-email" class="alert alert-danger hidden">
+      No user found with that email.
+    </div>
+    <div id="no-email" class="alert alert-warning hidden">
+      Email can't be blank.
+    </div>
+  </div>
+  <div id="success-reset" class="reset-section hidden">
+    <div class="alert alert-success">
+      Email sent to <strong><span id="email-success-sent">(your email)</span></strong>
+    </div>
+    Your email should arrive within a few minutes with instructions on resetting your password (check your spam folder!).
+  </div>
+{% endblock%}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+  $("#submit-btn").click(function() {
+    $("#submit-btn, #ask-reset .alert").addClass("hidden");
+    $("#loading-reset").removeClass("hidden");
+
+    var email = $("#email").val();
+    if (email == "") {
+      $("#no-email").removeClass("hidden");
+      $("#loading-reset").addClass("hidden");
+    } else {
+      $.ajax({
+        url:"/init-pass-reset",
+        type: "POST",
+        dataType: "JSON",
+        data: { email: email },
+        success: function() {
+          $("#ask-reset").addClass("hidden");
+          $("#email-success-sent").text(email);
+          $("#success-reset").removeClass("hidden");
+        },
+        statusCode: {
+          400: function() {
+            $("#bad-email").removeClass("hidden");
+          }
+        },
+        complete: function() {
+          $("#loading-reset").addClass("hidden");
+          $("#submit-btn").removeClass("hidden");
+        }
+      });
+    }
+  });
+</script>
+{% endblock%}
