@@ -57,6 +57,18 @@ class TestPasswordReset(PliEntireDbTestCase):
         self.assertEqual(200, res.status_code)
         assert_index_page(self, res)
 
+    @with_test_client
+    def test_reset_old_token(self, client):
+        tkn = generate_reset_token(user1["_id"], time.time() - (10 * 60)) # Token is going to be too old.
+        # Reset won't work since we are using an old token
+        self.perform_pass_change(client, user1["email_address"], tkn=tkn, eq_chk=False)
+
+        # The password shouldn't have changed, so we try and log in with the old password
+        res = self.try_relog(client, user1["email_address"], user1["real_pass"])
+        assert_index_page(self, res)
+        self.assertEqual(200, res.status_code)
+
+
 def generate_reset_token(uid, t=None):
     if t is None:
         t = time.time()
