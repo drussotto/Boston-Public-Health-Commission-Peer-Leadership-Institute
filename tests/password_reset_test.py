@@ -68,6 +68,14 @@ class TestPasswordReset(PliEntireDbTestCase):
         assert_index_page(self, res)
         self.assertEqual(200, res.status_code)
 
+    @with_test_client
+    def test_email_sent(self, client):
+        with pli.get_mail().record_messages() as outbox:
+            res = client.post('/init-pass-reset', data={"email":user1["email_address"]})
+            self.assertEqual(200, res.status_code)
+            self.assertEqual(1, len(outbox))
+        
+
 
 def generate_reset_token(uid, t=None):
     if t is None:

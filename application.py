@@ -132,7 +132,7 @@ def register():
 def reset_password():
     return pli.reset_password()
 
-@application.route('/init-pass-reset')
+@application.route('/init-pass-reset', methods = [ "POST", "GET" ])
 def init_reset_password():
     return pli.init_reset_password()
 
