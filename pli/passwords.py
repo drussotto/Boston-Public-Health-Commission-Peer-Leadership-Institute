@@ -37,7 +37,7 @@ def check_hash(to_check, expected):
     return check_password_hash(to_check, expected)
 
 def _get_reset_password():
-    tkn = request.form.get('token', None)
+    tkn = request.args.get('token', None)
     if tkn is None:
         return abort(404)
     else:
