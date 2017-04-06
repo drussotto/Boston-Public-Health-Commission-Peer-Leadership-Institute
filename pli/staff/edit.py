@@ -1,6 +1,6 @@
 from flask import request, abort, redirect, render_template, jsonify, url_for
 from staff_db import get_staff_by_id, update_staff, update_staff_order
-from staff_form import EditStaffForm, edit_form_to_dict
+from staff_form import edit_form_to_dict
 
 def _post_edit_staff():
     sid = request.args.get('id', None)
@@ -10,14 +10,11 @@ def _post_edit_staff():
     if staff_obj is None:
         return abort(400)
     # This isn't super safe, too lazy though
-    form = EditStaffForm(request.form)
-    if form.validate():
-        update_staff(sid, edit_form_to_dict(request.form))
-        if request.is_xhr:
-            return "", 200
-        else:
-            return redirect("/manage/staff")
-    return abort(400)
+    update_staff(sid, edit_form_to_dict(request.form))
+    if request.is_xhr:
+        return "", 200
+    else:
+        return redirect("/manage/staff")
 
 def _post_edit_staff_order():
     data = request.get_json()
