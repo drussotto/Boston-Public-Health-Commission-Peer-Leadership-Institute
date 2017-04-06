@@ -13,7 +13,7 @@
     margin: 5px;
   }
 
-  .add-staff-btn {
+  #add-staff-btn {
     margin: 1em auto;
   }
 
@@ -30,10 +30,70 @@
     margin-top: 5px;
   }
 
+  .modal .field-label {
+    margin: 0;
+    font-size: 1.2em;
+  }
+
+  .modal .modal-field {
+    width: 100%;
+    margin-bottom: 1em;
+  }
+
+  .modal button[type="submit"] {
+    margin-top: 2em;
+  }
+
+  .modal .modal-check {
+    font-size: 2em;
+  }
+
+  .modal .checkbox {
+    margin-top: 0;
+  }
 </style>
 {% endblock %}
 
 {% block page_content %}
+  {% set active_staff = list_active_staff() %}
+  {% set inactive_staff = list_inactive_staff() %}
+
+  <div class="modal fade" id="add-staff-modal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add Staff Info</h4>
+        </div>
+        <div class="modal-body">
+          <p>Use this form to add new staff info to the Our Staff page.</p>
+          <form method=post action="/manage/staff/add" enctype="multipart/form-data">
+            {% for field in add_form %}
+              {% if not field.type in [ "BooleanField", "HiddenField" ] %}
+                <div class="form-group">
+                  {{ field.label }}
+                  {{ field(class="form-control", placeholder="Enter " + field.name) }}
+                </div>
+              {% endif %}
+            {% endfor %}
+            <div class="form-group">
+              <label for="picture">Picture (optional)</label>
+              <input type="file" class="modal-field" name="picture" accept="image/*"></input>
+            </div>
+            <div class="form-group">
+              {{ add_form.active.label }}
+              <div class="checkbox">
+                <label>{{ add_form.active(checked="true") }} Check this box to display this staff info on the Our Staff page.</label>
+              </div>
+            </div>
+            {{ add_form.order(value=active_staff.count()) }}
+            <button type="submit" class="btn btn-block btn-success">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% macro staff_list(list, list_id, label, expanded) -%}
       <div class="staff-list-container">
         <button type="button"
@@ -57,12 +117,14 @@
       </div>
   {%- endmacro %}
 
-  {% set active_staff = list_active_staff() %}
-  {% set inactive_staff = list_inactive_staff() %}
-
   <h1>Manage Staff</h1>
   <p>Use this page to manage the staff information displayed on the <a href="/staff">Our Staff</a> page. Note inactive staff do not appear on the staff page.</p>
-  <button type="button" class="btn btn-success btn-lg add-staff-btn" id="add-staff-btn">Add New Staff</button>
+  <button type="button" 
+          class="btn btn-success btn-lg"
+          id="add-staff-btn"
+          data-toggle="modal"
+          data-target="#add-staff-modal">
+    Add New Staff</button>
   <p>Choose a staff entry below to edit it, or click and drag active staff to change the order that they appear.</p>
 
   {{ staff_list(active_staff, "active-staff", "Active", true) }}

@@ -1,14 +1,14 @@
-from wtforms import Form, StringField, IntegerField, BooleanField, validators
+from wtforms import Form, StringField, IntegerField, BooleanField, HiddenField, validators
 from wtforms.widgets import TextArea, CheckboxInput
 
 class AddStaffForm(Form):
-    name = StringField('Name', [validators.DataRequired()])
+    name = StringField('Staff Name', [validators.DataRequired()])
     title = StringField('Title', [validators.DataRequired()])
     bio = StringField('Bio', [validators.DataRequired()], widget=TextArea())
-    email = StringField('Email')
-    phone = StringField('Phone')
-    active = BooleanField('Are they active?', widget=CheckboxInput())
-    order = IntegerField('Order')
+    email = StringField('Email (optional)')
+    phone = StringField('Phone (optional)')
+    active = BooleanField('Active', widget=CheckboxInput())
+    order = HiddenField('Order')
     # picture = file field.
 
 class EditStaffForm(Form):
