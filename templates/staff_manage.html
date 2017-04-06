@@ -58,12 +58,13 @@
 
   .modal .image-preview {
     margin: 0 auto;
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
     border-radius: 100%;
+    float: right;    
     display: none;
   }
 </style>
@@ -185,6 +186,17 @@
     });
   });
 
+  function update_preview_image($preview_div, src) {
+    $preview_div.css("background-image", "url(" + src + ")").show();
+  }
+
+  $("#picture, #edit_picture").change(function() {
+    if (this.files && this.files[0]) {
+      var src = window.URL.createObjectURL(this.files[0]);
+      update_preview_image($(this).siblings(".image-preview"), src)
+    }
+  });
+
   var editing_staff_id;
   $(".staff-list-entry").click(function() {
     editing_staff_id = $(this).data("staff-id");
@@ -194,18 +206,21 @@
   var editing_staff_order;
   var editing_inactive_staff;
   var $edit_form = $('#edit-staff-modal form');
+  var edit_action = $edit_form.attr('action');
   $("#edit-staff-modal").on('show.bs.modal', function() {
-    $edit_form.attr('action', $edit_form.attr('action') + "?id=" + editing_staff_id);
+    $edit_form.attr('action', edit_action + "?id=" + editing_staff_id);
 
     $.get("/manage/staff/info?id=" + editing_staff_id, "", function(data) {
-      set_edit_val("name", data.name);    
-      set_edit_val("title", data.title);    
-      set_edit_val("bio", data.bio);    
-      set_edit_val("email", data.email);    
+      set_edit_val("name", data.name);
+      set_edit_val("title", data.title);
+      set_edit_val("bio", data.bio);
+      set_edit_val("email", data.email);
       set_edit_val("phone", data.phone);
-      set_edit_val("order", data.order)
+      set_edit_val("order", data.order);
       editing_staff_order = data.order;
       
+      update_preview_image($("#edit-staff-modal .image-preview"), data.picture);
+
       if (!data.active) {
         $("#edit_active").get(0).click();
         editing_inactive_staff = true;
