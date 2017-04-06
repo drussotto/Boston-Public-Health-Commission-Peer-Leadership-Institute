@@ -2,6 +2,7 @@
 
 {% block styles %}
 {{ super() }}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <style type="text/css">
   #content-column {
     padding: 0 5px;
@@ -16,16 +17,16 @@
     margin: 1em auto;
   }
 
-  .staff-list-heading {
-    font-size: 1.6em;
-  }
-
   .staff-list {
     margin: 0 auto;
     width: calc(100% - 20px);
   }
 
-  .staff-list button {
+  .staff-list-heading {
+    font-size: 1.6em;
+  }
+
+  .staff-list-entry {
     margin-top: 5px;
   }
 
@@ -33,36 +34,56 @@
 {% endblock %}
 
 {% block page_content %}
+  {% macro staff_list(list, list_id, label, expanded) -%}
+      <div class="staff-list-container">
+        <button type="button"
+                class="btn btn-primary btn-block staff-list-heading"
+                data-toggle="collapse"
+                data-target="#{{ list_id }}">
+          {{ label }} Staff ({{ list.count() }})
+        </button>
+        <div class="staff-list collapse {{ 'in' if expanded else '' }}"
+             id="{{list_id}}">
+          {% for staff in list %}
+            <a href="#" 
+               class="btn btn-info btn-block staff-list-entry {{ list_id }}-entry"
+               data-staff-id="{{ staff['_id'] }}">
+              {{staff["name"]}}
+            </a>
+          {% else %}
+            <p>No {{ label }} staff.</p>
+          {% endfor %}
+        </div>
+      </div>
+  {%- endmacro %}
+
   {% set active_staff = list_active_staff() %}
   {% set inactive_staff = list_inactive_staff() %}
-  {% set active_count = active_staff.count() %}
-  {% set inactive_count = inactive_staff.count() %}
+
   <h1>Manage Staff</h1>
   <p>Use this page to manage the staff information displayed on the <a href="/staff">Our Staff</a> page. Note inactive staff do not appear on the staff page.</p>
   <button type="button" class="btn btn-success btn-lg add-staff-btn" id="add-staff-btn">Add New Staff</button>
-  <p>Choose a staff entry below to edit it.</p>
-  <div class="staff-list-container">
-    <button type="button" class="btn btn-primary btn-block staff-list-heading" data-toggle="collapse" data-target="#active-staff">Active Staff ({{ active_count }})</button>
-    <div class="staff-list collapse in" id="active-staff">
-      {% for staff in active_staff %}
-      <button type="button" class="btn btn-info btn-block active-staff" data-staff-id="{{ staff['_id'] }}">
-        {{staff["name"]}}
-      </button>
-      {% else %}
-      <p>No active staff.</p>
-      {% endfor %}
-    </div>
-  </div>
-  <div class="staff-list-container">
-    <button type="button" class="btn btn-primary btn-block staff-list-heading" data-toggle="collapse" data-target="#inactive-staff">Inactive Staff ({{ inactive_count }})</button>
-    <div class="staff-list collapse" id="inactive-staff">
-      {% for staff in inactive_staff %}
-      <button type="button" class="btn btn-info btn-block active-staff" data-staff-id="{{ staff['_id'] }}">
-        {{staff["name"]}}
-      </button>
-      {% else %}
-      <p>No inactive staff.</p>
-      {% endfor %}
-    </div>
-  </div>
+  <p>Choose a staff entry below to edit it, or click and drag active staff to change the order that they appear.</p>
+
+  {{ staff_list(active_staff, "active-staff", "Active", true) }}
+  {{ staff_list(inactive_staff, "inactive-staff", "Inactive", false) }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+  $("#active-staff").sortable().on("sortupdate", function(e, ui) {
+    var ordered_ids = []
+    $(".staff-list-entry", ui.item.parent()).each(function() {
+      ordered_ids.push($(this).data("staff-id"));
+    });
+    $.ajax({
+      url: "/manage/staff/order",
+      type: "POST",
+      data: JSON.stringify({ ids: ordered_ids }),
+      contentType: "application/json"
+    });
+  });
+</script>
 {% endblock %}

@@ -113,19 +113,25 @@ def staff():
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)
 def manage_staff():
-    return render_template("staff_manage.html")
+    return pli.manage_staff()
 
-@application.route('/manage/staff/add', methods = [ "GET", "POST" ])
+@application.route('/manage/staff/add', methods = [ "POST" ])
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)
 def add_staff():
     return pli.add_staff()
 
-@application.route('/manage/staff/edit', methods = [ "GET", "POST" ])
+@application.route('/manage/staff/edit', methods = [ "POST" ])
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)
 def edit_staff():
     return pli.edit_staff()
+
+@application.route('/manage/staff/order', methods = [ "POST" ])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def edit_staff_order():
+    return pli.edit_staff_order()
 # / STAFF
 
 # ABOUT 

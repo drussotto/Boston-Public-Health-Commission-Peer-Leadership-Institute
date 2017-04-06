@@ -1,5 +1,5 @@
 from flask import request, abort, redirect, render_template
-from staff_db import get_staff_by_id, update_staff
+from staff_db import get_staff_by_id, update_staff, update_staff_order
 from staff_form import EditStaffForm, form_to_dict
 
 def _post_edit_staff():
@@ -13,15 +13,22 @@ def _post_edit_staff():
     form = EditStaffForm(request.form)
     if form.validate():
         update_staff(sid, form_to_dict(request.form))
-        return redirect("/page/staff.html")
+        if request.is_xhr:
+            return "", 200
+        else:
+            return redirect("/manage/staff")
     return abort(400)
 
-def _get_edit_staff():
-    form = EditStaffForm()
-    return render_template('staff_edit.html', form=form)
+def _post_edit_staff_order():
+    data = request.get_json()
+    ids = data["ids"]
+    if ids is None:
+        return abort(400)
+    update_staff_order(ids)
+    return "", 200
 
 def edit_staff():
-    if request.method == "GET":
-        return _get_edit_staff()
-    else:
-        return _post_edit_staff()
+    return _post_edit_staff()
+
+def edit_staff_order():
+    return _post_edit_staff_order()

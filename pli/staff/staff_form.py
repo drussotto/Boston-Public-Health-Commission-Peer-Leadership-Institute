@@ -8,6 +8,7 @@ class AddStaffForm(Form):
     email = StringField('Email')
     phone = StringField('Phone')
     active = BooleanField('Are they active?', widget=CheckboxInput())
+    order = IntegerField('Order')
     # picture = file field.
 
 class EditStaffForm(Form):
@@ -17,6 +18,7 @@ class EditStaffForm(Form):
     email = StringField('Email')
     phone = StringField('Phone')
     active = BooleanField('Are they active?', widget=CheckboxInput())
+    order = IntegerField('Order')
     # picture = file field.
 
 def form_to_dict(req) :
@@ -33,6 +35,8 @@ def form_to_dict(req) :
         o['phone'] = req['phone']
     if 'active' in req:
         o['active'] = as_bool(req['active'])
+    if 'order' in req:
+        o['order'] = req['order']
     return o
 
 def as_bool(s):

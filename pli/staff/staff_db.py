@@ -15,10 +15,14 @@ def update_staff(id, doc):
     get_db().staff.update_one({"_id": get_obj_id(id)}, {"$set": doc})
 
 def list_active_staff():
-    return get_db().staff.find({"active": True})
+    return get_db().staff.find({"active": True}).sort("order", 1)   
 
 def list_inactive_staff():
-    return get_db().staff.find({"active": False})
+    return get_db().staff.find({"active": False}).sort("name", 1)
+
+def update_staff_order(ids):
+    for index, id in enumerate(ids):
+        update_staff(id, {"order": index})
 
 def get_staff_by_id(id):
     if id is None:
