@@ -1,9 +1,10 @@
 from flask_mail import Message
-from pli import get_mail, user_by_email
-from flask import request, abort, current_app
+from pli import get_mail, user_by_email, get_db
+from flask import request, abort, current_app, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import passwd_reset_for, decode_passwd_reset
-from datetime import datetime, timedelta
+#from datetime import datetime, timedelta
+from time import time
 
 DEFAULT_RESET_TIMEOUT = 5
 def get_reset_timeout():
@@ -11,14 +12,14 @@ def get_reset_timeout():
         minutes = current_app.config["reset_timeout"]
     else:
         minutes = DEFAULT_RESET_TIMEOUT
-    return timedelta(minutes)
+    return (minutes * 60) # The timeout is expressed in seconds
 
 # Has the token with the given time been used already (for the given user)?
 def reset_time_not_used(uid, date):
     return get_db().reset_times.find_one({"user": uid, "time": date}) is None
 
 def is_time_valid(uid, date):
-    diff = datetime.utcnow() - date
+    diff = time() - date
     return \
         diff <= get_reset_timeout() and \
         reset_time_not_used(uid, date)
@@ -49,7 +50,7 @@ def _post_reset_password():
     if tkn is None or new_pass is None:
         return abort(400)
     user, time = decode_passwd_reset(tkn)
-    if is_time_valid(time):
+    if is_time_valid(user, time):
         use_time_for_user(user, time)
         update_password_for(user, new_pass)
         return redirect('/')

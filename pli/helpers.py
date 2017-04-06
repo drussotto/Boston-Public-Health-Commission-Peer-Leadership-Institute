@@ -2,6 +2,7 @@ from flask import request, redirect, url_for
 from bson import ObjectId
 from service_util import get_signer, get_db
 from itsdangerous import BadSignature
+from time import time
 
 # This function is necessary because we need to use the mongomock ObjectId
 # when in the tests, and the bson one when not. This setup is done before the
@@ -39,7 +40,7 @@ def decode_uid(euid):
 
 # Creates a new password reset token for the given user.
 def passwd_reset_for(uid):
-    return get_signer().dumps((uid, datetime.utcnow()))
+    return get_signer().dumps((uid, time()))
 
 # decodes a passed in password reset token for the given user.
 # if the passed in token isn't valid, returns None

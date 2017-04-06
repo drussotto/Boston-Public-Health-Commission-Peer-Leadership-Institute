@@ -1,20 +1,18 @@
 from testlib import *
-from datetime import datetime
+#from datetime import datetime
 import pli
-
+import time
 class TestPasswordReset(PliEntireDbTestCase):
     def try_relog(self, client, user, passwd):
-        self.assertEqual(200, client.get('/logout').status_code)
+        self.assertEqual(200, client.get('/logout', follow_redirects=True).status_code)
         # Try logging in with the new password
-        return post_login(client, username, passwd)
+        return post_login(client, user, passwd)
 
-    def change_pass_to(self, client, token, new_pass, expect_email_count=1):
-        with pli.get_mail().record_messages() as outbox:
-            res = client.post('/reset-pass', data={
-                "token": token,
-                "new_pass": new_pass
-            }, follow_redirects=True)
-            self.assertEqual(expect_email_count, len(outbox))
+    def change_pass_to(self, client, token, new_pass):
+        res = client.post('/pass-reset', data={
+            "token": token,
+            "new_pass": new_pass
+        }, follow_redirects=True)
         return res
 
     def perform_pass_change(self, client, user, uid=None, tkn=None, eq_chk=True):
@@ -24,10 +22,9 @@ class TestPasswordReset(PliEntireDbTestCase):
         res = self.change_pass_to(client, tkn, new_pass)
         if eq_chk:
             self.assertEqual(200, res.status_code)
-            assert_pass_reset_success(res)
+            assert_index_page(self, res)
         else:
             self.assertNotEqual(200, res.status_code)
-            assert_not_pass_reset_success(res)
 
         return tkn, new_pass
 
@@ -45,7 +42,7 @@ class TestPasswordReset(PliEntireDbTestCase):
         # Login with new password
         res = self.try_relog(client, user1["email_address"], new_pass)
         self.assertEqual(200, res.status_code)
-        assert_index_page(res)
+        assert_index_page(self, res)
 
     @with_test_client
     def test_reset_not_logged_in(self, client):
@@ -58,9 +55,9 @@ class TestPasswordReset(PliEntireDbTestCase):
         # Login with new password
         res = self.try_relog(client, user1["email_address"], new_pass)
         self.assertEqual(200, res.status_code)
-        assert_index_page(res)
+        assert_index_page(self, res)
 
-def generate_reset_token(uid, time=None):
-    if time is None:
-        time = datetime.utcnow()
-    return pli.get_signer().dumps((uid, time))
+def generate_reset_token(uid, t=None):
+    if t is None:
+        t = time.time()
+    return pli.get_signer().dumps((uid, t))

@@ -128,7 +128,7 @@ def logout():
 def register():
     return pli.register()
 
-@application.route('/pass-reset')
+@application.route('/pass-reset', methods = [ "POST", "GET" ])
 def reset_password():
     return pli.reset_password()
 
