@@ -87,5 +87,8 @@ class PliUser(UserMixin):
         else:
             raise AttributeError("No name %s in PliUser" % name)
 
+def user_by_email(email):
+    return get_db().users.find_one({"email_address": email})
+
 def list_all_users():
     return get_db().users.find({}, {"password": -1})

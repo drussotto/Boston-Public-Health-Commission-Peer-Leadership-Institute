@@ -2,7 +2,8 @@
 # User stuff
 from .pli_user import \
     PliUser, \
-    list_all_users
+    list_all_users, \
+    user_by_email
 
 # Our compatability helper (need for testing with mongomock)
 from .helpers import \
@@ -10,6 +11,22 @@ from .helpers import \
     encode_uid, \
     decode_uid, \
     uid_exists
+
+
+# Service utilities
+from .service_util import \
+    get_db, \
+    get_mail, \
+    get_signer, \
+    get_gridfs, \
+    get_obj_id
+
+# Password stuff
+from .passwords import \
+    init_reset_password, \
+    reset_password, \
+    gen_hash, \
+    check_hash
 
 # Role related things
 from .roles import *
@@ -27,13 +44,6 @@ from .qotd import \
     get_question, \
     answer_question
 
-# Service utilities
-from .service_util import \
-    get_db, \
-    get_mail, \
-    get_signer, \
-    get_gridfs, \
-    get_obj_id
 
 # Blog stuff
 from blog import *

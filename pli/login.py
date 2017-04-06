@@ -1,11 +1,11 @@
 from flask import Flask, render_template, abort, url_for, request, current_app, redirect, flash, g
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user
 from roles import set_identity, remove_identity
 from pli_user import PliUser
 from login_form import LoginForm
 from flask import current_app
 from helpers import redir_query_next
+from passwords import check_hash
 
 # Returns the user_id for the given user if the login was successful
 # Otherwise returns None
@@ -14,7 +14,7 @@ def validate_login(email, password):
         # This checks password against the hash we have store, the stored hash includes
         # information such as salts, what algo was used ... etc.
         # So it is best to delegate to werkseug to check here.
-        if check_password_hash(user["password"], password):
+        if check_hash(user["password"], password):
             return user["_id"]
     return None
 

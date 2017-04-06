@@ -12,9 +12,9 @@ def reg_form_from_user(d):
         password=d["real_pass"]
     )
 
-    
+
 class RegistrationTest(PliEntireDbTestCase):
-    
+
     @with_test_client
     def test_reg_post1(self, client):
         r = client.get('/register')
@@ -63,11 +63,11 @@ class RegistrationTest(PliEntireDbTestCase):
                                validate_login("email@example.com",
                                               "thisismypassword"))
             self.assertEqual(1, len(outbox))
-        
+
 
 
 class ValidationTest(PliEntireDbTestCase):
-    
+
     @with_app_ctxt
     def test_encode_decode_uid(self):
         self.assertEqual(user1["_id"], decode_uid(encode_uid(user1["_id"])))
@@ -86,7 +86,7 @@ class ValidationTest(PliEntireDbTestCase):
         # URL encoding tokens should do nothing.
         encoded_id = encode_uid(user1["_id"])
         self.assertEqual(encoded_id, quote_plus(encoded_id))
-    
+
 
     @with_app_ctxt
     @with_test_client
@@ -133,5 +133,3 @@ class ValidationTest(PliEntireDbTestCase):
     def test_invalid_token7(self, client):
         r = client.get('/validate?user=True')
         assert_bad_vtok_page(self, r)
-
-

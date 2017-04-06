@@ -50,3 +50,4 @@ assert_login_in_index, assert_not_login_in_index = check_page(["Login"], "index"
 assert_admin_dropdown_visible, assert_not_admin_dropdown_visible = check_page(["Admin"], "index")
 assert_editor_dropdown_visible, assert_not_editor_dropdown_visible = check_page(["Manage", "Users"], "index")
 assert_peerleader_resources_visible, assert_not_peerleader_resources_visible = check_page(["Peer Leader Resources"], "index")
+assert_pass_reset_success, assert_not_pass_reset_success = check_page(["reset"], "pass reset")
