@@ -35,15 +35,16 @@ def edit_form_to_dict(req) :
         o['phone'] = req['edit_phone']
     if 'edit_active' in req:
         o['active'] = as_bool(req['edit_active'])
+    else:
+        o['active'] = False
     if 'edit_order' in req:
         o['order'] = req['edit_order']
     return o
 
 def as_bool(s):
-    print(s)
     if s == 'True':
         return True
     elif s == 'False':
         return False
     else:
-        raise Exception("Not a boolean literal")
+        return bool(s)

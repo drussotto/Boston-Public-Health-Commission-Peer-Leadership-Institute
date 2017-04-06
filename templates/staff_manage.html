@@ -203,6 +203,13 @@
     $("#edit-staff-modal").modal("show");
   });
 
+  $(".active-staff-entry").click(function() {
+    var edit_check = $("#edit_active").get(0);
+    if (!edit_check.checked) {
+      edit_check.click();
+    }
+  });
+
   var editing_staff_order;
   var editing_inactive_staff;
   var $edit_form = $('#edit-staff-modal form');
@@ -220,10 +227,12 @@
       editing_staff_order = data.order;
       
       update_preview_image($("#edit-staff-modal .image-preview"), data.picture);
-
       if (!data.active) {
-        $("#edit_active").get(0).click();
         editing_inactive_staff = true;
+        var edit_check = $("#edit_active").get(0);
+        if (edit_check.checked) {
+          edit_check.click();
+        }
       }
     });
   });
