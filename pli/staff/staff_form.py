@@ -10,7 +10,6 @@ class AddStaffForm(Form):
     active = BooleanField('Are they active?', widget=CheckboxInput())
     # picture = file field.
 
-
 class EditStaffForm(Form):
     name = StringField('Name')
     title = StringField('Title')
@@ -19,7 +18,6 @@ class EditStaffForm(Form):
     phone = StringField('Phone')
     active = BooleanField('Are they active?', widget=CheckboxInput())
     # picture = file field.
-
 
 def form_to_dict(req) :
     o = {}

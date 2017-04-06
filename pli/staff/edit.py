@@ -1,4 +1,4 @@
-from flask import request, abort, redirect
+from flask import request, abort, redirect, render_template
 from staff_db import get_staff_by_id, update_staff
 from staff_form import EditStaffForm, form_to_dict
 
@@ -17,7 +17,8 @@ def _post_edit_staff():
     return abort(400)
 
 def _get_edit_staff():
-    raise Exception("Not implemented")
+    form = EditStaffForm()
+    return render_template('staff_edit.html', form=form)
 
 def edit_staff():
     if request.method == "GET":

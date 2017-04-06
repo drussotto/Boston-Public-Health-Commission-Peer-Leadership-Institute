@@ -5,7 +5,7 @@ from pli import get_gridfs
 
 def _get_add_staff():
     form = AddStaffForm()
-    return render_template('add_staff.html', form=form)
+    return render_template('staff_add.html', form=form)
 
 def _post_add_staff():
     form = AddStaffForm(request.form)

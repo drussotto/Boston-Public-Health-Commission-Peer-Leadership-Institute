@@ -47,6 +47,12 @@ def load_pli_user(uid):
 def on_identity_loaded(sender, identity):
     return pli.on_identity_loaded(sender, identity)
 
+
+@application.route('/')
+def index():
+    return render_template("index.html")
+
+# WN CARDS
 @application.route('/add-wn-card', methods = [ "POST", "GET" ])
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)
@@ -58,7 +64,9 @@ def add_wn_card():
 @pli.EDITOR_PERM.require(http_exception=403)
 def set_wn_cards():
     return pli.set_wn_cards()
+# / WN CARDS
 
+# UC
 @application.route('/uc/add', methods = [ "POST", "GET" ])
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)
@@ -86,28 +94,47 @@ def get_page_json():
 def get_segmented_page_list():
     return pli.get_segmented_page_list()
 
-
-@application.route('/staff/add', methods = [ "POST", "GET" ])
-@login_required
-@pli.EDITOR_PERM.require(http_exception=403)
-def add_staff():
-    return pli.add_staff()
-
-@application.route('/staff/edit', methods = [ "POST", "GET" ])
-@login_required
-@pli.EDITOR_PERM.require(http_exception=403)
-def edit_staff():
-    return pli.edit_staff()
-
-@application.route('/staff', methods = [ "GET" ])
-def staff():
-    return render_template("staff.html")
-
 @application.route('/uc/edit', methods = [ "GET", "POST" ])
 @login_required
 def edit_my_page():
     return pli.edit_blog_page()
 
+@application.route('/uc/manage/count')
+def blog_page_count():
+    return pli.blog_page_count()
+# / UC
+
+# STAFF
+@application.route('/staff', methods = [ "GET" ])
+def staff():
+    return render_template("staff.html")
+
+@application.route('/manage/staff', methods = [ "GET" ])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def manage_staff():
+    return render_template("staff_manage.html")
+
+@application.route('/manage/staff/add', methods = [ "GET", "POST" ])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def add_staff():
+    return pli.add_staff()
+
+@application.route('/manage/staff/edit', methods = [ "GET", "POST" ])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def edit_staff():
+    return pli.edit_staff()
+# / STAFF
+
+# ABOUT 
+@application.route('/about', methods = [ "GET" ])
+def about():
+    return render_template("about.html")
+# / ABOUT 
+
+# ROLES
 @application.route('/add-role', methods = [ "PUT" ])
 @login_required
 @pli.ADMIN_PERM.require(http_exception=403)
@@ -120,6 +147,14 @@ def add_role():
 def rm_role():
     return pli.rm_role()
 
+@application.route('/change-roles')
+@login_required
+@pli.ADMIN_PERM.require(http_exception=403)
+def change_roles():
+    return render_template("change_roles.html")
+# / ROLES
+
+# ACCOUNT
 @application.route('/login', methods = [ "POST", "GET" ])
 def login():
     return pli.login()
@@ -138,49 +173,24 @@ def validate():
         return render_template("bad_validation_token.html")
     else:
         return pli.validate_user(request.args.get('user'))
+# / ACCOUNT
 
+# RESOURCES
 @application.route('/peer-leader-resources')
 @login_required
 @pli.PEERLEADER_PERM.require(http_exception=403)
 def peer_leader_resources():
     return render_template("peer_leader_resources.html")
+# / RESOURCES
 
-@application.route('/change-roles')
-@login_required
-@pli.ADMIN_PERM.require(http_exception=403)
-def change_roles():
-    return render_template("change_roles.html")
-
-@application.route('/')
-def index():
-    return render_template("index.html")
-
-
-@application.route('/uc/manage/count')
-def blog_page_count():
-    return pli.blog_page_count()
-
+# QOTD
 @application.route('/question', methods = ["POST"])
 @application.route('/question/<int:qid>', methods = ["POST"])
 def question(qid=1):
     return pli.answer_question(qid)
+# / QOTD
 
-@application.route('/page/<path:path>')
-def page(path):
-    try:
-      return render_template(path)
-    except TemplateNotFound:
-        abort(404)
-
-@application.errorhandler(404)
-def page_not_found(e):
-    return page("404.html"), 404
-
-@application.errorhandler(400)
-def bad_request(e): #to-do: Make more generic
-    return e.description, 400
-    #return render_template("surveys/error_page.html", error=e.description), 400
-
+# SURVEYS
 @application.route("/surveys/create", methods =["POST", "GET"])
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)
@@ -208,8 +218,23 @@ def show_surveys():
 @application.route('/surveys/<string:sid>', methods=["GET", "POST"])
 def complete_survey(sid):
     return pli.complete_survey(sid)
+# / SURVEYS
 
+@application.route('/page/<path:path>')
+def page(path):
+    try:
+      return render_template(path)
+    except TemplateNotFound:
+        abort(404)
 
+@application.errorhandler(404)
+def page_not_found(e):
+    return page("404.html"), 404
+
+@application.errorhandler(400)
+def bad_request(e): #to-do: Make more generic
+    return e.description, 400
+    #return render_template("surveys/error_page.html", error=e.description), 400
 
 # override_url_for automatically adds a timestamp query parameter to
 # static files (e.g. css) to avoid browser caching issues

@@ -73,10 +73,11 @@
     {% else %}
     <div class="staff">
         <p>No staff information found.</p>
-        {% if current_user.is_authenticated and "editor" in current_user.roles %}
-            <a href="/manage/staff">Click here to manage staff information.</a>
-        {% endif %}
     </div>
     {% endfor%}
-    
+    {% if current_user.is_authenticated and "editor" in current_user.roles %}
+    <div class="staff">
+        <a href="/manage/staff">Manage Staff Information.</a>
+    </div>
+    {% endif %}
 {% endblock%}
