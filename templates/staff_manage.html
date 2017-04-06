@@ -8,6 +8,10 @@
     padding: 0 5px;
   }
 
+  h1 {
+    text-align: center;
+  }
+
   .staff-list-container {
     padding: 5px;
     margin: 5px;
@@ -51,48 +55,78 @@
   .modal .checkbox {
     margin-top: 0;
   }
+
+  .modal .image-preview {
+    margin: 0 auto;
+    width: 200px;
+    height: 200px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border-radius: 100%;
+    display: none;
+  }
 </style>
 {% endblock %}
 
 {% block page_content %}
   {% set active_staff = list_active_staff() %}
   {% set inactive_staff = list_inactive_staff() %}
+  {% set active_staff_count = active_staff.count() %}
+  <script type="text/javascript">
+    var active_staff_count = {{ active_staff_count }};
+  </script>
 
-  <div class="modal fade" id="add-staff-modal" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add Staff Info</h4>
-        </div>
-        <div class="modal-body">
-          <p>Use this form to add new staff info to the Our Staff page.</p>
-          <form method=post action="/manage/staff/add" enctype="multipart/form-data">
-            {% for field in add_form %}
-              {% if not field.type in [ "BooleanField", "HiddenField" ] %}
-                <div class="form-group">
-                  {{ field.label }}
-                  {{ field(class="form-control", placeholder="Enter " + field.name) }}
-                </div>
-              {% endif %}
-            {% endfor %}
-            <div class="form-group">
-              <label for="picture">Picture (optional)</label>
-              <input type="file" class="modal-field" name="picture" accept="image/*"></input>
-            </div>
-            <div class="form-group">
-              {{ add_form.active.label }}
-              <div class="checkbox">
-                <label>{{ add_form.active(checked="true") }} Check this box to display this staff info on the Our Staff page.</label>
+  {% macro create_staff_form_modal(modal_id, modal_title, button_text, form_type) -%}
+    <div class="modal fade" id="{{ modal_id }}" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{ modal_title }}</h4>
+          </div>
+          <div class="modal-body">
+            {% set form = add_form %}
+            {% set picture = add_form.picture %}
+            {% set active = add_form.active %}
+            {% set order = add_form.order %}
+            {% if form_type == "add" %}
+              <p>Use this form to add new staff info to the Our Staff page.</p>
+            {% elif form_type == "edit" %}
+              {% set form = edit_form %}
+              {% set picture = edit_form.edit_picture %}
+              {% set active = edit_form.edit_active %}
+              {% set order = edit_form.edit_order %}
+              <p>Use this form to edit existing staff info on the Our Staff page.</p>
+            {% endif %}
+            <form method=post action="/manage/staff/{{form_type}}" enctype="multipart/form-data">
+              {% for field in form %}
+                {% if field.type == "StringField" %}
+                  <div class="form-group">
+                    {{ field.label }}
+                    {{ field(class="form-control", placeholder="Enter " + field.label.text) }}
+                  </div>
+                {% endif %}
+              {% endfor %}
+              <div class="form-group">
+                {{ picture.label }}
+                <div class="image-preview"></div>
+                {{ picture(accept="image/*") }}
               </div>
-            </div>
-            {{ add_form.order(value=active_staff.count()) }}
-            <button type="submit" class="btn btn-block btn-success">Submit</button>
-          </form>
+              <div class="form-group">
+                {{ active.label }}
+                <div class="checkbox">
+                  <label>{{ active(checked="true") }} Check this box to display this staff info on the Our Staff page.</label>
+                </div>
+              </div>
+              {{ order(value=active_staff_count) }}
+              <button type="submit" class="btn btn-block btn-success">{{ button_text }}</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  {%- endmacro %}
 
   {% macro staff_list(list, list_id, label, expanded) -%}
       <div class="staff-list-container">
@@ -116,6 +150,9 @@
         </div>
       </div>
   {%- endmacro %}
+
+  {{ create_staff_form_modal("add-staff-modal", "Add Staff Info", "Submit", "add") }}
+  {{ create_staff_form_modal("edit-staff-modal", "Edit Staff Info", "Update", "edit") }}
 
   <h1>Manage Staff</h1>
   <p>Use this page to manage the staff information displayed on the <a href="/staff">Our Staff</a> page. Note inactive staff do not appear on the staff page.</p>
@@ -147,5 +184,51 @@
       contentType: "application/json"
     });
   });
+
+  var editing_staff_id;
+  $(".staff-list-entry").click(function() {
+    editing_staff_id = $(this).data("staff-id");
+    $("#edit-staff-modal").modal("show");
+  });
+
+  var editing_staff_order;
+  var editing_inactive_staff;
+  var $edit_form = $('#edit-staff-modal form');
+  $("#edit-staff-modal").on('show.bs.modal', function() {
+    $edit_form.attr('action', $edit_form.attr('action') + "?id=" + editing_staff_id);
+
+    $.get("/manage/staff/info?id=" + editing_staff_id, "", function(data) {
+      set_edit_val("name", data.name);    
+      set_edit_val("title", data.title);    
+      set_edit_val("bio", data.bio);    
+      set_edit_val("email", data.email);    
+      set_edit_val("phone", data.phone);
+      set_edit_val("order", data.order)
+      editing_staff_order = data.order;
+      
+      if (!data.active) {
+        $("#edit_active").get(0).click();
+        editing_inactive_staff = true;
+      }
+    });
+  });
+
+  $("#edit_active").change(function() {
+    if (editing_inactive_staff) {  
+      if(this.checked) {
+        // activating inactive staff
+        editing_staff_order = $("#edit_order").val();
+        set_edit_val("order", active_staff_count);
+      } else {
+        set_edit_val("order", editing_staff_order);
+      }
+    }
+  });
+
+  function set_edit_val(input_name, val) {
+    if (val) {
+      $("#edit_" + input_name).val(val);
+    }
+  }
 </script>
 {% endblock %}

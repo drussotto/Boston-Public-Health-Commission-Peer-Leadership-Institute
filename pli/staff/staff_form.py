@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, IntegerField, BooleanField, HiddenField, validators
+from wtforms import Form, StringField, IntegerField, BooleanField, HiddenField, FileField, validators
 from wtforms.widgets import TextArea, CheckboxInput
 
 class AddStaffForm(Form):
@@ -7,39 +7,40 @@ class AddStaffForm(Form):
     bio = StringField('Bio', [validators.DataRequired()], widget=TextArea())
     email = StringField('Email (optional)')
     phone = StringField('Phone (optional)')
+    picture = FileField("Picture")
     active = BooleanField('Active', widget=CheckboxInput())
     order = HiddenField('Order')
-    # picture = file field.
 
 class EditStaffForm(Form):
-    name = StringField('Name')
-    title = StringField('Title')
-    bio = StringField('Bio', widget=TextArea())
-    email = StringField('Email')
-    phone = StringField('Phone')
-    active = BooleanField('Are they active?', widget=CheckboxInput())
-    order = IntegerField('Order')
-    # picture = file field.
+    edit_name = StringField('Name')
+    edit_title = StringField('Title')
+    edit_bio = StringField('Bio', widget=TextArea())
+    edit_email = StringField('Email (optional)')
+    edit_phone = StringField('Phone (optional)')
+    edit_picture = FileField("Picture")
+    edit_active = BooleanField('Active', widget=CheckboxInput())
+    edit_order = HiddenField('Order')
 
-def form_to_dict(req) :
+def edit_form_to_dict(req) :
     o = {}
-    if 'name' in req:
-        o['name'] = req['name']
-    if 'title' in req:
-        o['title'] = req['title']
-    if 'bio' in req:
-        o['bio'] = req['bio']
-    if 'email' in req:
-        o['email'] = req['email']
-    if 'phone' in req:
-        o['phone'] = req['phone']
-    if 'active' in req:
-        o['active'] = as_bool(req['active'])
-    if 'order' in req:
-        o['order'] = req['order']
+    if 'edit_name' in req:
+        o['name'] = req['edit_name']
+    if 'edit_title' in req:
+        o['title'] = req['edit_title']
+    if 'edit_bio' in req:
+        o['bio'] = req['edit_bio']
+    if 'edit_email' in req:
+        o['email'] = req['edit_email']
+    if 'edit_phone' in req:
+        o['phone'] = req['edit_phone']
+    if 'edit_active' in req:
+        o['active'] = as_bool(req['edit_active'])
+    if 'edit_order' in req:
+        o['order'] = req['edit_order']
     return o
 
 def as_bool(s):
+    print(s)
     if s == 'True':
         return True
     elif s == 'False':

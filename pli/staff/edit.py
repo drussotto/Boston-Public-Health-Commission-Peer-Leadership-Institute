@@ -1,6 +1,6 @@
-from flask import request, abort, redirect, render_template
+from flask import request, abort, redirect, render_template, jsonify
 from staff_db import get_staff_by_id, update_staff, update_staff_order
-from staff_form import EditStaffForm, form_to_dict
+from staff_form import EditStaffForm, edit_form_to_dict
 
 def _post_edit_staff():
     sid = request.args.get('id', None)
@@ -12,7 +12,7 @@ def _post_edit_staff():
     # This isn't super safe, too lazy though
     form = EditStaffForm(request.form)
     if form.validate():
-        update_staff(sid, form_to_dict(request.form))
+        update_staff(sid, edit_form_to_dict(request.form))
         if request.is_xhr:
             return "", 200
         else:
@@ -32,3 +32,16 @@ def edit_staff():
 
 def edit_staff_order():
     return _post_edit_staff_order()
+
+def get_staff_info():
+    staff_id = request.args.get('id')
+    info = get_staff_by_id(staff_id)
+    if info is not None:
+        del info["_id"]
+        if info["picture"]:
+            info["picture"] = '/card-img/' + str(info["picture"])
+        else:
+            info["picture"] = url_for('static', filename='images/no_image_staff.jpg')
+        return jsonify(info)
+    else:
+        return abort(403)

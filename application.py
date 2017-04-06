@@ -132,6 +132,12 @@ def edit_staff():
 @pli.EDITOR_PERM.require(http_exception=403)
 def edit_staff_order():
     return pli.edit_staff_order()
+
+@application.route('/manage/staff/info', methods = [ "GET" ])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def get_staff_info():
+    return pli.get_staff_info()
 # / STAFF
 
 # ABOUT 
