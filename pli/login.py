@@ -42,7 +42,7 @@ def logout():
 def login():
     if request.method == "GET":
         form = LoginForm()
-        return render_template("login.html", form=form)
+        return render_template("login.html", next=request.args.get("next"))
     if request.method == "POST":
         form = LoginForm(request.form)
         if form.validate():

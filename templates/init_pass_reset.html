@@ -22,7 +22,7 @@
     font-size: 1.2em;
   }
 
-  #email {
+  #reset-email {
     min-width: 200px;
     width: 30%;
     border-radius: 3px;
@@ -37,9 +37,9 @@
   <div id="ask-reset" class="reset-section">
     <p>Enter your email and we'll send you a link to reset your password.</p>
     <div class="form-group">
-      <label for="email">Email</label>
+      <label for="reset-email">Email</label>
       <br>
-      <input type="text" id="email" name="email" placeholder="Enter your email">
+      <input type="text" id="reset-email" name="reset-email" placeholder="Enter your email">
       <br>
       <br>
       <button type="submit" id="submit-btn" class="btn btn-success">Submit</button>
@@ -70,7 +70,7 @@
     $("#submit-btn, #ask-reset .alert").addClass("hidden");
     $("#loading-reset").removeClass("hidden");
 
-    var email = $("#email").val();
+    var email = $("#reset-email").val();
     if (email == "") {
       $("#no-email").removeClass("hidden");
       $("#loading-reset").addClass("hidden");
@@ -80,14 +80,14 @@
         type: "POST",
         dataType: "JSON",
         data: { email: email },
-        success: function() {
-          $("#ask-reset").addClass("hidden");
-          $("#email-success-sent").text(email);
-          $("#success-reset").removeClass("hidden");
-        },
         statusCode: {
           400: function() {
             $("#bad-email").removeClass("hidden");
+          },
+          200: function() {
+            $("#ask-reset").addClass("hidden");
+            $("#email-success-sent").text(email);
+            $("#success-reset").removeClass("hidden");
           }
         },
         complete: function() {
