@@ -5,6 +5,7 @@
 #news-carousel {
   background-color: gray;
   height: 378px;
+  margin-bottom: 20px;
 }
 
 #news-carousel .carousel-inner, #news-carousel .item {
@@ -22,7 +23,7 @@
 }
 
 .section {
-  padding: 20px 30px;
+  padding: 0px 30px 20px 30px;
 }
 
 .section-heading {
@@ -47,6 +48,10 @@
   #qotd-heading-date {
     display: inline-block;
   }
+}
+
+#qotd {
+  background-color: #8ABFDD;
 }
 
 .resource-link {

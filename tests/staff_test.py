@@ -7,7 +7,7 @@ class StaffTest(PliEntireDbTestCase):
 
     def add_dummy_staff(self, client, active):
         with open(os.path.join(os.path.dirname(__file__), "res", "python-logo.png"), "r") as picture:
-            res = post_add_staff(client, "Dummy", "Test Title", "some bio", picture, "fakeemail@fakeemail.com", "111-111-1111", active)
+            res = post_add_staff(client, "Dummy", "Test Title", "some bio", picture, "fakeemail@fakeemail.com", "111-111-1111", active, 0)
         self.assertEqual(200, res.status_code)
 
     @with_login(user1["email_address"], user1["real_pass"])
@@ -24,7 +24,7 @@ class StaffTest(PliEntireDbTestCase):
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_add_staff_missing_fields(self, client):
-        res = post_add_staff(client, "Dummy", "Dummy Title", "Bio", None, None, None, True)
+        res = post_add_staff(client, "Dummy", "Dummy Title", "Bio", None, None, None, True, 0)
         self.assertEqual(200, res.status_code)
         staff_page = client.get('/page/staff.html')
         self.assertTrue("Dummy" in staff_page.data)
@@ -61,7 +61,7 @@ class StaffTest(PliEntireDbTestCase):
 
     @with_login(user3["email_address"], user3["real_pass"])
     def test_add_staff_unauthorized(self, client):
-        res = post_add_staff(client, "Dummy", "Dummy Title", "Bio", None, None, None, True)
+        res = post_add_staff(client, "Dummy", "Dummy Title", "Bio", None, None, None, True, 0)
         self.assertEqual(403, res.status_code)
 
     @with_login(user3["email_address"], user3["real_pass"])
@@ -71,13 +71,13 @@ class StaffTest(PliEntireDbTestCase):
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_add_staff_invalid(self, client):
-        res = post_add_staff(client, None, "Dummy Title", "Bio", None, None, None, None)
+        res = post_add_staff(client, None, "Dummy Title", "Bio", None, None, None, None, 0)
         self.assertEqual(400, res.status_code)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_edit_staff_invalid(self, client):
         # missing sending staff _id
-        res = client.post("/staff/edit", data={"title":"nope"}, follow_redirects=True)
+        res = client.post("/manage/staff/edit", data={"title":"nope"}, follow_redirects=True)
         self.assertEqual(400, res.status_code)
     @with_login(user1["email_address"], user1["real_pass"])
     def test_edit_staff_invalid_id(self, client):
@@ -85,7 +85,7 @@ class StaffTest(PliEntireDbTestCase):
         res = post_edit_staff(client, ObjectId(), {"active": True})
         self.assertEqual(400, res.status_code)
         
-def post_add_staff(client, name, title, bio, picture, email, phone, active):
+def post_add_staff(client, name, title, bio, picture, email, phone, active, order):
     data = {}
     if name:
         data["name"] = name
@@ -101,7 +101,9 @@ def post_add_staff(client, name, title, bio, picture, email, phone, active):
         data["phone"] = phone
     if active:
         data["active"] = True
-    return client.post("/staff/add", data=data, follow_redirects=True)
+    if order:
+        data["order"] = order
+    return client.post("/manage/staff/add", data=data, follow_redirects=True)
 
 def post_edit_staff(client, id, data):
-    return client.post("/staff/edit?id="+str(id), data=data, follow_redirects=True)
+    return client.post("/manage/staff/edit?id="+str(id), data=data, follow_redirects=True)
