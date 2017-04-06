@@ -3,6 +3,7 @@ from application import application as pli
 from post_utils import post_login
 
 # This decorator takes a username and password to attempt a login with
+# if no password is provided then "username" is treated like a user object.
 # the optional 'to' argument specifies what the 'next' query argument of the login
 # should be. If left empty next won't be given in the url.
 # The function this decorates can take either 1 or 2 additional aguments (excluding self)
@@ -11,12 +12,15 @@ from post_utils import post_login
 # the second one will be the response from the login call (will be the index page if you didn't)
 # supply a 'to' keyword arg. The function that is being decorated is run inside the request context
 # of the given client.
-def with_login(username, passwd, to=None):
+def with_login(username, passwd=None, to=None):
     def decorator(f):
         def actual_function(s):
             with pli.test_client() as client:
                 n = ("?next="+to) if to is not None else ""
-                r = post_login(client, username, passwd, url='/login'+n)
+                if passwd is not None or username is None:
+                    r = post_login(client, username, passwd, url='/login'+n)
+                else:
+                    r = post_login(client, username["email_address"], username["real_pass"], url='/login'+n)
                 p_len = len(inspect.getargspec(f).args)
                 if p_len == 1:
                     f(s)

@@ -1,5 +1,5 @@
 from wtforms import Form, StringField, PasswordField, validators
-from werkzeug.security import generate_password_hash, check_password_hash
+from passwords import gen_hash
 
 class PliRegistrationForm(Form):
     first_name = StringField('First Name', [validators.DataRequired()])
@@ -15,5 +15,5 @@ class PliRegistrationForm(Form):
             "first_name":self.first_name.data,
             "last_name":self.last_name.data,
             "email_address":self.email.data,
-            "password": generate_password_hash(self.password.data, method='pbkdf2:sha256')
+            "password": gen_hash(self.password.data)
         }

@@ -27,6 +27,7 @@ db.surveys.remove()
 db.responses.remove()
 db.usercontent.remove()
 db.staff.remove()
+db.reset_times.remove()
 
 u1={
     "_id": 12345,

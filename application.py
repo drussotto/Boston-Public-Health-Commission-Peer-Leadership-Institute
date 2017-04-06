@@ -128,6 +128,14 @@ def logout():
 def register():
     return pli.register()
 
+@application.route('/pass-reset', methods = [ "POST", "GET" ])
+def reset_password():
+    return pli.reset_password()
+
+@application.route('/init-pass-reset', methods = [ "POST", "GET" ])
+def init_reset_password():
+    return pli.init_reset_password()
+
 @application.route('/validate')
 def validate():
     if "user" not in request.args:
