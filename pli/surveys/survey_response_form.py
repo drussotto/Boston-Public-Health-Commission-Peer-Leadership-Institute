@@ -20,12 +20,14 @@ class SubmitResponseForm():
         if survey is None:
             abort(404)
 
-        survey["questions"] = [self.db.survey_questions.find_one({"_id": qid}) for qid in survey["qids"]]
+        survey["questions"] =  [self.db.survey_questions.find_one({"_id": ObjectId(str(qid))}) for qid in survey["qids"]]
 
         return survey
 
     def set_ans_ids(self, request):
-        self.ans_ids = [int(ans) for ans in request.form.itervalues()]
+        questions = sorted(request.form.items(),
+                            cmp=lambda q1, q2: cmp(q1[0], q2[0]))
+        self.ans_ids = [int(question[1]) for question in questions]
 
     def set_timestamp(self):
         self.ts = datetime.utcnow()
@@ -42,7 +44,7 @@ class SubmitResponseForm():
 
         if correct_length:
             for i,question in enumerate(self.survey["questions"]):
-                if len(question["answers"]) < self.ans_ids[i]: #out of bounds ans id
+                if len(question["answers"]) <= self.ans_ids[i]: #out of bounds ans id, zero-indexed
                     return False, "Out of bounds answer id: {id},len={l}"\
                         .format(id=self.ans_ids[i],l=len(question["answers"]))
         else:

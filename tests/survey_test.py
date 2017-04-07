@@ -1,6 +1,7 @@
 from testlib import *
 from datetime import date
 from bson import ObjectId
+from pli import retrieve_response_data, objectId_str
 
 class RetrieveSurveyTest(PliEntireDbTestCase):
 
@@ -30,8 +31,8 @@ class SubmitResponseTest(PliSurveysTestCase):
             "survey_question2": 2,
         }
 
-        sid = str(ObjectId("survey000001"))
-        res = client.post("/surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("/surveys/{sid}".format(sid=objectId_str("survey000001")),
+                            data=form_data)
         assert_response_submitted_page(self, res)
 
 
@@ -39,15 +40,13 @@ class SubmitResponseTest(PliSurveysTestCase):
     def test_submit_valid_response2(self, client):
 
         form_data = {
-            "survey_question1": 1,
-            "survey_question2": 2,
-            "survey_question3": 4,
-            "survey_question4": 3,
+            "survey_question0": 0,
+            "survey_question1": 2,
+            "survey_question2": 3,
+            "survey_question3": 2,
         }
 
-        sid = str(ObjectId("survey000003"))
-
-        res = client.post("/surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("/surveys/{sid}".format(sid=objectId_str("survey000003")), data=form_data)
         assert_response_submitted_page(self, res)
 
     #invalid id
@@ -58,8 +57,7 @@ class SubmitResponseTest(PliSurveysTestCase):
             "survey_question2": 2,
         }
 
-        sid = str(ObjectId("surveyxxx003"))
-        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("surveys/{sid}".format(sid=objectId_str("surveyxxx003")), data=form_data)
         assert_response_failed_page(self, res)
 
     #too many questions
@@ -86,8 +84,7 @@ class SubmitResponseTest(PliSurveysTestCase):
         }
 
         #4 questions on this survey
-        sid = str(ObjectId("survey000003"))
-        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("surveys/{sid}".format(sid=objectId_str("survey000003")), data=form_data)
         assert_response_failed_page(self, res)
 
     #invalid ans_id for a questoin
@@ -101,8 +98,7 @@ class SubmitResponseTest(PliSurveysTestCase):
 
         }
 
-        sid = str(ObjectId("survey000003"))
-        res = client.post("surveys/{sid}".format(sid=sid), data=form_data)
+        res = client.post("surveys/{sid}".format(sid=objectId_str("survey000003")), data=form_data)
         assert_response_failed_page(self, res)
 
 
@@ -202,7 +198,8 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
 
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "question-0": "sq0000000001",
+            "question-1": "sq0000000003"
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -213,7 +210,9 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_valid_survey_success2(self, client):
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "question-0": "sq0000000001",
+            "question-1": "sq0000000003",
+            "question-2": "sq0000000002"
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -224,7 +223,8 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_valid_survey_failure1(self, client):
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "question-0": "sq0000000001",
+            "question-1": "sq0000000003"
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -235,7 +235,8 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_valid_survey_failure1(self, client):
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "question-0": "sq0000000001",
+            "question-1": "sq0000000003"
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -247,10 +248,12 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_invalid_survey1(self, client):
         form_data = {
             "name": "",
-            "questions": ["survey_question1", "survey_question3"]
+            "question-0": "sq0000000001",
+            "question-1": "sq0000000003"
         }
 
         res = client.post("/surveys/create", data=form_data)
+        self.assertEqual(res.status_code, 400)
         assert_create_failed_page(self, res)
 
     #No questions on the survey
@@ -261,6 +264,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
         }
 
         res = client.post("/surveys/create", data=form_data)
+        self.assertEqual(res.status_code, 400)
         assert_create_failed_page(self, res)
 
     #invalid question id
@@ -268,8 +272,54 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_survey_bad_qid(self, client):
         form_data = {
             "name": "some name",
-            "questions": ["survey_question1", "survey_questionIAMNOTREAL"]
+            "question-0": "sq0000000001",
+            "question-1": "sq000z00x001"
         }
 
         res = client.post("/surveys/create", data=form_data)
+        self.assertEqual(res.status_code, 400)
         assert_create_failed_page(self, res)
+
+class RetrieveResponsesTest(PliEntireDbTestCase):
+    @with_app_ctxt
+    def test_retrieve_response_data(self):
+
+        response_data = retrieve_response_data(objectId_str("survey000003"))
+        self.assertEqual(len(response_data["questions"]), 4)
+        self.assertEqual(len(response_data["questions"][0]["answers"].keys()), 4)
+
+        q4_ans4 = ex.survey_question4["answers"][3]["answer"]
+
+
+        self.assertEqual(response_data["questions"][3]["answers"][q4_ans4], 60) ##?
+        #self.assertEqual(response_data["questions"][0]["answers"][0][], "Within the past week")
+
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_get_survey_results_page1(self, client):
+        res = client.get("/surveys/{sid}/responses".format(sid=objectId_str("survey000003")))
+        # print res.data
+        assert_survey_results_page(self, res)
+
+    @with_login(user_editor["email_address"], user_editor["real_pass"])
+    def test_get_survey_results_page2(self, client):
+        res = client.get("/surveys/{sid}/responses".format(sid=objectId_str("survey000001")))
+
+        assert_survey_results_page(self, res)
+
+    #participant privilege (forbidden)
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_get_survey_results_page_forbidden(self, client):
+        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("survey000002")))
+
+        self.assertEqual(res.status_code, 404)
+        assert_not_survey_results_page(self, res)
+        assert_404_page(self, res)
+
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_get_survey_results_invalid(self, client):
+        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("surveyxxxx03")))
+
+        assert_not_survey_results_page(self, res)
+        self.assertEqual(res.status_code, 404)
+        assert_404_page(self, res)

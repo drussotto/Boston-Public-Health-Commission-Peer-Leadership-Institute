@@ -10,7 +10,8 @@ from .helpers import \
     init_help, \
     encode_uid, \
     decode_uid, \
-    uid_exists
+    uid_exists, \
+    objectId_str
 
 
 # Service utilities

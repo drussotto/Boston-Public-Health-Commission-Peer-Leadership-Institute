@@ -1,33 +1,51 @@
 from flask import current_app
+from bson import ObjectId
 from wtforms import Form, StringField, IntegerField, TextField, FieldList, SelectMultipleField, validators
 
 
-class CreateSurveyForm(Form):
-    name = TextField("Name", [validators.required()])
-    questions = SelectMultipleField("Questions", coerce=unicode)
+class CreateSurveyForm():
 
-    def populate_survey_questions(self, db):
+    def __init__(self, db):
+        self.db = db
+        self.name = None
+        self.questions = None
+
+    @staticmethod
+    def get_survey_questions(db):
         raw_data = db.survey_questions.find()
-        
-        self.questions.choices = [(str(q["_id"]), q["question"]) for q in raw_data]
-        return self.questions.choices
+
+        choices = [(str(q["_id"]), q["question"]) for q in raw_data]
+        return choices
+
+    def set_name(self, request):
+        self.name = request.form["name"]
+
+    def set_questions(self, request):
+        form_pairs = sorted(request.form.items(),
+                            cmp=lambda q1, q2: cmp(q1[0], q2[0]))
+
+        self.questions = [fp[1] for fp in form_pairs if fp[0] != "name"]
 
 
     def as_mongo_doc(self):
         return {
-            "name": self.name.data,
-            "qids": self.questions.data
+            "name": self.name,
+            "qids": self.questions
         }
 
     def validate(self):
-        if not Form.validate(self):
-            return False
+        if not self.name:
+            return False, "Survey must have a name"
 
-        if len(self.questions.data) < 1:
-            self.errors["questions"] = "Must provide at least one question for the survey"
-            return False
+        if self.questions is None or len(self.questions) == 0:
+            return False, "Must have at least one question in the survey"
 
-        return True
+        for qid in self.questions:
+            question = self.db.survey_questions.find_one({"_id": ObjectId(str(qid))})
+            if question is None:
+                return False, "Invalid question id"
+
+        return True, "We cool"
 
 class CreateQuestionForm(Form):
     question = TextField("Question", [validators.required()])

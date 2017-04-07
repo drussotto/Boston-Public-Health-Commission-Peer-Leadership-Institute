@@ -11,6 +11,7 @@ import mongomock
 import gridfs
 import pli
 import os
+import pprint
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
@@ -140,11 +141,11 @@ def get_staff_info():
     return pli.get_staff_info()
 # / STAFF
 
-# ABOUT 
+# ABOUT
 @application.route('/about', methods = [ "GET" ])
 def about():
     return render_template("about.html")
-# / ABOUT 
+# / ABOUT
 
 # ROLES
 @application.route('/edit-role', methods = [ "PUT" ])
@@ -211,6 +212,12 @@ def question(qid=1):
 def create_survey():
     return pli.create_survey()
 
+@application.route("/surveys/questions", methods=["GET"])
+@login_required
+@pli.editor_perm
+def get_survey_questions():
+    return pli.get_survey_questions()
+
 @application.route("/surveys/questions/create", methods =["POST", "GET"])
 @login_required
 @pli.editor_perm
@@ -232,6 +239,13 @@ def show_surveys():
 @application.route('/surveys/<string:sid>', methods=["GET", "POST"])
 def complete_survey(sid):
     return pli.complete_survey(sid)
+
+@application.route('/surveys/<string:sid>/responses', methods=["GET", "POST"])
+@login_required
+@pli.editor_perm
+def show_survey_results(sid):
+    return render_template("/surveys/survey_response.html",
+                            results=pli.retrieve_response_data(sid))
 # / SURVEYS
 
 @application.route('/page/<path:path>')

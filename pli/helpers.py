@@ -54,3 +54,7 @@ def decode_passwd_reset(tkn):
 # Does a user with the given id exist?
 def uid_exists(uid):
     return get_db().users.find({"_id":uid}).limit(1).count() == 1
+
+#Allows for prettier object ids, represented as a string
+def objectId_str(name):
+    return str(ObjectId(name))
