@@ -7,6 +7,12 @@
   if (next && next != "None") {
     $("#login-modal form").attr("action", "/login?next=" + next);
   }
-  $("#nav-login-btn").click();
+  $("#login-modal").modal({
+    show: true,
+    keyboard: false,
+    backdrop: "static",
+  }).on('hide.bs.modal', function () {
+    window.location = '/';
+  });
 </script>
 {% endblock %}

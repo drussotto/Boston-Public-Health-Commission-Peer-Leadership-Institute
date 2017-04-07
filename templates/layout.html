@@ -59,13 +59,20 @@
           {% set login_form = get_login_form() %}
           <form method=post action="/login">
             {% for field in login_form %}
+              {% if field.name == "password" %}
+                <a href="/init-pass-reset">Forgot password?</a>
+              {% endif %}
               <div class="form-group">
                 {{ field.label }}
-                {{ field(class="form-control", placeholder="Enter" + field.label.text) }}
+                {{ field(class="form-control", placeholder="Enter " + field.label.text) }}
               </div>
             {% endfor %}
-            <a href="/init-pass-reset">Forgot password?</a>
             <button type="submit" class="btn btn-success btn-block btn-lg" id="submit-login-btn">Login</button>
+            <p class="login-alert" id="login-loading-msg">Logging in...</p>
+            <div id="login-failed-alert" class="alert alert-danger login-alert">
+              Incorrect username or password.
+            </div>
+            <div id="login-invalid-alert" class="alert alert-danger login-alert"></div>
           </form>
         </div>
       </div>
@@ -193,10 +200,8 @@
 {% block scripts %}
   {{super()}}
   <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>
   <script>
-    $loginForm = $("#login-modal form");
-    $loginForm.attr("action", $loginForm.attr("action") + "?next=" + window.location);
-
     var comingSoonTemp = "";
     $(".coming-soon").hover(function() {
       comingSoonTemp = $(this).text();

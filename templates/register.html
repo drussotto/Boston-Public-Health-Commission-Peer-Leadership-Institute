@@ -1,18 +1,22 @@
 {% extends "layout.html" %}
+
+{% block styles %}
+{{ super() }}
+<style type="text/css">
+  #content-column {
+    max-width: 450px;
+  }
+
+  #h1 {
+    text-align: center;
+  }
+</style>
+{% endblock %}
+
 {% block page_content %}
 {% from "layout.html" import render_field %}
 <!-- Reg-Page -->
-<div class="container-fluid">
-  <h1>Register</h1>
-  <form method=post>
-    <dl>
-      {{ render_field(form.first_name) }}
-      {{ render_field(form.last_name) }}
-      {{ render_field(form.email) }}
-      {{ render_field(form.password) }}
-    </dl>
-    <p>
-      <input type="submit" value="Submit">
-  </form>
-</div>
+<h1>Register</h1>
+<form method=post>
+</form>
 {% endblock %}

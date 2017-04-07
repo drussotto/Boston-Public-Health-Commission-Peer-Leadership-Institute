@@ -18,6 +18,10 @@ html, body {
   margin-top: 2em;
 }
 
+.login-alert {
+  display: none;
+}
+
 #page-content {
   padding-top: 46px;
   min-height: 100%;

@@ -1,7 +1,7 @@
 from wtforms import Form, StringField, PasswordField, validators
 
 class LoginForm(Form):
-    email = StringField('Email', [validators.Length(min=6, max=35)])
+    email = StringField('Email', [validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
 
     # Returns this form as a login-tuple (email, password).
