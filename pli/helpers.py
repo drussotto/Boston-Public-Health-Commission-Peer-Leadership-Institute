@@ -21,7 +21,7 @@ def redir_query_next():
     else:
         return redirect(str(to))
 
-    
+
 # returns the encoded uid (using itsdangerous)
 # this token will be used for email validation (should be ascii armored, and URL safe)
 def encode_uid(uid):
@@ -36,7 +36,11 @@ def decode_uid(euid):
     except BadSignature:
         # We return None for a bad signature
         return None
-    
+
 # Does a user with the given id exist?
 def uid_exists(uid):
     return get_db().users.find({"_id":uid}).limit(1).count() == 1
+
+#Allows for prettier object ids, represented as a string
+def objectId_str(name):
+    return str(ObjectId(name))

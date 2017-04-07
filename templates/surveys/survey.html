@@ -4,15 +4,16 @@
 <div class="container-fluid">
   <h1>Complete Survey</h1>
   <h2>{{survey["name"]}}</h2>
-  <form method=post>
+  <form id="questions-container" method=post>
     {% for q in survey["questions"] %}
       {{q["question"]}}
-      <ul>
+      <ul id={{q["_id"]}}>
+        {% set outer_loop = loop %}
         {% for ans in q["answers"] %}
           <li>
-            <input type="radio" id={{"{q}-{ans_id}".format(q=q["_id"],ans_id=ans["ans_id"])}}
-              name={{q["_id"]}} value={{ans["ans_id"]}}>
-            <label for={{"{q}-ans{ans_id}".format(q=q["_id"],ans_id=ans["ans_id"])}}>
+            <input type="radio" id={{"question_{count}-ans{ans_id}".format(count=outer_loop.index,ans_id=ans["ans_id"])}}
+              name={{"question_{count}".format(count=outer_loop.index)}} value={{ans["ans_id"]}}>
+            <label for={{"question_{count}-ans{ans_id}".format(count=outer_loop.index,ans_id=ans["ans_id"])}}>
               {{ans["answer"]}}
             </label>
           </li>

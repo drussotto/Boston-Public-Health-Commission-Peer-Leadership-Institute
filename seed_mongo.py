@@ -5,6 +5,7 @@ from bson import ObjectId
 import gridfs
 import os
 from datetime import datetime
+from pli import objectId_str
 client = MongoClient()
 db = client.pli
 gridfs = gridfs.GridFS(db)
@@ -145,104 +146,105 @@ db.whatsnew.insert({"show": [wn_card2["_id"], wn_card1["_id"]],
                     "cards": [wn_card0["_id"], wn_card1["_id"], wn_card2["_id"]]})
 
 survey_question1 = {
-    "_id": "survey_question1",
+    "_id": ObjectId("sq0000000001"),
     "question": "When did you last...",
     "answers": [
         {
-        "ans_id": 1,
-        "answer": "within the past week"
+            "ans_id": 0,
+            "answer": "within the past week"
         },
         {
-        "ans_id": 2,
-        "answer": "within the past month"
+            "ans_id": 1,
+            "answer": "within the past month"
         },
         {
-            "ans_id": 3,
+            "ans_id": 2,
             "answer": "within the past year"
         },
         {
-            "ans_id": 4,
+            "ans_id": 3,
             "answer": "Never"
         }
     ]
 }
 
 survey_question2 = {
-    "_id": "survey_question2",
+    "_id": ObjectId("sq0000000002"),
     "question": "Which best describes...",
     "answers": [
         {
-            "ans_id": 1,
+            "ans_id": 0,
             "answer": "Asian/Pacific Islander"
         },
         {
-            "ans_id": 2,
+            "ans_id": 1,
             "answer": "African American"
         },
         {
-            "ans_id": 3,
+            "ans_id": 2,
             "answer": "White"
         },
         {
-            "ans_id": 4,
+            "ans_id": 3,
             "answer": "Latin American"
         }
     ]
 }
 
 survey_question3 = {
-    "_id": "survey_question3",
+    "_id": ObjectId("sq0000000003"),
     "question": "How much do you agree with...",
     "answers": [
         {
-            "ans_id": 1,
+            "ans_id": 0,
             "answer": "Strongly Agree"
         },
         {
-            "ans_id": 2,
+            "ans_id": 1,
             "answer": "Agree"
         },
         {
-            "ans_id": 3,
+            "ans_id": 2,
             "answer": "Disagree"
         },
         {
-            "ans_id": 4,
+            "ans_id": 3,
             "answer": "Strongly Disagree"
         }
     ]
 }
 
 survey_question4 = {
-    "_id": "survey_question4",
+    "_id": ObjectId("sq0000000004"),
     "question": "Which do you prefer?",
     "answers": [
         {
-            "ans_id": 1,
+            "ans_id": 0,
             "answer": "Strongly Prefer X"
         },
         {
-            "ans_id": 2,
+            "ans_id": 1,
             "answer": "Slightly Prefer X"
         },
         {
-            "ans_id": 3,
+            "ans_id": 2,
             "answer": "Slightly Prefer Y"
         },
         {
-            "ans_id": 4,
+            "ans_id": 3,
             "answer": "Strongly Prefer Y"
         }
     ]
 }
 
+
 survey_questions = [survey_question1, survey_question2, survey_question3, survey_question4]
 
 db.survey_questions.insert_many(survey_questions)
 
-survey1 = dict(_id=ObjectId("survey000001"), name="Survey One", qids=["survey_question1", "survey_question2"])
-survey2 = dict(_id=ObjectId("survey000002"), name="Survey Two", qids=["survey_question3","survey_question4"])
-survey3 = dict(_id=ObjectId("survey000003"), name="survey Three", qids=["survey_question1", "survey_question2", "survey_question3","survey_question4"])
+survey1 = dict(_id=ObjectId("survey000001"), name="Survey One", qids=["sq0000000001", "sq0000000002"])
+survey2 = dict(_id=ObjectId("survey000002"), name="Survey Two", qids=["sq0000000003","sq0000000004"])
+survey3 = dict(_id=ObjectId("survey000003"), name="Survey Three", qids=["sq0000000001", "sq0000000002", "sq0000000003","sq0000000004"])
 
 surveys = [survey1, survey2, survey3]
 
@@ -259,46 +261,74 @@ response2 = {
     "_id": "response2",
     "survey_id": "survey000003",
     "date_taken": datetime.utcnow(),
-    "ans_ids": [2, 1, 3, 4]
+    "ans_ids": [1, 0, 2, 3]
 }
 
 response_list = []
 
+# {
+#     question-1: {
+#         a0: 20 + 20
+#         a1: 20
+#         a2: 10
+#         a3: 10
+#     },
+#     question-2: {
+#         a0: 20
+#         a1: 10
+#         a2: 20 + 20
+#         a3: 10
+#     },
+#     question-3: {
+#         a0: 10
+#         a1: 20 + 20
+#         a2: 20
+#         a3: 10
+#     },
+#     question-4: {
+#         a0: 10
+#         a1: 10
+#         a2: 0
+#         a3: 20 + 20 + 20
+#     }
+#
+# }
+
 for i in range(20):
     response_list.append({
         "_id": ObjectId(),
-        "survey_id": "survey000003",
+        "survey_id": objectId_str("survey000003"),
         "date_taken": datetime.utcnow(),
-        "ans_ids": [2, 1, 3, 4]
+        "ans_ids": [1, 0, 2, 3]
     })
 
     response_list.append({
         "_id": ObjectId(),
-        "survey_id": "survey000003",
+        "survey_id": objectId_str("survey000003"),
         "date_taken": datetime.utcnow(),
-        "ans_ids": [1, 3, 2, 4]
+        "ans_ids": [0, 2, 1, 3]
     })
 
     response_list.append({
         "_id": ObjectId(),
-        "survey_id": "survey000003",
+        "survey_id": objectId_str("survey000003"),
         "date_taken": datetime.utcnow(),
-        "ans_ids": [1, 3, 2, 4]
+        "ans_ids": [0, 2, 1, 3]
     })
 
 for i in range(10):
     response_list.append({
         "_id": ObjectId(),
-        "survey_id": "survey000003",
+        "survey_id": objectId_str("survey000003"),
         "date_taken": datetime.utcnow(),
-        "ans_ids": [4, 2, 1, 1]
+        "ans_ids": [3, 1, 0, 0]
     })
 
     response_list.append({
         "_id": ObjectId(),
-        "survey_id": "survey000003",
+        "survey_id": objectId_str("survey000003"),
         "date_taken": datetime.utcnow(),
-        "ans_ids": [3, 4, 4, 2]
+        "ans_ids": [2, 3, 3, 1]
     })
 
 responses = [response1, response2]

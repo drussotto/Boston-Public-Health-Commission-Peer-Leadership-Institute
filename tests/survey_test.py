@@ -1,6 +1,7 @@
 from testlib import *
 from datetime import date
 from bson import ObjectId
+from pli import retrieve_response_data, objectId_str
 
 class RetrieveSurveyTest(PliEntireDbTestCase):
 
@@ -197,7 +198,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
 
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "questions": ["sq0000000001", "sq0000000003"]
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -208,7 +209,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_valid_survey_success2(self, client):
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "questions": ["sq0000000001", "sq0000000003"]
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -219,7 +220,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_valid_survey_failure1(self, client):
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "questions": ["sq0000000001", "sq0000000003"]
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -230,7 +231,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_valid_survey_failure1(self, client):
         form_data = {
             "name": "NewSurvey1",
-            "questions": ["survey_question1", "survey_question3"]
+            "questions": ["sq0000000001", "sq0000000003"]
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -242,7 +243,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_invalid_survey1(self, client):
         form_data = {
             "name": "",
-            "questions": ["survey_question1", "survey_question3"]
+            "questions": ["sq0000000001", "sq0000000003"]
         }
 
         res = client.post("/surveys/create", data=form_data)
@@ -263,38 +264,24 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
     def test_create_survey_bad_qid(self, client):
         form_data = {
             "name": "some name",
-            "questions": ["survey_question1", "survey_questionIAMNOTREAL"]
+            "questions": ["sq0000000001", "survey_questionIAMNOTREAL"]
         }
 
         res = client.post("/surveys/create", data=form_data)
         assert_create_failed_page(self, res)
 
 class RetrieveResponsesTest(PliEntireDbTestCase):
-    @with_app_ctx
+    @with_app_ctxt
     def test_retrieve_response_data(self):
-        """
-        {
-            "sid": "survey000003",
-            "questions": [
-                {
-                    "question": "When did you last...",
-                    "answers": [
-                        {
-                            "answer": "Within the past week",
-                            "answered": 25
-                        }
-                        ...
-                    ]
-                }
-                ...
-            ]
-        }
-        """
+
         response_data = retrieve_response_data(objectId_str("survey000003"))
         self.assertEqual(len(response_data["questions"]), 4)
-        self.assertEqual(len(response_data["questions"][0]["answers"]), 4)
-        self.assertEqual(response_data["questions"][0]["answers"])[0]["answered"], 100) ##?
-        self.assertEqual(response_data["questions"][0]["answers"])[0]["answer"], "Within the past week")
+        self.assertEqual(len(response_data["questions"][0]["answers"].keys()), 4)
+
+        q4_ans4 = ex["survey_question4"]["question"]["answers"][3]["answer"]
+
+        self.assertEqual(response_data["questions"][3]["answers"][q4_ans4], 60) ##?
+        #self.assertEqual(response_data["questions"][0]["answers"][0][], "Within the past week")
 
 
     @with_login(user1["email_address"], user1["real_pass"])
@@ -325,8 +312,4 @@ class RetrieveResponsesTest(PliEntireDbTestCase):
         assert_not_surveys_results_page(self, res)
         self.assertEqual(res.status_code, 404)
         assert_404_page(self, res)
-
-
-#Allows for prettier object ids, represented as a string
-def objectId_str(name):
-    return str(ObjectId(name))
+        

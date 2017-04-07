@@ -8,7 +8,7 @@ class CreateSurveyForm(Form):
 
     def populate_survey_questions(self, db):
         raw_data = db.survey_questions.find()
-        
+
         self.questions.choices = [(str(q["_id"]), q["question"]) for q in raw_data]
         return self.questions.choices
 

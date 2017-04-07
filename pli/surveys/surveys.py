@@ -1,7 +1,62 @@
 from flask import request, render_template, redirect, url_for, current_app, abort
+from bson import ObjectId
 from pli import get_db
 from create_survey_form import CreateSurveyForm, CreateQuestionForm
 from survey_response_form import SubmitResponseForm
+
+#Ultimately, return value should look something like this:
+"""
+{
+    "sid": "survey000003",
+    name: "survey 3",
+    "questions": [
+        {
+            "question": "When did you last...",
+            "answers": {
+                    "Within the past week": 25,
+                    "Within the past month": 10
+                    ...
+            }
+        }
+        ...
+    ]
+}
+"""
+
+#TODO: Refactor into less of a giant blob
+def retrieve_response_data(sid):
+    ret_val = {
+        "sid": sid,
+        "questions": []
+    }
+
+    db = get_db()
+
+    survey = db.surveys.find_one({"_id": ObjectId(sid)})
+    ret_val["name"] = survey["name"]
+    questions = [db.survey_questions.find_one({"_id": ObjectId(str(qid))}) for qid in survey["qids"]]
+
+    #[[0, 1, 2, 3], [2, 1, 0 2]...]
+    #[[0, 1], [3, 2]...]
+    responses = [r["ans_ids"] for r in db.responses.find({"survey_id": str(survey["_id"])} )]
+    ret_val["num_responses"] = len(responses)
+
+    for q_idx, question in enumerate(questions):
+        new_q = dict(question=question["question"], answers={})
+
+        for ans_idx, ans in enumerate(question["answers"]):
+            chosen_count = 0
+
+
+            for ans_arr in responses:
+                if ans_arr[q_idx] == ans_idx: #if they answered the question with this option
+                    chosen_count += 1
+
+            new_q["answers"][ans["answer"]] = chosen_count
+
+        ret_val["questions"].append(new_q)
+
+    return ret_val
 
 def create_survey():
     if request.method == "GET":

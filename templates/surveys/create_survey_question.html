@@ -4,22 +4,33 @@
 <div class="container-fluid">
   <h1>Create a Question</h1>
   <form method=post>
-    <dl>
-      {{ render_field(form.question) }}
-      {{ render_field(form.answers) }}
-    </dl>
-    <p><input type="submit" value="CreateQuestion">
+    <div>
+      <label for="question">Question</label>
+      <div>
+        <input id="question" name="question" type="text" value="">
+      </div>
+    </div>
+    <div>
+      <label for="answers">Answers</label>
+     <button class="btn" type="button" onclick="newAnswer()">Add Option</button>
+      <div>
+        <ul id="answers">
+          <li><input  name="answers-0" id="answers-0"></li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <input type="submit" class="btn btn-primary" value="Create Question!">
+    </div>
   </form>
 </div>
 <div>
-  <button name="New Answer" onclick="newQuestion()">
-    New Answer
-  </button>
+
 </div>
 {% block scripts %}
 {{super()}}
 <script>
-  function newQuestion() {
+  function newAnswer() {
     var entryId = $("#answers").children().length;
     var newTag = "<li><input name='answers-" + entryId + "' id='answers-" + entryId + "'></li>";
     $(newTag).appendTo("#answers");

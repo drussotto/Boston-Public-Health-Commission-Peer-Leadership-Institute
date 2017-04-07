@@ -11,6 +11,7 @@ import mongomock
 import gridfs
 import pli
 import os
+import pprint
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
@@ -190,6 +191,12 @@ def show_surveys():
 def complete_survey(sid):
     return pli.complete_survey(sid)
 
+@application.route('/surveys/<string:sid>/responses', methods=["GET", "POST"])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def show_survey_results(sid):
+    return render_template("/surveys/survey_response.html",
+                            results=pli.retrieve_response_data(sid))
 
 
 # override_url_for automatically adds a timestamp query parameter to

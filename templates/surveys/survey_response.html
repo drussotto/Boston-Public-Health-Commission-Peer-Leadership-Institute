@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>{{results["name"]}}</h1>
+  <div style="padding: 15px">
+    Total responses for this survey: {{results["num_responses"]}}
+  </div>
+  {% for question in results["questions"] %}
+    <div style="padding-bottom: 20px">
+      <strong>{{question["question"]}}</strong>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <tr>
+          <th>Answer</th>
+          <th>Times selected</th>
+        </tr>
+        {% for question, answered in question["answers"].iteritems() %}
+          <tr>
+            <td>{{question}}</td>
+            <td>{{answered}}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
