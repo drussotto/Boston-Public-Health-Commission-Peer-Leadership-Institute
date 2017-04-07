@@ -185,7 +185,7 @@ def init_reset_password():
 @application.route('/validate')
 def validate():
     if "user" not in request.args:
-        return render_template("bad_validation_token.html")
+        return render_template("register_validate.html", valid=False)
     else:
         return pli.validate_user(request.args.get('user'))
 # / ACCOUNT
@@ -295,7 +295,9 @@ application.add_template_global(file_url_for, "file_url_for")
 # This allows the jinja templates to get todays question directly.
 application.add_template_global(pli.get_todays_question, "get_todays_question")
 application.add_template_global(pli.get_todays_choices, "get_todays_choices")
+
 application.add_template_global(current_user, "current_user")
+application.add_template_global(pli.get_login_form, "get_login_form")
 
 # This allows the jinja templates to get todays whats new cards
 application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_cards")

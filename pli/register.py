@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, current_app
+from flask import request, render_template, redirect, url_for, current_app, jsonify
 from register_form import PliRegistrationForm
 from flask_mail import Message
 from service_util import get_db, get_mail
@@ -13,16 +13,16 @@ def register():
         form = PliRegistrationForm(request.form)
         if form.validate():
             # Make sure they don't exist, and perform registration.
-            (uid, confirmed) = user_exists(form.email.data)
+            (uid, confirmed) = user_exists(form.register_email.data)
             if uid and confirmed:
-                return redirect(url_for('page', path="already_register.html"))
+                return "user already exists", 400
             # the exists and not confirmed case falls through
             # we will send another email.
             if not uid:
                 uid = create_user(form.as_mongo_doc())
-            send_confirmation_email(form.email.data, uid)
-            return render_template("reg_email_sent.html")
-        return redirect(url_for('register'))
+            send_confirmation_email(form.register_email.data, uid)
+            return "", 200
+        return jsonify(form.errors), 400 # invalid form
 
 # Checks if a user with the given email already exists in the DB
 # returns a tuple whose contents indicate whether the user exists and is
@@ -84,10 +84,14 @@ def create_user(user_document):
 def validate_user(user_tok):
     toConfirmId = decode_uid(user_tok)
     if toConfirmId is None or not uid_exists(toConfirmId):
-        return render_template("bad_validation_token.html")
+        return render_template("register_validate.html", valid=False)
     else:
-        get_db().users.update({"_id":toConfirmId}, {"$set": { "confirmed" : "true" }})
-        return render_template("good_validation_token.html")
+        get_db().users.update({ "_id": toConfirmId }, { "$set": { "confirmed" : "true" } })
+        user = get_db().users.find_one({"_id" : toConfirmId})
+        return render_template("register_validate.html", 
+            valid=True, 
+            name=user["first_name"] + " " + user["last_name"],
+            email=user["email_address"])
 
 
 # returns true if the user with the given uid is "confirmed"

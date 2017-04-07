@@ -4,6 +4,24 @@ html, body {
   overflow-x: hidden;
 }
 
+#login-modal {
+  font-size: 1.1em;
+}
+
+#login-modal a {
+  font-size: 0.9em;
+  float: right;
+  margin-bottom: 1em;
+}
+
+#submit-login-btn {
+  margin-top: 2em;
+}
+
+.login-alert {
+  display: none;
+}
+
 #page-content {
   padding-top: 46px;
   min-height: 100%;
@@ -12,6 +30,7 @@ html, body {
 #content-column {
   margin: 0 auto;
   max-width: 1000px;
+  color: #00255e;
 }
 
 /* SiteMap Styles (sidebar & footer) */
