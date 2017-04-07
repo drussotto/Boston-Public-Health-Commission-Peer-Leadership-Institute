@@ -1,9 +1,10 @@
-from flask import current_app
+from flask import current_app, abort
 from flask_login import UserMixin
 from service_util import get_db
+import pli
 
 class PliUser(UserMixin):
-    are_roles_valid = False
+    are_role_valid = False
 
     def __init__(self, uid, is_auth):
         self.uid = uid
@@ -34,56 +35,36 @@ class PliUser(UserMixin):
     def get_me(self):
         return get_db().users.find_one({"_id" : self.uid})
 
-    def get_roles(self, refresh=False):
+    def get_role(self, refresh=False):
         if not self.is_authenticated:
-            return []
-        elif self.are_roles_valid and not refresh:
-            return self.role_list
+            return None
+        elif self.are_role_valid and not refresh:
+            return self.role
         else:
             # Roles is a space seperated list of roles on the user.
             me = self.get_me()
-            roles = me["roles"]
-            self.are_roles_valid = True
-            self.role_list = roles
-            return self.role_list
+            role = me["role"]
+            self.are_role_valid = True
+            self.role = role
+            return self.role
 
-    def invalidate_roles(self):
+    def invalidate_role(self):
         self.are_roles_valid = False
 
-    def update_roles_to(self, new_roles):
-        get_db().users.update_one({"_id" : self.uid},
-                                  {"$set" : {"roles" : new_roles}})
-    def transform_roles(self, f, p, role_name):
-        cur_roles = list(self.get_roles(refresh=True))
-        if not p(role_name, cur_roles):
-            return False
-        f(role_name, cur_roles)
-        self.update_roles_to(cur_roles)
-        # We want to force-load the roles again so they get they updated version.
-        self.invalidate_roles()
-        return True
-
-
-    def add_role(self, role_name):
-        return self.transform_roles(
-            # Add element
-            lambda e,l: l.append(e),
-            # only add new things
-            lambda e,l: e not in l,
-            role_name)
-
-    def remove_role(self, role_name):
-        return self.transform_roles(
-            # remove element
-            lambda e,l: l.remove(e),
-            # only remove existing things
-            lambda e,l: e in l,
-            role_name)
-
+    def update_role_to(self, name):
+        get_db().users.update_one({"_id": self.uid}, {"$set": {"role": name}})
+    
+    def edit_role(self, role_name):
+        if (role_name in pli.get_all_roles()):
+            self.update_role_to(role_name)
+            self.invalidate_role()
+            return "", 200
+        else:
+            return "", 400
 
     def __getattr__(self, name):
-        if name == "roles":
-            return self.get_roles()
+        if name == "role":
+            return self.get_role()
         else:
             raise AttributeError("No name %s in PliUser" % name)
 
@@ -91,4 +72,4 @@ def user_by_email(email):
     return get_db().users.find_one({"email_address": email})
 
 def list_all_users():
-    return get_db().users.find({}, {"password": -1})
+    return get_db().users.find({}, {"password": 0})

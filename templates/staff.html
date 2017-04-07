@@ -75,7 +75,7 @@
         <p>No staff information found.</p>
     </div>
     {% endfor%}
-    {% if current_user.is_authenticated and "editor" in current_user.roles %}
+    {% if has_editor() %}
     <div class="staff">
         <a href="/manage/staff">Manage Staff Information</a>
     </div>
