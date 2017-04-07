@@ -190,7 +190,7 @@ def init_reset_password():
 @application.route('/validate')
 def validate():
     if "user" not in request.args:
-        return render_template("bad_validation_token.html")
+        return render_template("register_validate.html", valid=False)
     else:
         return pli.validate_user(request.args.get('user'))
 # / ACCOUNT

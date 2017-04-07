@@ -10,12 +10,12 @@ class PliRegistrationForm(Form):
     ])
     register_email = StringField('Email Address', [
         validators.DataRequired("Email is required."), 
-        validators.Regexp('^[^@]+@[^@]+\.[^@]+$', 0, message="Invalid email."),
+        validators.Regexp('^[^@]+@[^@]+\.[^@]+$', 0, message="Invalid email.")
     ])
     register_password = PasswordField('Password', [
         validators.DataRequired("Password is required."),
-        validators.EqualTo("register_confirm_password", message="Password confirmation does not match."),
-        validators.Length(min=8, max=64, message="Password must be between %(min)s and %(max)s characters.")
+        validators.Length(min=8, max=64, message="Password must be between %(min)s and %(max)s characters."),
+        validators.EqualTo("register_confirm_password", message="Password confirmation does not match.")
     ])
     register_confirm_password = PasswordField('Confirm Password')
 

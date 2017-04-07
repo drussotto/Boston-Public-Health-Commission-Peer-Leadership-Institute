@@ -41,14 +41,16 @@
   <p>Your account has been created! An email should arrive within a few minutes with a link to confirm your account (check your spam folder!). If you don't get an email, use the button below to send another.</p>
 </div>
 <div id="registration-container">
-  <form method=post>
-    <p>Use this form to create an account. All fields are required. We'll send you a confirmation email afterwards to verify your new account.</p>
-    {% for field in form %}
-      <div class="form-group">
-        {{ field.label }}
-        {{ field(class="form-control", placeholder="Enter " + field.label.text) }}
-      </div>
-    {% endfor %}
+  <form method=post id="registration-form">
+    <div class="form-body">
+      <p>Use this form to create an account. All fields are required. We'll send you a confirmation email afterwards to verify your new account.</p>
+      {% for field in form %}
+        <div class="form-group">
+          {{ field.label }}
+          {{ field(class="form-control", placeholder="Enter " + field.label.text) }}
+        </div>
+      {% endfor %}
+    </div>
     <button type="submit" class="btn btn-lg btn-success btn-block" id="submit-registration-btn">Submit</button>
   </form>
   <div id="registration-loading">
@@ -65,7 +67,7 @@
   $("#registration-container form").submit(function(e) {
     e.preventDefault();
 
-    $("#registration-container form, #registration-errors, #submit-registration-btn").hide();
+    $("#registration-form, #registration-errors").hide();
     $("#registration-loading").show();
     $("#registration-errors").html("");
 
@@ -83,13 +85,12 @@
       statusCode: {
         200: function() {
           $("#registration-confirmation-sent").text($("#register_email").val());
-          $("#registration-container form, #submit-registration-btn, #registration-success").show();
-          console.log($("#registration-container form > *:not(button)").length);
-          $("#registration-container form > *:not(button)").hide();
+          $("#registration-form, #registration-success").show();
+          $("#registration-form .form-body").hide();
           $("#submit-registration-btn").text("Resend Email");
         },
         400: function(data) {
-          $("#registration-container form, #registration-errors, #submit-registration-btn").show();
+          $("#registration-form, #registration-errors").show();
           if (data.responseText == "user already exists") {
               $("#registration-errors").append("<p>A user already exists with that email.</p>");
           } else {

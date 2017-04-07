@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+{{ super() }}
+<style type="text/css">
+  #content-column {
+    text-align: center;
+  }
+
+  hr {
+    border-color: #FA3800;
+  }
+</style>
+{% endblock %}
+
+{% block page_content %}
+  {% if valid %}
+    <h1>Confirmed</h1>
+    <hr>
+    <p>Hi {{ name }}, your email ({{ email }}) has been confirmed and your account has been verified.</p>
+    <button type="button" class="btn btn-primary btn-lg" id="explore-btn">Explore the Site</button>
+  {% else %}
+    <h1>Invalid Token</h1>
+    <hr>
+    <p>Sorry, we were unable to activate your account due to an invalid token.</p>
+    <a href="/register">Re-register</a>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+  $("#explore-btn").click(function() {
+    $("#menu-toggle").click();
+  });
+</script>
+{% endblock %}

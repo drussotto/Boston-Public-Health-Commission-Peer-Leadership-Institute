@@ -82,7 +82,7 @@ If the link doesn't work go to this url: %s
 <br/>
 ''' % (link, link)
     get_mail().send(msg)
-    return "", 200 #render_template("redir_success.html")
+    return "", 200
 
 def init_reset_password():
     if request.method == "GET":
