@@ -55,13 +55,13 @@ def index():
 # WN CARDS
 @application.route('/add-wn-card', methods = [ "POST", "GET" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def add_wn_card():
     return pli.add_wn_card()
 
 @application.route('/set-wn-cards', methods = [ "POST", "GET" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def set_wn_cards():
     return pli.set_wn_cards()
 # / WN CARDS
@@ -69,7 +69,7 @@ def set_wn_cards():
 # UC
 @application.route('/uc/add', methods = [ "POST", "GET" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def add_user_content():
     return pli.add_blog_page()
 
@@ -111,31 +111,31 @@ def staff():
 
 @application.route('/manage/staff', methods = [ "GET" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def manage_staff():
     return pli.manage_staff()
 
 @application.route('/manage/staff/add', methods = [ "POST" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def add_staff():
     return pli.add_staff()
 
 @application.route('/manage/staff/edit', methods = [ "POST" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def edit_staff():
     return pli.edit_staff()
 
 @application.route('/manage/staff/order', methods = [ "POST" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def edit_staff_order():
     return pli.edit_staff_order()
 
 @application.route('/manage/staff/info', methods = [ "GET" ])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def get_staff_info():
     return pli.get_staff_info()
 # / STAFF
@@ -147,21 +147,15 @@ def about():
 # / ABOUT 
 
 # ROLES
-@application.route('/add-role', methods = [ "PUT" ])
+@application.route('/edit-role', methods = [ "PUT" ])
 @login_required
-@pli.ADMIN_PERM.require(http_exception=403)
-def add_role():
-    return pli.add_role()
-
-@application.route('/rm-role', methods = [ "DELETE" ])
-@login_required
-@pli.ADMIN_PERM.require(http_exception=403)
-def rm_role():
-    return pli.rm_role()
+@pli.admin_perm
+def edit_role():
+    return pli.edit_role()
 
 @application.route('/change-roles')
 @login_required
-@pli.ADMIN_PERM.require(http_exception=403)
+@pli.admin_perm
 def change_roles():
     return render_template("change_roles.html")
 # / ROLES
@@ -198,7 +192,7 @@ def validate():
 # RESOURCES
 @application.route('/peer-leader-resources')
 @login_required
-@pli.PEERLEADER_PERM.require(http_exception=403)
+@pli.peerleader_perm
 def peer_leader_resources():
     return render_template("peer_leader_resources.html")
 # / RESOURCES
@@ -213,13 +207,13 @@ def question(qid=1):
 # SURVEYS
 @application.route("/surveys/create", methods =["POST", "GET"])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def create_survey():
     return pli.create_survey()
 
 @application.route("/surveys/questions/create", methods =["POST", "GET"])
 @login_required
-@pli.EDITOR_PERM.require(http_exception=403)
+@pli.editor_perm
 def create_question():
     return pli.create_question()
 
@@ -299,7 +293,7 @@ application.add_template_global(pli.WhatsNewCard.list_wn_cards, "list_all_wn_car
 application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_cards")
 
 # This allows the jinja templates to get the lists of all roles.
-application.add_template_global(pli.all_roles, "get_all_roles")
+application.add_template_global(pli.get_all_roles, "get_all_roles")
 
 # This allows the jinja templates to get the list of all deletable user content pages.
 application.add_template_global(pli.get_deletable_pages, "get_deletable_pages")
@@ -311,6 +305,10 @@ application.add_template_global(pli.blog_page_count, "blog_page_count")
 application.add_template_global(pli.list_active_staff, "list_active_staff")
 application.add_template_global(pli.list_inactive_staff, "list_inactive_staff")
 application.add_template_global(pli.list_all_users, "list_all_users")
+application.add_template_global(pli.has_admin,"has_admin")
+application.add_template_global(pli.has_editor,"has_editor")
+application.add_template_global(pli.has_peerleader,"has_peerleader")
+application.add_template_global(pli.has_user,"has_user")
 
 
 

@@ -36,7 +36,7 @@ u1={
     "password": 'pbkdf2:sha1:1000$FmjdX5b2$c23a5cefc39cc669f3e193670c3c122041266f26',
     "first_name": "Bob",
     "last_name": "Smith",
-    "roles": ["admin", "editor"],
+    "role": "admin",
     "confirmed": True,
     "organization": {
         "name": "Boston Latin",
@@ -53,7 +53,7 @@ u2={
     "password": "pbkdf2:sha1:1000$HDOj8diN$62524eb1619b6ee167aeb1d6116ad6075a5bf3cb",
     "first_name": "Alice",
     "last_name": "Da Example",
-    "roles": ["participant"],
+    "role": "peer_leader",
     "confirmed": False,
     "organization": {
         "name": "Squashbusters",
@@ -69,7 +69,7 @@ u3={
 #    "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "Eve",
-    "roles":[],
+    "role":"user",
     "last_name": "Fakename",
     "confirmed": True,
     "organization": None
@@ -82,7 +82,7 @@ u4={
 #    "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "John",
-    "roles":["peer_leader"],
+    "role":"peer_leader",
     "last_name": "Leader",
     "confirmed": True,
     "organization": None
