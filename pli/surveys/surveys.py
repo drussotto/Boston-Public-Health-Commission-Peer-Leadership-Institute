@@ -1,5 +1,6 @@
 from flask import request, render_template, redirect, url_for, current_app, abort
 from bson import ObjectId
+import json
 from pli import get_db
 from create_survey_form import CreateSurveyForm, CreateQuestionForm
 from survey_response_form import SubmitResponseForm
@@ -59,19 +60,20 @@ def retrieve_response_data(sid):
     return ret_val
 
 def create_survey():
+    form = CreateSurveyForm(get_db())
     if request.method == "GET":
-        form = CreateSurveyForm()
-        form.populate_survey_questions(current_app.config["db"])
-        return render_template("surveys/create_survey.html", form=form)
+        return render_template("surveys/create_survey.html")
 
     else:
-        form = CreateSurveyForm(request.form)
-        form.populate_survey_questions(current_app.config["db"])
-        # short circuits if invalid form                                        ??
-        if form.validate() and store_survey(form, current_app.config["db"]) != -1:
-                return render_template("surveys/successfully_created.html", form=form)
+        form.set_name(request)
+        form.set_questions(request)
+        
+        validated, reason = form.validate()
+        if validated:
+            store_survey(form, get_db())
+            return render_template("surveys/successfully_created.html", form=form)
         else:
-            return render_template("surveys/error_page.html", form=form)
+            abort(400, reason)
 
 def create_question():
     if request.method == "GET":
@@ -105,8 +107,8 @@ def complete_survey(sid):
         else:
             abort(400, error_msg)
 
-
-
+def get_survey_questions():
+    return json.dumps((CreateSurveyForm.get_survey_questions(get_db())))
 
 def store_question(form, db):
     return db.survey_questions.insert_one(form.as_mongo_doc())

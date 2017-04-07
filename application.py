@@ -170,6 +170,12 @@ def bad_request(e): #to-do: Make more generic
 def create_survey():
     return pli.create_survey()
 
+@application.route("/surveys/questions", methods=["GET"])
+@login_required
+@pli.EDITOR_PERM.require(http_exception=403)
+def get_survey_questions():
+    return pli.get_survey_questions()
+
 @application.route("/surveys/questions/create", methods =["POST", "GET"])
 @login_required
 @pli.EDITOR_PERM.require(http_exception=403)
