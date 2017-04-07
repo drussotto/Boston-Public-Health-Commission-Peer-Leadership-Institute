@@ -29,7 +29,7 @@ def check_page(expected_content, *name):
 
 # These are some of the page tests we've already made.
 assert_index_page, assert_not_index_page = check_page(["Index-Page"],"index")
-assert_login_page, assert_not_login_page = check_page(["Email Address","Login","Password"], "login")
+assert_login_page, assert_not_login_page = check_page(["Email","Password"], "login")
 assert_res_page, assert_not_res_page = check_page(["Resources-Page"], "resources")
 assert_surv_page, assert_not_surv_page = check_page(["Survey-Page"], "surveys")
 assert_mail_sent_page, assert_not_mail_sent_page = check_page(["Reg-Email-Sent"], "mail-sent")

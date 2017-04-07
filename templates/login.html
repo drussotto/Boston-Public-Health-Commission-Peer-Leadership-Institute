@@ -6,7 +6,10 @@
   var next = "{{ next }}"
   if (next && next != "None") {
     $("#login-modal form").attr("action", "/login?next=" + next);
+  } else {
+    $("#login-modal form").attr("action", "/login?next=/");
   }
+  console.log(next);
   $("#login-modal").modal({
     show: true,
     keyboard: false,

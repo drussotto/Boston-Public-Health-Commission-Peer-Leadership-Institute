@@ -10,8 +10,9 @@ class TestPasswordReset(PliEntireDbTestCase):
 
     def change_pass_to(self, client, token, new_pass):
         res = client.post('/pass-reset', data={
-            "token": token,
-            "new_pass": new_pass
+            "reset_token": token,
+            "reset_new_password": new_pass,
+            "reset_confirm_password": new_pass
         }, follow_redirects=True)
         return res
 
@@ -22,7 +23,6 @@ class TestPasswordReset(PliEntireDbTestCase):
         res = self.change_pass_to(client, tkn, new_pass)
         if eq_chk:
             self.assertEqual(200, res.status_code)
-            assert_index_page(self, res)
         else:
             self.assertNotEqual(200, res.status_code)
 
@@ -42,7 +42,6 @@ class TestPasswordReset(PliEntireDbTestCase):
         # Login with new password
         res = self.try_relog(client, user1["email_address"], new_pass)
         self.assertEqual(200, res.status_code)
-        assert_index_page(self, res)
 
     @with_test_client
     def test_reset_not_logged_in(self, client):
@@ -55,7 +54,6 @@ class TestPasswordReset(PliEntireDbTestCase):
         # Login with new password
         res = self.try_relog(client, user1["email_address"], new_pass)
         self.assertEqual(200, res.status_code)
-        assert_index_page(self, res)
 
     @with_test_client
     def test_reset_old_token(self, client):
@@ -65,7 +63,6 @@ class TestPasswordReset(PliEntireDbTestCase):
 
         # The password shouldn't have changed, so we try and log in with the old password
         res = self.try_relog(client, user1["email_address"], user1["real_pass"])
-        assert_index_page(self, res)
         self.assertEqual(200, res.status_code)
 
     @with_test_client

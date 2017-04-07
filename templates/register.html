@@ -30,7 +30,6 @@
 {% endblock %}
 
 {% block page_content %}
-{% from "layout.html" import render_field %}
 <!-- Reg-Page -->
 <h1>Register</h1>
 <hr>
@@ -64,7 +63,7 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
-  $("#registration-container form").submit(function(e) {
+  $("#registration-form").submit(function(e) {
     e.preventDefault();
 
     $("#registration-form, #registration-errors").hide();

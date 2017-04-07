@@ -15,11 +15,13 @@
 
 {% block page_content %}
   {% if valid %}
+    <!-- Good-Token-Valid -->
     <h1>Confirmed</h1>
     <hr>
     <p>Hi {{ name }}, your email ({{ email }}) has been confirmed and your account has been verified.</p>
     <button type="button" class="btn btn-primary btn-lg" id="explore-btn">Explore the Site</button>
   {% else %}
+    <!-- Failed-Token-Valid -->
     <h1>Invalid Token</h1>
     <hr>
     <p>Sorry, we were unable to activate your account due to an invalid token.</p>
