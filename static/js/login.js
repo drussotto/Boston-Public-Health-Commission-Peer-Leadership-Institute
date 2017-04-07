@@ -25,7 +25,7 @@ $loginForm.submit(function(e) {
         },
         400: function(errors) {
           $invalidAlert = $("#login-invalid-alert").show();
-          var errors = $.parseJSON(errors.responseText);
+          errors = $.parseJSON(errors.responseText);
           if (errors["email"]) {
             $invalidAlert.append("<p>Email is required.</p>");
           }

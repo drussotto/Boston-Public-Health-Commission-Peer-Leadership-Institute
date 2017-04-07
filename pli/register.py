@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, url_for, current_app
+from flask import request, render_template, redirect, url_for, current_app, jsonify
 from register_form import PliRegistrationForm
 from flask_mail import Message
 from service_util import get_db, get_mail
@@ -13,16 +13,16 @@ def register():
         form = PliRegistrationForm(request.form)
         if form.validate():
             # Make sure they don't exist, and perform registration.
-            (uid, confirmed) = user_exists(form.email.data)
+            (uid, confirmed) = user_exists(form.register_email.data)
             if uid and confirmed:
-                return redirect(url_for('page', path="already_register.html"))
+                return "user already exists", 400 #redirect(url_for('page', path="already_register.html"))
             # the exists and not confirmed case falls through
             # we will send another email.
             if not uid:
                 uid = create_user(form.as_mongo_doc())
-            send_confirmation_email(form.email.data, uid)
-            return render_template("reg_email_sent.html")
-        return redirect(url_for('register'))
+            send_confirmation_email(form.register_email.data, uid)
+            return "", 200 #render_template("reg_email_sent.html")
+        return jsonify(form.errors), 400 # invalid form
 
 # Checks if a user with the given email already exists in the DB
 # returns a tuple whose contents indicate whether the user exists and is
