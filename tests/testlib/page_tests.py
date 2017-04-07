@@ -44,6 +44,7 @@ assert_create_survey_question_page, assert_not_create_survey_question_page = che
 assert_create_success_page, assert_create_failed_page = check_page(["Submission Successful"], "create post")
 assert_response_submitted_page, assert_response_failed_page = check_page(["Submission Successful"], "submit_response")
 assert_survey_page, assert_not_survey_page = check_page(["Complete Survey"], "get_survey")
+assert_survey_results_page, assert_not_survey_results_page = check_page(["Total responses for this survey"], "survey_results")
 assert_redirect_page, assert_not_redirect_page = check_page(["Redirecting"], "redirect")
 assert_logout_in_index, assert_not_logout_in_index = check_page(["Logout"], "index")
 assert_login_in_index, assert_not_login_in_index = check_page(["Login"], "index")

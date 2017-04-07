@@ -1,4 +1,5 @@
 from flask import current_app
+from bson import ObjectId
 from wtforms import Form, StringField, IntegerField, TextField, FieldList, SelectMultipleField, validators
 
 
@@ -38,6 +39,11 @@ class CreateSurveyForm():
 
         if self.questions is None or len(self.questions) == 0:
             return False, "Must have at least one question in the survey"
+
+        for qid in self.questions:
+            question = self.db.survey_questions.find_one({"_id": ObjectId(str(qid))})
+            if question is None:
+                return False, "Invalid question id"
 
         return True, "We cool"
 
