@@ -1,7 +1,8 @@
 <!-- Macros -->
 {% macro render_field(field) %}
-  <dt>{{ field.label }}
-  <dd>{{ field(**kwargs)|safe }}
+<div class=form-field>
+  <h4>{{ field.label }}</h4>
+  <div>{{ field(**kwargs)|safe }}</div>
   {% if field.errors %}
     <ul class=errors>
     {% for error in field.errors %}
@@ -10,6 +11,7 @@
     </ul>
   {% endif %}
   </dd>
+</div>
 {% endmacro %}
 
 {% macro sitemap_heading(text) -%}
@@ -58,7 +60,7 @@
       {{ sitemap_heading("Resources") }}
       {{ sitemap_link("What's New", "", "coming-soon") }}
       {{ sitemap_link("Student Resources", "resources") }}
-      {% if current_user.is_authenticated and "peer_leader" in current_user.get_roles() %}
+      {% if has_peerleader() %}
         {{ sitemap_link("Peer Leader Resources", "peer_leader_resources") }}
       {% endif %}
       {{ sitemap_heading("Workshops") }}
@@ -66,19 +68,19 @@
       {{ sitemap_link("Testimonials", "", "coming-soon") }}
       {{ sitemap_link("Request a Workshop", "", "", url_for('static', filename='docs/workshop_signup.pdf')) }}
 
-      {% if current_user.is_authenticated and ("admin" in current_user.roles or "editor" in current_user.roles) %}
+      {% if has_editor() %}
       	{{ sitemap_heading("Admin") }}
-        {% if "admin" in current_user.roles %}
+        {% if has_admin() %}
         	{{ sitemap_link("Manage Users","","", url_for('change_roles')) }} 
         {% endif %}
-        {% if "editor" in current_user.roles %}
+        {% if has_editor() %}
           {{ sitemap_link("Manage Surveys","","", url_for('show_surveys')) }} 
         {% endif %}
       {% endif %}
 
       {{ sitemap_heading("About") }}
       {{ sitemap_link("What We Do", "about") }}
-      {{ sitemap_link("Our Staff", "", "coming-soon") }}
+      {{ sitemap_link("Our Staff", "", "", "/staff") }}
       {{ sitemap_link("Contact Us", "contact") }}
       {{ sitemap_link("BPHC", "", "", "http://bphc.org") }}
 
@@ -146,7 +148,7 @@
           <ul class='sitemap-list'>
             {{ sitemap_heading("About") }}
             {{ sitemap_link("What We Do", "about") }}
-            {{ sitemap_link("Our Staff", "", "coming-soon") }}
+            {{ sitemap_link("Our Staff", "", "", "/staff") }}
             {{ sitemap_link("Contact Us", "contact") }}
             {{ sitemap_link("BPHC", "", "", "http://bphc.org") }}
           </ul>

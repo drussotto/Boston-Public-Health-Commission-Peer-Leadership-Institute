@@ -11,7 +11,7 @@
       $("#success-message-not-has").hide();
       $("#error-message-has").hide();
       $("#error-message-not-has").hide();
-     $.ajax('/add-role',
+     $.ajax('/edit-role',
          {
              "type": 'PUT',
              "data": {
@@ -27,32 +27,6 @@
                        $("#success-message-has").show();
                    }
                }
-         });
-  });
-  </script>
-
-  <script>
-  $("#remove-role-button").click(function(){
-      $("#error-message-has").hide();
-      $("#error-message-not-has").hide();
-      $("#success-message-has").hide();
-      $("#success-message-not-has").hide();
-     $.ajax('/rm-role',
-         {
-             "type": 'DELETE',
-             "data": {
-                 "user": $('#users').val(),
-                 "role": $('#roles').val()
-             },
-             "dataType": "json",
-             statusCode: {
-                 409: function () {
-                     $("#error-message-not-has").show();
-                 },
-                 200: function () {
-                     $("#success-message-not-has").show();
-                 },
-             }
          });
   });
   </script>
@@ -83,11 +57,14 @@
   </select>
   <h2>Users</h2>
   <select class="form-control" id="users">
-    {% for user in users %}
+  {% for user in list_all_users() %}
+    {% if user['_id'] != current_user.get_id() %}    
       <option value="{{ user['_id'] }}">
         {{ user['last_name'] }}, {{ user['first_name'] }}  &lt{{ user['email_address'] }}&gt
       </option>
-    {% endfor %}
+     {% endif %}
+  {% endfor %}
+
   </select>
   <br>
   <a id="add-role-button" class="btn btn-success btn-block">
@@ -95,10 +72,7 @@
   </a>
   <br>
   <a id="remove-role-button" class="btn btn-danger btn-block">
-    Remove Role
+  Remove Role
   </a>
-{% for user in users %}
-{{ user }}
-{% endfor %}
 </div>
 {% endblock %}

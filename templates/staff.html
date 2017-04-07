@@ -1,4 +1,83 @@
 {% extends "layout.html" %}
+{% block styles %}
+{{ super() }}
+<style>
+    #content-column {
+        color: #00255e;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .staff {
+        margin: 0 auto;
+        text-align: center;
+        max-width: 600px;
+        padding: 1em 10px;
+        border-top: 1px solid #FA3800;
+    }
+
+    .staff .staff-profile {
+        margin: 0 auto;
+        width: 200px;
+        height: 200px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-radius: 100%;
+    }
+
+    .staff p {
+        margin: 0;
+    }
+
+    .staff .staff-name {
+        font-size: 2em;
+    }
+
+    .staff .staff-title {
+        font-style: italic;
+        font-size: 1.2em;
+    }
+
+    .staff .staff-bio {
+        margin-top: 0.5em;
+        color: black;
+    }
+</style>
+{% endblock %}
 {% block page_content %}
-<h1>Staff goes here :)</h1>
+    <h1>Our Staff</h1>
+    {% for staff in list_active_staff() %}
+    <div class="staff">
+        {% set picture = staff['picture'] %}
+        {% set email = staff['email'] %}
+        {% set phone = staff['phone'] %}
+	    <div class="staff-profile"
+             style="background-image: url({{ ('/card-img/' + picture|string) if picture else url_for('static', filename='images/no_image_staff.jpg') }});"></div>
+    	<p class="staff-name">{{staff['name']}}</p>
+    	<p class="staff-title">{{staff['title']}}</p>
+        <p class="staff-contact">
+            {% if email %}
+                <a href="mailto:{{email}}">{{email}}</a>
+            {% endif %}
+        </p>
+        <p class="staff-contact">
+            {% if phone %}
+                {{phone}}
+            {% endif %}
+        </p>
+    	<p class="staff-bio">{{staff['bio']}}</p>
+    </div>
+    {% else %}
+    <div class="staff">
+        <p>No staff information found.</p>
+    </div>
+    {% endfor%}
+    {% if has_editor() %}
+    <div class="staff">
+        <a href="/manage/staff">Manage Staff Information</a>
+    </div>
+    {% endif %}
 {% endblock%}

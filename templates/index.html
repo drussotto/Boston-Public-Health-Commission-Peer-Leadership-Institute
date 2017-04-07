@@ -73,21 +73,24 @@
     <img class="section-bubbles" src="{{ url_for('static', filename='images/bubbles.png') }}">
     Question of the Day&nbsp;<span id="qotd-heading-date"></span>
   </h1>
-  <p>Test your trivia skills against other students with today's Question of the Day:</p>
+  <p>Test your trivia skills against other students with today's Question of the Day</p>
 
   <!-- Get today's question -->
   {% set cur_q = get_todays_question() %}
 
   <!-- Display today's question -->
-  <h4>{{ cur_q.question }}</h4>
-  <form action="/question/{{cur_q.question_number}}" method="post">
-    <ol id="qotd-options">
-      {% for letter, text in cur_q.choices.iteritems() %}
-      <input type="radio" name="answer" value="{{ letter }}"> {{ text }}<br>
-      {% endfor %}
-    </ol>
-    <input type="submit" value="Submit">
-  </form>
+  <div id="qotd">
+    <h4>{{ cur_q.question }}</h4>
+    <form action="/question/{{cur_q.question_number}}" method="post">
+      <ol id="qotd-options">
+        {% for letter, text in cur_q.choices.iteritems() %}
+        <input type="radio" name="answer" value="{{ letter }}"> {{ text }}<br>
+        {% endfor %}
+      </ol>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+    
 </div>
 <!-- /QOTD -->
 

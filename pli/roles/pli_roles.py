@@ -28,12 +28,11 @@ def on_identity_loaded(sender, identity):
             identity.provides.add(UserNeed(current_user.uid))
 
         # Add roles to the identity
-        if current_user.roles is not None:
-            for role in current_user.roles:
-                identity.provides.add(RoleNeed(role))
+        identity.provides.add(RoleNeed(current_user.role))
+                
 
 
-def add_role():
+def edit_role():
     info = RoleInfoForm(request.form)
     if not info.validate():
         return "", 400
@@ -44,25 +43,4 @@ def add_role():
             # User doesn't exist...
             return "", 400
 
-        ok = target.add_role(info.role.data)
-        if ok:
-            return "", 200
-        else:
-            return "", 409
-
-def rm_role():
-    info = RoleInfoForm(request.form)
-    if not info.validate():
-        return "", 400
-    else:
-        target = PliUser.get(info.user.data)
-
-        if target is None:
-            # User doesn't exist...
-            return "", 400
-
-        ok = target.remove_role(info.role.data)
-        if ok:
-            return "", 200
-        else:
-            return "", 409
+        return target.edit_role(info.role.data)

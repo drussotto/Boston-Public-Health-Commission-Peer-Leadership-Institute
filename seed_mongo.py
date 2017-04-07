@@ -27,6 +27,8 @@ db.survey_questions.remove()
 db.surveys.remove()
 db.responses.remove()
 db.usercontent.remove()
+db.staff.remove()
+db.reset_times.remove()
 
 u1={
     "_id": 12345,
@@ -35,7 +37,7 @@ u1={
     "password": 'pbkdf2:sha1:1000$FmjdX5b2$c23a5cefc39cc669f3e193670c3c122041266f26',
     "first_name": "Bob",
     "last_name": "Smith",
-    "roles": ["admin", "editor"],
+    "role": "admin",
     "confirmed": True,
     "organization": {
         "name": "Boston Latin",
@@ -52,7 +54,7 @@ u2={
     "password": "pbkdf2:sha1:1000$HDOj8diN$62524eb1619b6ee167aeb1d6116ad6075a5bf3cb",
     "first_name": "Alice",
     "last_name": "Da Example",
-    "roles": ["participant"],
+    "role": "peer_leader",
     "confirmed": False,
     "organization": {
         "name": "Squashbusters",
@@ -68,7 +70,7 @@ u3={
 #    "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "Eve",
-    "roles":[],
+    "role":"user",
     "last_name": "Fakename",
     "confirmed": True,
     "organization": None
@@ -81,7 +83,7 @@ u4={
 #    "real_pass": "passw0rd",
     "password": 'pbkdf2:sha1:1000$0nSmVzaw$d02fab4a49fa7db43e50b3345b18522eace34e55',
     "first_name": "John",
-    "roles":["peer_leader"],
+    "role":"peer_leader",
     "last_name": "Leader",
     "confirmed": True,
     "organization": None
@@ -382,5 +384,55 @@ db.usercontent.insert_many(
      blog_page_two,
      blog_page_three,
      blog_page_four])
+
+staff1 = {
+    "_id": ObjectId(),
+    "name": "Peggy Gibson",
+    "title": "The Boss",
+    "bio": "Peggy Gibson is a weird name but I got it from a random name generator, don't judge me. Peggy is the boss for this example and I need to write a bunch of words here because bios are supposed to be sorta long. Like a few sentences or so. Though it doesn't really matter I guess.",
+    "picture": gridfs.put(get_image_bytes("howard.png"), content_type="image/png"),
+    "email": "theboss@notarealemail.com",
+    "phone": "555-555-5555",
+    "active": True
+}
+
+staff2 = {
+    "_id": ObjectId(),
+    "name": "Josh Arnold",
+    "title": "Vice Boss",
+    "bio": "Josh Arnold is a weird name but I got it from a random name generator, don't judge me. Josh is the vice boss for this example, and has no picture.",
+    "picture": None,
+    "email": "viceboss@notarealemail.com",
+    "phone": "555-555-5555",
+    "active": True
+}
+
+staff3 = {
+    "_id": ObjectId(),
+    "name": "Erik Maxwell",
+    "title": "Regular Employee",
+    "bio": "Another random name. Erik's a regular employee so I decided not to give him a phone number, since he's not important enough to get a phone. He's also Peggy's twin.",
+    "picture": gridfs.put(get_image_bytes("howard.png"), content_type="image/png"),
+    "email": None,
+    "phone": None,
+    "active": True
+}
+
+staff_inactive = {
+    "_id": ObjectId(),
+    "name": "Victoria Lamb",
+    "title": "Regular Employee",
+    "bio": "This randomly named person isn't active, and you shouldn't be able to read this. Unless you've made it active, in which case you should. Or if you're in the back-end doing tests or something.",
+    "picture": gridfs.put(get_image_bytes("howard.png"), content_type="image/png"),
+    "email": None,
+    "phone": None,
+    "active": False
+}
+
+db.staff.insert_many(
+    [staff1,
+     staff2,
+     staff3,
+     staff_inactive])
 
 client.close()

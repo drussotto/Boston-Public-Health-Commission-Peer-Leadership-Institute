@@ -14,7 +14,8 @@ def init(db, gridfs):
         "picture": gridfs.put(get_image_bytes("howard.png"), content_type="image/png"),
         "email": "theboss@notarealemail.com",
         "phone": "555-555-5555",
-        "active": True
+        "active": True,
+        "order": 0
     }
 
     staff2 = {
@@ -25,7 +26,8 @@ def init(db, gridfs):
         "picture": None,
         "email": "viceboss@notarealemail.com",
         "phone": "555-555-5555",
-        "active": True
+        "active": True,
+        "order": 1
     }
 
     staff3 = {
@@ -36,7 +38,8 @@ def init(db, gridfs):
         "picture": gridfs.put(get_image_bytes("howard.png"), content_type="image/png"),
         "email": None,
         "phone": None,
-        "active": True
+        "active": True,
+        "order": 2
     }
 
     staff_inactive = {
@@ -47,7 +50,8 @@ def init(db, gridfs):
         "picture": gridfs.put(get_image_bytes("howard.png"), content_type="image/png"),
         "email": None,
         "phone": None,
-        "active": False
+        "active": False,
+        "order": 1
     }
 
     staff = [ staff1, staff2, staff3, staff_inactive ]
@@ -56,6 +60,8 @@ def init(db, gridfs):
            staff2=staff2,
            staff3=staff3,
            staff_inactive=staff_inactive)
+
+    db.staff.insert_many(staff)
 
 def add_mocked_staff(db):
     init(db, gridfs.MockGridFS(db))

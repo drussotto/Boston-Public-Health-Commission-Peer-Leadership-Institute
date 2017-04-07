@@ -1,6 +1,5 @@
-from flask import current_app, send_file, request
-from pli import get_db, get_obj_id
-from pli.service_util import get_gridfs, get_db
+from flask import current_app, send_file, request, abort
+from pli import get_db, get_obj_id, get_gridfs
 from pli.images import add_new_img, get_img_file
 class CarouselCard(object):
 
@@ -24,7 +23,10 @@ class CarouselCard(object):
     @classmethod
     def send_picture(cls, card_id):
         if not isinstance(card_id, get_obj_id()):
-            card_id = get_obj_id()(card_id)
+            try:
+                card_id = get_obj_id()(card_id)
+            except:
+                return abort(404)
         file_obj, content_type = get_img_file(card_id)
         # No picture => 404
         if file_obj is None:

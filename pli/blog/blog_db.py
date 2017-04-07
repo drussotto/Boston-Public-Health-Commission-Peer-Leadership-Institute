@@ -1,5 +1,5 @@
 from pli.service_util import get_db, get_obj_id
-from pli import PliUser, ADMIN_PERM
+from pli import PliUser, has_admin, has_permission
 from flask_login import current_user
 from flask import jsonify, request
 
@@ -52,7 +52,7 @@ def get_page_to_view(id):
 
     if current_user.is_authenticated and \
        (page["owner"] == current_user.get_id()) or \
-       ADMIN_PERM.can():
+       has_admin():
         # Owners can always see their own pages.
         # (and so can admins)
         return page
@@ -63,7 +63,7 @@ def get_page_to_view(id):
 
     for role in page["required_roles"]:
         if current_user.is_authenticated and \
-           role in current_user.roles:
+           has_permission(role):
             return page
 
     # We've reached here if they don't meet any of the role reqs
@@ -93,14 +93,14 @@ def get_page_to_delete(id):
         return page
 
     # Admins can always delete
-    if ADMIN_PERM.can():
+    if has_admin():
         return page
 
     # Otherwise NO
     return None
 
 def get_deletable_pages():
-    if ADMIN_PERM.can():
+    if has_admin():
         return get_db().usercontent.find({})
     else:
         return get_my_pages()
