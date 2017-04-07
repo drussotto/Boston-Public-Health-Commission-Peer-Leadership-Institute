@@ -7,16 +7,14 @@
     <div>
       <label for="question">Question</label>
       <div>
-        <input id="question" name="question" type="text" value="">
+        <input id="question" class="form-control" name="question" type="text" value="">
       </div>
     </div>
     <div>
       <label for="answers">Answers</label>
      <button class="btn" type="button" onclick="newAnswer()">Add Option</button>
-      <div>
-        <ul id="answers">
-          <li><input  name="answers-0" id="answers-0"></li>
-        </ul>
+      <div id="answers">
+          <div><input id="answers-0" class="form-control" name="answers-0"></div>
       </div>
     </div>
     <div>
@@ -32,7 +30,10 @@
 <script>
   function newAnswer() {
     var entryId = $("#answers").children().length;
-    var newTag = "<li><input name='answers-" + entryId + "' id='answers-" + entryId + "'></li>";
+
+    var name = "'answers-" + entryId + "'"
+
+    var newTag = "<div><input id=" + name + "class='form-control'" + "' name=" + name + "'></div>";
     $(newTag).appendTo("#answers");
   }
 </script>

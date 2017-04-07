@@ -3,26 +3,26 @@
 {% from "layout.html" import render_field %}
 <div class="container-fluid">
   <h1>Create a Survey</h1>
-  <form method=post>
-    <div>
-      <label for="name">Name</label>
+  <div class="form-group">
+    <form method=post>
       <div>
-        <input id="name" name="name" type="text" value="">
+        <label for="survey_name">Name</label>
+        <div>
+          <input id="survey_name" class="form-control" name="name" type="text" value="">
+        </div>
       </div>
-    </div>
-    <div>
-      <label for="answers">Questions</label>
-     <button class="btn" type="button" onclick="newQuestion()">Add Question</button>
       <div>
-        <ul id="questions">
-          <!-- questions go here -->
-        </ul>
+        <label for="answers">Questions</label>
+       <button class="btn" type="button" onclick="newQuestion()">Add Question</button>
+        <div id="s_questions">
+
+        </div>
       </div>
-    </div>
-    <div>
-      <input type="submit" class="btn btn-primary" value="Create Survey!">
-    </div>
-  </form>
+      <div>
+        <input type="submit" class="btn btn-primary" value="Create Survey!">
+      </div>
+    </form>
+  </div>
 </div>
 <div>
 
@@ -30,12 +30,12 @@
 {% block scripts %}
 {{super()}}
 <script>
-  function buildLi(insideList) {
-    return "<li>" + insideList + "</li>";
+  function buildDiv(insideDiv) {
+    return "<div>" + insideDiv + "</div>";
   }
 
   function buildSelect(name, optionsStr) {
-    var openSelect =  "<select " + "name=" + name + ">",
+    var openSelect =  "<select class='form-control' " + "name=" + name + ">",
         closeSelect = "</select>";
 
     return openSelect + optionsStr + closeSelect;
@@ -61,11 +61,12 @@
 
   function newQuestion() {
 
-    var newId = $("#questions").children().length;
+    var newId = $("#s_questions").children().length;
 
     $.ajax({url: "/surveys/questions"}).done(function(response){
-        var li = buildLi(buildSelect("question-" + newId, buildOptList(JSON.parse(response))));
-        $(li).appendTo("#questions");
+        var div = buildDiv(buildSelect("question-" + newId, 
+                                          buildOptList(JSON.parse(response))));
+        $(div).appendTo("#s_questions");
     });
 
   }

@@ -6,21 +6,21 @@
   <h2>{{survey["name"]}}</h2>
   <form id="questions-container" method=post>
     {% for q in survey["questions"] %}
-      {{q["question"]}}
-      <ul id={{q["_id"]}}>
+      <strong>{{q["question"]}}</strong>
+      <div id={{q["_id"]}}>
         {% set outer_loop = loop %}
         {% for ans in q["answers"] %}
-          <li>
-            <input type="radio" id={{"question_{count}-ans{ans_id}".format(count=outer_loop.index,ans_id=ans["ans_id"])}}
-              name={{"question_{count}".format(count=outer_loop.index)}} value={{ans["ans_id"]}}>
+          <div class="radio">
             <label for={{"question_{count}-ans{ans_id}".format(count=outer_loop.index,ans_id=ans["ans_id"])}}>
+              <input type="radio" id={{"question_{count}-ans{ans_id}".format(count=outer_loop.index,ans_id=ans["ans_id"])}}
+                name={{"question_{count}".format(count=outer_loop.index)}} value={{ans["ans_id"]}}>
               {{ans["answer"]}}
             </label>
-          </li>
+          </div>
         {% endfor %}
-      </ul>
+      </div>
     {% endfor %}
-    <input type="submit" value="Submit">
+    <input type="submit" class="btn btn-primary" value="Submit">
   </form>
 </div>
 {% endblock %}
