@@ -4,20 +4,20 @@
 <div class="container-fluid">
   <h1>Create a Question</h1>
   <form method=post>
-    <div>
+    <div class="form_elem">
       <label for="question">Question</label>
       <div>
         <input id="question" class="form-control" name="question" type="text" value="">
       </div>
     </div>
-    <div>
+    <div class="form_elem">
       <label for="answers">Answers</label>
-     <button class="btn" type="button" onclick="newAnswer()">Add Option</button>
+     <button class="btn add_btn" type="button" onclick="newAnswer()">Add Option</button>
       <div id="answers">
-          <div><input id="answers-0" class="form-control" name="answers-0"></div>
+          <div class="option_li"><input id="answers-0" class="form-control" name="answers-0"></div>
       </div>
     </div>
-    <div>
+    <div class="form_elem">
       <input type="submit" class="btn btn-primary" value="Create Question!">
     </div>
   </form>
@@ -25,6 +25,7 @@
 <div>
 
 </div>
+{% endblock %}
 {% block scripts %}
 {{super()}}
 <script>
@@ -33,9 +34,8 @@
 
     var name = "'answers-" + entryId + "'"
 
-    var newTag = "<div><input id=" + name + "class='form-control'" + "' name=" + name + "'></div>";
+    var newTag = "<div class='option_li'><input id=" + name + "class='form-control'" + "' name=" + name + "'></div>";
     $(newTag).appendTo("#answers");
   }
 </script>
-{% endblock %}
 {% endblock %}

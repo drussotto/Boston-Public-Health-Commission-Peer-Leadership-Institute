@@ -3,7 +3,7 @@
 {% from "layout.html" import render_field %}
 <div class="container-fluid">
   <h1>Surveys</h1>
-  <div class="list-group">
+  <div class="list-group surveys_cont">
     {% for survey_id,survey_name in surveys %}
         <a href={{"/surveys/{sid}".format(sid=survey_id)}} class="list-group-item">
           {{survey_name}}

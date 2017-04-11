@@ -38,6 +38,7 @@
   <link rel="stylesheet" href="{{url_for('static', filename='css/navbar.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/sidebar.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='css/footer.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/survey_pages.css')}}">
   <link rel="icon" href="{{url_for('static', filename='images/favicon.ico')}}">
 {% endblock %}
 <!-- /Styles -->
@@ -71,10 +72,10 @@
       {% if has_editor() %}
       	{{ sitemap_heading("Admin") }}
         {% if has_admin() %}
-        	{{ sitemap_link("Manage Users","","", url_for('change_roles')) }} 
+        	{{ sitemap_link("Manage Users","","", url_for('change_roles')) }}
         {% endif %}
         {% if has_editor() %}
-          {{ sitemap_link("Manage Surveys","","", url_for('show_surveys')) }} 
+          {{ sitemap_link("Manage Surveys","","", url_for('show_surveys')) }}
         {% endif %}
       {% endif %}
 
@@ -86,10 +87,10 @@
 
       {{ sitemap_heading("Account") }}
       {% if current_user.is_authenticated %}
-      {{ sitemap_link("Logout","","", url_for('logout')) }} 
+      {{ sitemap_link("Logout","","", url_for('logout')) }}
       {% else %}
-      {{ sitemap_link("Login","","", url_for('login')) }} 
-      {{ sitemap_link("Register","","", url_for('register')) }} 
+      {{ sitemap_link("Login","","", url_for('login')) }}
+      {{ sitemap_link("Register","","", url_for('register')) }}
       {% endif %}
 
     </ul>
@@ -179,4 +180,3 @@
   </script>
 {% endblock %}
 <!-- /Scripts -->
-
