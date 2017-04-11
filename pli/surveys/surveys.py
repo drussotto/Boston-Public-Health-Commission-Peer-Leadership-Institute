@@ -34,6 +34,8 @@ def retrieve_response_data(sid):
     db = get_db()
 
     survey = db.surveys.find_one({"_id": ObjectId(sid)})
+    if survey is None:
+        abort(404)
     ret_val["name"] = survey["name"]
     questions = [db.survey_questions.find_one({"_id": ObjectId(str(qid))}) for qid in survey["qids"]]
 
@@ -67,7 +69,7 @@ def create_survey():
     else:
         form.set_name(request)
         form.set_questions(request)
-        
+
         validated, reason = form.validate()
         if validated:
             store_survey(form, get_db())

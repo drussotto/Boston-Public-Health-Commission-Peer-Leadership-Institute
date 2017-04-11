@@ -95,12 +95,37 @@ survey_question4 = {
     ]
 }
 
-survey_questions = [survey_question1, survey_question2, survey_question3, survey_question4]
+survey_question5 = {
+    "_id": ObjectId("sq0000000005"),
+    "question": "Which do you prefer?",
+    "answers": [
+        {
+            "ans_id": 0,
+            "answer": "Strongly Prefer X"
+        },
+        {
+            "ans_id": 1,
+            "answer": "Slightly Prefer X"
+        },
+        {
+            "ans_id": 2,
+            "answer": "Slightly Prefer Y"
+        },
+        {
+            "ans_id": 3,
+            "answer": "Strongly Prefer Y"
+        }
+    ]
+}
+
+
+survey_questions = [survey_question1, survey_question2, survey_question3, survey_question4, survey_question5]
 
 ex.add(survey_question1=survey_question1,
         survey_question2=survey_question2,
         survey_question3=survey_question3,
-        survey_question4=survey_question4)
+        survey_question4=survey_question4,
+        survey_question5=survey_question5)
 
 survey1 = dict(_id=ObjectId("survey000001"), name="Survey One", qids=["sq0000000001", "sq0000000002"])
 survey2 = dict(_id=ObjectId("survey000002"), name="Survey Two", qids=["sq0000000003","sq0000000004"])

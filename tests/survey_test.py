@@ -1,7 +1,7 @@
 from testlib import *
 from datetime import date
 from bson import ObjectId
-from pli import retrieve_response_data, objectId_str
+from pli import retrieve_response_data, objectId_str, get_db
 
 class RetrieveSurveyTest(PliEntireDbTestCase):
 
@@ -291,8 +291,7 @@ class RetrieveResponsesTest(PliEntireDbTestCase):
         q4_ans4 = ex.survey_question4["answers"][3]["answer"]
 
 
-        self.assertEqual(response_data["questions"][3]["answers"][q4_ans4], 60) ##?
-        #self.assertEqual(response_data["questions"][0]["answers"][0][], "Within the past week")
+        self.assertEqual(response_data["questions"][3]["answers"][q4_ans4], 60)
 
 
     @with_login(user1["email_address"], user1["real_pass"])
@@ -310,16 +309,111 @@ class RetrieveResponsesTest(PliEntireDbTestCase):
     #participant privilege (forbidden)
     @with_login(user2["email_address"], user2["real_pass"])
     def test_get_survey_results_page_forbidden(self, client):
-        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("survey000002")))
+        res = client.get("/surveys/{sid}/responses".format(sid=objectId_str("survey000002")))
 
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 403)
         assert_not_survey_results_page(self, res)
-        assert_404_page(self, res)
+        assert_403_page(self, res)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_get_survey_results_invalid(self, client):
-        res = client.get("/surveys/{sid}/results".format(sid=objectId_str("surveyxxxx03")))
+        res = client.get("/surveys/{sid}/responses".format(sid=objectId_str("surveyxxxx03")))
 
         assert_not_survey_results_page(self, res)
         self.assertEqual(res.status_code, 404)
         assert_404_page(self, res)
+
+class DeleteSurveys(PliEntireDbTestCase):
+    #admin
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_delete_survey_succes1(self, client):
+        survey_count = get_db().surveys.count()
+        sid = objectId_str(ex.survey1["_id"])
+        path = "/surveys/{sid}".format(sid=sid)
+        res = client.delete(path)
+        self.assertEqual(get_db().surveys.count(), survey_count - 1)
+        assert_404_page(self, client.get(path))
+
+        #editor
+    @with_login(user_editor["email_address"], user_editor["real_pass"])
+    def test_delete_survey_success2(self, client):
+        survey_count = get_db().surveys.count()
+        sid = objectId_str(ex.survey2["_id"])
+        path = "/surveys/{sid}".format(sid=sid)
+
+        res = client.delete(path)
+        self.assertEqual(get_db().surveys.count(), survey_count - 1)
+        assert_404_page(self, client.get(path))
+
+    #participant (forbidden)
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_delete_survey_fail1(self, client):
+        survey_count = get_db().surveys.count()
+        sid = objectId_str(ex.survey2["_id"])
+        path = "/surveys/{sid}".format(sid=sid)
+
+        res = client.delete(path)
+        self.assertEqual(len(get_db().surveys.find()), survey_count)
+        assert_403_page(self, client.get(path))
+
+    #not logged in
+    @with_test_client
+    def test_delete_survey_fail2(self, client):
+        survey_count = get_db().surveys.count()
+        sid = objectId_str(ex.survey2["_id"])
+        path = "/surveys/{sid}".format(sid=sid)
+
+        res = client.delete(path)
+        self.assertEqual(survey_count, get_db().surveys.count())
+        assert_redirect_page(self, res)
+
+    #admin
+    @with_login(user1["email_address"], user1["real_pass"])
+    def test_delete_survey_question_success1(self, client):
+        question_count = get_db().survey_questions.count()
+        qid = objectId_str(ex.survey_question5["_id"])
+        path = "/surveys/questions/{qid}".format(qid=qid)
+        res = client.delete(path)
+        self.assertEqual(get_db().survey_questions.count(), question_count - 1)
+
+    #editor
+    @with_login(user_editor["email_address"], user_editor["real_pass"])
+    def test_delete_survey_question_succes2(self, client):
+        question_count = get_db().survey_questions.count()
+        qid = objectId_str(ex.survey_question5["_id"])
+        path = "/surveys/questions/{qid}".format(qid=qid)
+        res = client.delete(path)
+        self.assertEqual(get_db().survey_questions.count(), question_count - 1)
+        self.assertEqual(res.status_code, 400)
+
+    #On a survey
+    @with_login(user_editor["email_address"], user_editor["real_pass"])
+    def test_delete_survey_question_fail3(self, client):
+        question_count = get_db().survey_questions.count()
+        qid = objectId_str(ex.survey_question2["_id"])
+        path = "/surveys/questions/{qid}".format(qid=qid)
+
+        self.assertEqual(get_db().survey_questions.count(), question_count)
+        self.assertEqual(res.status_code, 400)
+
+    #participant (forbidden)
+    @with_login(user2["email_address"], user2["real_pass"])
+    def test_delete_survey_question_fail1(self, client):
+        question_count = get_db().survey_questions.count()
+        qid = objectId_str(ex.survey_question5["_id"])
+        path = "/surveys/questions/{qid}".format(qid=qid)
+
+        res = client.delete(path)
+        self.assertEqual(get_db().survey_questions.count(), question_count)
+        self.assertEqual(res.status_code, 403)
+
+    #not logged in
+    @with_test_client
+    def test_delete_survey_question_fail2(self, client):
+        question_count = get_db().survey_questions.count()
+        qid = objectId_str(ex.survey_question5["_id"])
+        path = "/surveys/questions/{qid}".format(qid=qid)
+
+        res = client.delete(path)
+        self.assertEqual(get_db().survey_questions.count(), question_count)
+        assert_redirect_page(self, res)
