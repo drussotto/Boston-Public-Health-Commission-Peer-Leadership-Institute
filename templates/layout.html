@@ -203,6 +203,14 @@
   <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>
   <script>
+
+    function autoRedirect(url, timeout) {
+      setTimeout(function() {
+        window.location.replace(url);
+      }, timeout);
+    }
+
+
     var comingSoonTemp = "";
     $(".coming-soon").hover(function() {
       comingSoonTemp = $(this).text();

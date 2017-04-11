@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+  {{super()}}
+  <style>
+    #content-column {
+      text-align: center;
+      max-width: 600px;
+    }
+    
+    hr {
+      border-color: #FA3800;
+    }
+  </style>
+{% endblock %} 
+
+{% block page_content %}
+  <h1>Not Authorized</h1>
+  <hr>
+  <p>Sorry, you're not authorized to view this page. You will be redirected automatically in a few seconds, or <a href="/">click here</a> to return to the homepage.</p>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+  autoRedirect("/", 5000);
+</script>
+{% endblock %}
