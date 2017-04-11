@@ -1,18 +1,109 @@
 {% extends "layout.html" %}
+
+{% block styles %}
+{{ super() }}
+<style type="text/css">
+  #content-column {
+    max-width: 450px;
+  }
+
+  #content-column > div {
+    padding: 0 15px;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  hr {
+    border-color: #FA3800;
+  }
+
+  #registration-loading, #registration-errors, #registration-success {
+    display: none;
+  }
+
+  #registration-loading {
+    text-align: center;
+  }
+</style>
+{% endblock %}
+
 {% block page_content %}
-{% from "layout.html" import render_field %}
 <!-- Reg-Page -->
-<div class="container-fluid">
-  <h1>Register</h1>
-  <form method=post>
-    <dl>
-      {{ render_field(form.first_name) }}
-      {{ render_field(form.last_name) }}
-      {{ render_field(form.email) }}
-      {{ render_field(form.password) }}
-    </dl>
-    <p>
-      <input type="submit" value="Submit">
-  </form>
+<h1>Register</h1>
+<hr>
+<div id="registration-success">
+  <div class="alert alert-success">
+    Verification email sent to <strong><span id="registration-confirmation-sent">your email</span></strong>.
+  </div>
+  <p>Your account has been created! An email should arrive within a few minutes with a link to confirm your account (check your spam folder!). If you don't get an email, use the button below to send another.</p>
 </div>
+<div id="registration-container">
+  <form method=post id="registration-form">
+    <div class="form-body">
+      <p>Use this form to create an account. All fields are required. We'll send you a confirmation email afterwards to verify your new account.</p>
+      {% for field in form %}
+        <div class="form-group">
+          {{ field.label }}
+          {{ field(class="form-control", placeholder="Enter " + field.label.text) }}
+        </div>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-lg btn-success btn-block" id="submit-registration-btn">Submit</button>
+  </form>
+  <div id="registration-loading">
+    <p>Submitting...</p>
+    <img src="{{ url_for('static', filename='images/loading.gif') }}" width="50" height="50">
+  </div>
+  <div id="registration-errors" class="alert alert-danger"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+  $("#registration-form").submit(function(e) {
+    e.preventDefault();
+
+    $("#registration-form, #registration-errors").hide();
+    $("#registration-loading").show();
+    $("#registration-errors").html("");
+
+    $.ajax({
+      url: "/register",
+      type: "POST",
+      dataType: "JSON",
+      data: { 
+        first_name: $("#first_name").val(),
+        last_name: $("#last_name").val(),
+        register_email: $("#register_email").val(),
+        register_password: $("#register_password").val(),
+        register_confirm_password: $("#register_confirm_password").val()
+      },
+      statusCode: {
+        200: function() {
+          $("#registration-confirmation-sent").text($("#register_email").val());
+          $("#registration-form, #registration-success").show();
+          $("#registration-form .form-body").hide();
+          $("#submit-registration-btn").text("Resend Email");
+        },
+        400: function(data) {
+          $("#registration-form, #registration-errors").show();
+          if (data.responseText == "user already exists") {
+              $("#registration-errors").append("<p>A user already exists with that email.</p>");
+          } else {
+            errors = $.parseJSON(data.responseText);
+            $.each(errors, function(key, msgs) {
+              $("#registration-errors").append("<p>" + msgs[0] + "</p>");
+            });
+          }
+        }
+      },
+      complete: function() {
+        $("#registration-loading").hide();
+      }
+    });
+  });
+</script>
 {% endblock %}

@@ -1,9 +1,11 @@
 from flask_mail import Message
 from pli import get_mail, user_by_email, get_db
-from flask import request, abort, current_app, redirect, render_template
+from flask import request, abort, current_app, redirect, render_template, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import passwd_reset_for, decode_passwd_reset
 from time import time
+from reset_password_form import ResetPasswordForm
+
 
 DEFAULT_RESET_TIMEOUT = 5
 def get_reset_timeout():
@@ -41,23 +43,24 @@ def _get_reset_password():
     if tkn is None:
         return abort(404)
     else:
-        return render_template("reset_password.html", token=tkn)
+        form = ResetPasswordForm()
+        return render_template("reset_password.html", form=form, token=tkn)
 
 def _post_reset_password():
-    tkn = request.form.get('token', None)
-    new_pass = request.form.get('new_pass', None)
-    if tkn is None or new_pass is None:
-        return abort(400)
-    user, time = decode_passwd_reset(tkn)
-    if is_time_valid(user, time):
-        use_time_for_user(user, time)
-        update_password_for(user, new_pass)
-        return redirect('/')
-    else:
-        return abort(400)
+    form = ResetPasswordForm(request.form)
+    if form.validate():
+        tkn = form.reset_token.data
+        new_pass = form.reset_new_password.data
+        user, time = decode_passwd_reset(tkn)
+        if is_time_valid(user, time):
+            use_time_for_user(user, time)
+            update_password_for(user, new_pass)
+            return "", 200
+        return "timed out", 400
+    return jsonify(form.errors), 400
 
 def _get_init_reset_password():
-    return render_template("init_reset_pass.html")
+    return render_template("reset_password_init.html")
 
 def _post_init_reset_password():
     email = request.form.get("email", None)
@@ -69,7 +72,7 @@ def _post_init_reset_password():
                   recipients=[email])
     usr = user_by_email(email)
     if usr is None:
-        return None
+        return abort(400)
 
     rst = passwd_reset_for(usr)
     link = "http://%s/pass-reset?token=%s" % (current_app.config["HOST"], rst)
@@ -82,7 +85,7 @@ If the link doesn't work go to this url: %s
 <br/>
 ''' % (link, link)
     get_mail().send(msg)
-    return render_template("redir_success.html")
+    return "", 200
 
 def init_reset_password():
     if request.method == "GET":

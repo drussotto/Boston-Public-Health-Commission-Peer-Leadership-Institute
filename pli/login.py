@@ -3,7 +3,7 @@ from flask_login import login_user, current_user, logout_user
 from roles import set_identity, remove_identity
 from pli_user import PliUser
 from login_form import LoginForm
-from flask import current_app
+from flask import current_app, jsonify
 from helpers import redir_query_next
 from passwords import check_hash
 
@@ -42,13 +42,13 @@ def logout():
 def login():
     if request.method == "GET":
         form = LoginForm()
-        return render_template("login.html", form=form)
+        return render_template("login.html", next=request.args.get("next"))
     if request.method == "POST":
         form = LoginForm(request.form)
         if form.validate():
             uid = validate_login(*form.as_args())
             if perform_login(uid):
-                return redir_query_next()
-        # TODO indicate the failure on the login page ...
-        return redirect(url_for('login'))
-    return abort(404)
+                return "", 200           # logged in, redirect to target page
+            return abort(403)            # logging in with a user that doesn't exist (login failed)
+        return jsonify(form.errors), 400 # form doesn't validate
+    return abort(404)                    # not GET or POST

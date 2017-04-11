@@ -34,29 +34,29 @@
     margin-top: 5px;
   }
 
-  .modal .field-label {
+  .staff-form-modal .field-label {
     margin: 0;
     font-size: 1.2em;
   }
 
-  .modal .modal-field {
+  .staff-form-modal .modal-field {
     width: 100%;
     margin-bottom: 1em;
   }
 
-  .modal button[type="submit"] {
+  .staff-form-modal button[type="submit"] {
     margin-top: 2em;
   }
 
-  .modal .modal-check {
+  .staff-form-modal .modal-check {
     font-size: 2em;
   }
 
-  .modal .checkbox {
+  .staff-form-modal .checkbox {
     margin-top: 0;
   }
 
-  .modal .image-preview {
+  .staff-form-modal .image-preview {
     margin: 0 auto;
     width: 100px;
     height: 100px;
@@ -79,7 +79,7 @@
   </script>
 
   {% macro create_staff_form_modal(modal_id, modal_title, button_text, form_type) -%}
-    <div class="modal fade" id="{{ modal_id }}" role="dialog">
+    <div class="modal fade staff-form-modal" id="{{ modal_id }}" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">

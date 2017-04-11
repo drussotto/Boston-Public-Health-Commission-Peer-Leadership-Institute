@@ -1,14 +1,21 @@
 {% extends "layout.html" %}
-{% block page_content %}
-{% from "layout.html" import render_field %}
-<div class="container-fluid">
-  <h1>Log In</h1>
-  <form method=post>
-    <dl>
-      {{ render_field(form.email) }}
-      {{ render_field(form.password) }}
-    </dl>
-    <p><input type="submit" value="Login">
-  </form>
-</div>
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+  var next = "{{ next }}"
+  if (next && next != "None") {
+    $("#login-modal form").attr("action", "/login?next=" + next);
+  } else {
+    $("#login-modal form").attr("action", "/login?next=/");
+  }
+  console.log(next);
+  $("#login-modal").modal({
+    show: true,
+    keyboard: false,
+    backdrop: "static",
+  }).on('hide.bs.modal', function () {
+    window.location = '/';
+  });
+</script>
 {% endblock %}

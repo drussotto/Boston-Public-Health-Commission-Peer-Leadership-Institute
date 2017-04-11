@@ -56,3 +56,5 @@ from .carousel_card import *
 from .login import validate_login, logout, login
 from .surveys import *
 from .images import *
+
+from login_form import get_login_form
