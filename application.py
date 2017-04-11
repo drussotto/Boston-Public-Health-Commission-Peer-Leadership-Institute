@@ -16,27 +16,32 @@ import os
 application = Flask(__name__)
 application.config.from_envvar('PLI_SETTINGS')
 
-# Don't use these directly.
-# See service_util.get_db ... etc. for how to get these...
-db = MongoClient().pli
-mail = Mail(application)
-principals = Principal(application)
-gridfs = gridfs.GridFS(db)
-Bootstrap(application)
 
 login_manager = LoginManager()
 login_manager.init_app(application)
 login_manager.login_view="login"
 
-application.url_map.strict_slashes = False
+# Function to prevent usage of these names directly
+# use the get_* functions in pli
+def init_services():
+    db = MongoClient().pli
+    mail = Mail(application)
+    principals = Principal(application)
+    gridfs_ = gridfs.GridFS(db)
+    Bootstrap(application)
 
-application.config["db"] = db
-application.config["mail"] = mail
-application.config["signer"] = URLSafeSerializer(application.config["SECRET_KEY"])
-application.config["principals"] = principals
-application.config["gridfs"] = gridfs
+    application.url_map.strict_slashes = False
 
-pli.init_help(application)
+    application.config["db"] = db
+    application.config["mail"] = mail
+    application.config["signer"] = URLSafeSerializer(application.config["SECRET_KEY"])
+    application.config["principals"] = principals
+    application.config["gridfs"] = gridfs_
+
+init_services()
+with application.app_context():
+    # Hook to give any additional setup required.
+    pli.pli_init()
 
 @login_manager.user_loader
 def load_pli_user(uid):

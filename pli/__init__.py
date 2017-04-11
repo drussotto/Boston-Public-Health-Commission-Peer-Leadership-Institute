@@ -1,4 +1,3 @@
-
 # User stuff
 from .pli_user import \
     PliUser, \
@@ -7,11 +6,11 @@ from .pli_user import \
 
 # Our compatability helper (need for testing with mongomock)
 from .helpers import \
-    init_help, \
     encode_uid, \
     decode_uid, \
     uid_exists, \
-    objectId_str
+    objectId_str, \
+    datetime_today
 
 
 # Service utilities
@@ -58,3 +57,11 @@ from .surveys import *
 from .images import *
 
 from login_form import get_login_form
+from .questions import *
+
+import flask
+import bson
+
+def pli_init():
+    flask.current_app.config["object_id"] = bson.ObjectId
+    flask.current_app.teardown_request(save_question_list)

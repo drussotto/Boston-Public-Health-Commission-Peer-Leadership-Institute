@@ -1,7 +1,6 @@
-from application import mail
 from urllib import quote_plus
 from testlib import *
-from pli import validate_login, encode_uid, decode_uid, is_confirmed_uid
+from pli import validate_login, encode_uid, decode_uid, is_confirmed_uid, get_mail
 from pli.register import send_confirmation_email
 
 def reg_form_from_user(d):
@@ -22,7 +21,7 @@ class RegistrationTest(PliEntireDbTestCase):
 
     @with_test_client
     def test_form_confirmed(self, client):
-        with mail.record_messages() as outbox:
+        with get_mail().record_messages() as outbox:
             r = client.post('/register',
                             data=reg_form_from_user(user1),
                             follow_redirects=True)
@@ -30,7 +29,7 @@ class RegistrationTest(PliEntireDbTestCase):
 
     @with_test_client
     def test_form_unconfirmed(self, client):
-        with mail.record_messages() as outbox:
+        with get_mail().record_messages() as outbox:
             r = client.post('/register',
                             data=reg_form_from_user(user2),
                             follow_redirects=True)
@@ -38,7 +37,7 @@ class RegistrationTest(PliEntireDbTestCase):
 
     @with_test_client
     def test_form_invalid(self, client):
-        with mail.record_messages() as outbox:
+        with get_mail().record_messages() as outbox:
             r = client.post('/register',
                             data={},
                             follow_redirects=True)
@@ -47,7 +46,7 @@ class RegistrationTest(PliEntireDbTestCase):
     @with_app_ctxt
     @with_test_client
     def test_new_user(self, client):
-        with mail.record_messages() as outbox:
+        with get_mail().record_messages() as outbox:
             r = client.post('/register',
                             data=dict(
                                 first_name="idontknow",
