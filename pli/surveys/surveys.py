@@ -90,6 +90,36 @@ def create_question():
         else:
             return render_template("surveys/error_page.html", form=form)
 
+def delete_survey(sid):
+    try:
+        removed_survey = get_db().surveys.remove({"_id": ObjectId(sid)})
+        if removed_survey is None:
+            abort(400, "Invalid survey id: {sid}".format(sid=sid))
+        else:
+            get_db().responses.remove({"survey_id": str(sid)})
+            return "Success!"
+    except Exception as e:
+        abort(400, str(e))
+
+def delete_survey_question(qid):
+    surveys = get_db().surveys.find()
+
+    for survey in surveys:
+        for question in survey["qids"]:
+            if qid == question:
+                abort(400,
+                "This question currently exists on a survey. Delete all surveys that reference this question to delete it")
+
+    try:
+        removed = get_db().survey_questions.remove({"_id": ObjectId(qid)})
+        if removed is None:
+            abort(400, "Invalid question id: {qid}".format(qid=qid))
+        else:
+            return "Success!"
+    except Exception as e:
+        abort(400, str(e))
+
+
 def complete_survey(sid):
     db = get_db()
     form = SubmitResponseForm(sid, db)
@@ -110,7 +140,24 @@ def complete_survey(sid):
             abort(400, error_msg)
 
 def get_survey_questions():
-    return json.dumps((CreateSurveyForm.get_survey_questions(get_db())))
+    if request.args.get("ajax") is not None:
+        if json.loads(request.args.get("ajax")):
+            return json.dumps((CreateSurveyForm.get_survey_questions(get_db())))
+        else:
+            abort(400, "What are you trying to do?")
+    else:
+        questions = [(q["_id"], q["question"]) for q in get_db().survey_questions.find()]
+        return render_template("/surveys/survey_question_list.html", questions=questions)
+
+def get_survey_question(qid):
+    question = get_db().survey_questions.find_one({"_id": ObjectId(qid)})
+
+    if question is None:
+        abort(404)
+    else:
+        return render_template("/surveys/survey_question.html", question=question)
+
+
 
 def store_question(form, db):
     return db.survey_questions.insert_one(form.as_mongo_doc())

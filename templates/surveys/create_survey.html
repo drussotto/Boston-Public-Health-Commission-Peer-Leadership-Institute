@@ -64,7 +64,7 @@
 
     var newId = $("#s_questions").children().length;
 
-    $.ajax({url: "/surveys/questions"}).done(function(response){
+    $.ajax({url: "/surveys/questions", data: {ajax: true}}).done(function(response){
         var div = buildDiv(buildSelect("question-" + newId,
                                           buildOptList(JSON.parse(response))));
         $(div).appendTo("#s_questions");

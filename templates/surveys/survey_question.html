@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>{{question["question"]}}</h1>
+  <button id="delete_question" class="btn btn-danger delete_btn" onclick="deleteQuestion()">
+    Delete this Question
+  </button>
+  <h3>Answers</h2>
+  <div class="list-group">
+    {% for ans in question["answers"] %}
+      <div class="list-group-item">{{ans["answer"]}}</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script>
+  function deleteQuestion() {
+    if (confirm("Clicking \"OK\" will delete this question permanently. " +
+                "Are you sure you want to delete this question?"))
+    {
+      $.ajax({url: window.location.href, method: "DELETE"}).done(function(response){
+          window.location.reload(true);
+      }).fail(function(response) {
+          console.error(response.responseText);
+          alert(response.responseText);
+      });
+    }
+  }
+</script>
+{% endblock %}

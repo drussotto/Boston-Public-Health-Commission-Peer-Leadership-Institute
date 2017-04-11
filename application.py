@@ -246,6 +246,26 @@ def complete_survey(sid):
 def show_survey_results(sid):
     return render_template("/surveys/survey_response.html",
                             results=pli.retrieve_response_data(sid))
+@application.route('/surveys/<string:sid>', methods=["DELETE"])
+@login_required
+@pli.editor_perm
+def delete_survey(sid):
+    return pli.delete_survey(sid)
+
+@application.route('/surveys/questions/<string:qid>', methods=["GET"])
+@login_required
+@pli.editor_perm
+def get_survey_question(qid):
+    return pli.get_survey_question(qid)
+
+
+
+@application.route('/surveys/questions/<string:qid>', methods=["DELETE"])
+@login_required
+@pli.editor_perm
+def delete_survey_question(qid):
+    return pli.delete_survey_question(qid)
+
 # / SURVEYS
 
 @application.route('/page/<path:path>')

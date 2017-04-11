@@ -330,19 +330,22 @@ class DeleteSurveys(PliEntireDbTestCase):
         survey_count = get_db().surveys.count()
         sid = objectId_str(ex.survey1["_id"])
         path = "/surveys/{sid}".format(sid=sid)
+
         res = client.delete(path)
         self.assertEqual(get_db().surveys.count(), survey_count - 1)
+        self.assertEqual(0, get_db().responses.find({"survey_id": sid}).count())
         assert_404_page(self, client.get(path))
 
         #editor
     @with_login(user_editor["email_address"], user_editor["real_pass"])
     def test_delete_survey_success2(self, client):
         survey_count = get_db().surveys.count()
-        sid = objectId_str(ex.survey2["_id"])
+        sid = objectId_str(ex.survey3["_id"])
         path = "/surveys/{sid}".format(sid=sid)
 
         res = client.delete(path)
         self.assertEqual(get_db().surveys.count(), survey_count - 1)
+        self.assertEqual(0, get_db().responses.find({"survey_id": sid}).count())
         assert_404_page(self, client.get(path))
 
     #participant (forbidden)
@@ -353,8 +356,9 @@ class DeleteSurveys(PliEntireDbTestCase):
         path = "/surveys/{sid}".format(sid=sid)
 
         res = client.delete(path)
-        self.assertEqual(len(get_db().surveys.find()), survey_count)
-        assert_403_page(self, client.get(path))
+        self.assertEqual(res.status_code, 403)
+        self.assertEqual(get_db().surveys.count(), survey_count)
+
 
     #not logged in
     @with_test_client
@@ -384,7 +388,6 @@ class DeleteSurveys(PliEntireDbTestCase):
         path = "/surveys/questions/{qid}".format(qid=qid)
         res = client.delete(path)
         self.assertEqual(get_db().survey_questions.count(), question_count - 1)
-        self.assertEqual(res.status_code, 400)
 
     #On a survey
     @with_login(user_editor["email_address"], user_editor["real_pass"])
@@ -392,6 +395,7 @@ class DeleteSurveys(PliEntireDbTestCase):
         question_count = get_db().survey_questions.count()
         qid = objectId_str(ex.survey_question2["_id"])
         path = "/surveys/questions/{qid}".format(qid=qid)
+        res = client.delete(path)
 
         self.assertEqual(get_db().survey_questions.count(), question_count)
         self.assertEqual(res.status_code, 400)

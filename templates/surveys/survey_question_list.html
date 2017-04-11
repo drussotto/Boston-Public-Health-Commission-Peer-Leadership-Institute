@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+<div class="container-fluid">
+  <h1>Survey Questions</h1>
+  <div class="list-group surveys_cont">
+    {% for qid,question in questions %}
+        <a href={{"/surveys/questions/{qid}".format(qid=qid)}} class="list-group-item">
+          {{question}}
+        </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
