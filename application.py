@@ -75,7 +75,7 @@ def set_wn_cards():
 # BLOG
 @application.route('/blog', methods = [ "GET" ])
 def get_blog_page():
-    return pli.get_blog_page()
+    return pli.get_blog()
 
 @application.route('/blog/show', methods = [ "GET" ])
 def show_blog_page():
@@ -336,6 +336,7 @@ application.add_template_global(pli.get_todays_choices, "get_todays_choices")
 
 application.add_template_global(current_user, "current_user")
 application.add_template_global(pli.get_login_form, "get_login_form")
+application.add_template_global(pli.PliUser.get, "get_user_by_uid")
 
 # This allows the jinja templates to get todays whats new cards
 application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_cards")

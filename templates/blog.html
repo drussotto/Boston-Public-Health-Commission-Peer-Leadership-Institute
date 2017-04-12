@@ -35,14 +35,16 @@
 
 </style>
 {% endblock %}
-{% block scripts %}
+<!-- {% block scripts %}
 {{ super() }}
   <script type="text/javascript" src="{{ url_for('static', filename='js/whats_new_posts.js') }}"></script>
-{% endblock %}
+{% endblock %} -->
 {% block page_content %}
-{% from "layout.html" import render_field %}
+    {% for post in posts %}
+    <a href="/blog/show?id={{post['_id']}}"><h1>{{ post['title']|safe }}</h1></a>
+    {% endfor %}
 
-<div class="container-fluid">
+<!-- <div class="container-fluid">
     <div id="post_container"></div>
     <div class="button-container">
 	{% for x in blog_page_count() %}
@@ -52,5 +54,5 @@
 	{% endif %}
 	{% endfor %}
     </div>
-</div>
+</div> -->
 {% endblock %}

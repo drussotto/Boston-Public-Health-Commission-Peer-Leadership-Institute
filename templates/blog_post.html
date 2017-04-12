@@ -1,12 +1,41 @@
 {% extends "layout.html" %}
-{% block head %}
-{{ super() }}
+
 {# we have to filter by safe so it will build the text into the webpage #}
-<title>{{ page["title"]|safe }}</title>
+{% block title %}{{ page["title"]|safe }}{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style type="text/css">
+  h1, #blog-body {
+    border-bottom: 1px solid #FA3800;
+  }
+
+  .author-info {
+    font-style: italic;
+  }
+
+  #blog-body {
+    padding: 1em;
+    color: initial;
+  }
+
+  #edit-link {
+    float: right;
+  }
+</style>
 {% endblock %}
+
 {% block page_content %}
-<div class="container-fluid">
-  <h1>{{ page["title"]|safe }}</h1>
-  {{ page["body"]|safe }}
+{% set owner = get_user_by_uid(page.owner).get_me() %}
+
+<h1>{{ page.title|safe }}</h1>
+<span class="author-info">Created by {{ owner.first_name }} {{ owner.last_name }}</span>
+{% if has_admin() or current_user.get_id() == page.owner %}
+  <a href="/blog/edit?id={{ page._id }}" class="btn btn-sm btn-primary" id="edit-link">Edit</a>
+{% endif %}
+<div id="blog-body">
+  {{ page.body|safe }}
 </div>
+
+
 {% endblock %}

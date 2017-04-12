@@ -41,7 +41,7 @@ class AddBlogPageTest(PliEntireDbTestCase):
         res = client.get("/blog/add")
         self.assertEqual(200, res.status_code)
         self.assertTrue("Title" in res.data)
-        self.assertTrue("Attach" in res.data)
+        self.assertTrue("Body" in res.data)
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_add_get_no_auth(self, client):

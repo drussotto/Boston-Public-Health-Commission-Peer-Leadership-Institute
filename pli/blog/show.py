@@ -1,6 +1,6 @@
 from flask import request, render_template, abort, redirect
 from flask_login import current_user
-from blog_db import get_page_to_view, get_page_with_id, check_blog_permissions
+from blog_db import get_page_with_id, check_blog_permissions, get_allowed_pages
 import urllib
 
 # Endpoint to get the page whose id is provided as a query argument under the name
@@ -22,3 +22,8 @@ def show_blog_page():
         return redirect("/login?"+urllib.urlencode({"next": "/blog/show?id="+str(page_id)}))
     else:
         return abort(403) # not authorized
+
+def get_blog():
+    all_posts = get_allowed_pages()
+    page = request.args.get("page", 1, int)
+    return render_template("blog.html", posts=all_posts, page=page)

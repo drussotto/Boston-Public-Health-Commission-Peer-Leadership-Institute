@@ -29,7 +29,6 @@ def get_page_with_id(id):
 # Returns the page object if the current user has permissions to view it
 # or None otherwise
 def check_blog_permissions(page):
-
     role = page["required_role"]
     
     # if no required role, anyone can access the page;
@@ -56,8 +55,7 @@ def get_page_title_body(id):
 # Safely collects the blog page with the given id, will return None
 # if the current_user is not allowed to view the page
 def get_page_to_view(id):
-
-    return None
+    return check_blog_permissions(get_page_with_id(id))
 
 def get_page_to_edit(id):
     # Editting a page has the same rules as deleting the page
@@ -99,6 +97,15 @@ def get_my_pages():
         return get_db().usercontent.find({"owner": current_user.get_id()})
     else:
         return []
+
+def get_allowed_pages():
+    all_pages = list(get_db().usercontent.find({}).sort("_id", -1))
+    allowed = []
+    for page in all_pages:
+        valid_page = check_blog_permissions(page)
+        if valid_page:
+            allowed.append(valid_page)
+    return allowed
 
         
 def get_segmented_page_list():

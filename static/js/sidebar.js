@@ -6,7 +6,7 @@ $("#menu-toggle").click(function(e) {
   $wrapper.toggleClass("toggled");
   if ($wrapper.hasClass("toggled")) {
     $("body").scrollTop(0);
-    originalPageContentHeight = $pageContent.height();
+    originalPageContentHeight = $("#page-content").height();
     $("#page-content, #content-column").height(window.innerHeight - navHeight);
     $("#sidebar-wrapper, #page-content-mask").height(window.innerHeight);
     $("#footer").hide();

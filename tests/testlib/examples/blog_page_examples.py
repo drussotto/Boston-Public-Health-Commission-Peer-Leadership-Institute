@@ -26,8 +26,8 @@ def build_and_assign_blogs(db, gridfs):
 
     blog_page_one = {
         "_id": ObjectId(),
-        "title":"<h1>Page one</h1>",
-        "body":"<h2>Body one</h2>",
+        "title":"Page one",
+        "body":"Body one",
         "required_role": pli.roles.all_roles._ADMIN_ROLE,
         "owner": user1["_id"],
         "attachments": [],
@@ -35,8 +35,8 @@ def build_and_assign_blogs(db, gridfs):
 
     blog_page_two = {
         "_id": ObjectId(),
-        "title": "<h1>Page two</h1>",
-        "body": "<h2>Body two</h2>",
+        "title": "Page two",
+        "body": "Body two",
         "required_role": pli.roles.all_roles._PEERLEADER_ROLE,
         "owner": user2["_id"],
         "attachments": [
@@ -46,8 +46,8 @@ def build_and_assign_blogs(db, gridfs):
 
     blog_page_three = {
         "_id": ObjectId(),
-        "title": "<h1>Page three</h1>",
-        "body": "<h2>Body three</h2>",
+        "title": "Page three",
+        "body": "Body three",
         "required_role": None,
         "owner": user3["_id"],
         "attachments": [
@@ -57,8 +57,8 @@ def build_and_assign_blogs(db, gridfs):
 
     blog_page_four = {
         "_id": ObjectId(),
-        "title": "<h1>For the public</h1>",
-        "body": "<h2>A post</h2>",
+        "title": "For the public",
+        "body": "A post",
         "required_role": None,
         "owner": user2["_id"],
         "attachments": []

@@ -12,25 +12,13 @@ def build_file_list(files):
     return output
 
 # Dict from page form.
-def dict_from_add_page_form(form):
+def dict_from_page_form(form):
     return {
         "title": form.title.data,
         "body" : form.body.data,
         # Owner is the current user (the one making it)
         "owner": current_user.get_id(),
         "required_role": form.required_role.data,
-        # Construct the attachments from the form attachments
-        "attachments": build_file_list(request.files)
-    }
-
-# Dict from page form.
-def dict_from_edit_page_form(form):
-    return {
-        "title": form.edit_title.data,
-        "body" : form.edit_body.data,
-        # Owner is the current user (the one making it)
-        "owner": current_user.get_id(),
-        "required_role": form.edit_required_role.data,
         # Construct the attachments from the form attachments
         "attachments": build_file_list(request.files)
     }

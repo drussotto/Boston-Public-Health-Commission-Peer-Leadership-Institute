@@ -11,12 +11,6 @@ $(function() {
 	      autoresize_overflow_padding: 50,
     });
 });
-
-function submitEditor() {
-    tinyMCE.triggerSave();
-    $('#editor-form').submit();
-}
-
 		
 function setupEdit(id) {		
     $.ajax("/uc/manage/getpage",		

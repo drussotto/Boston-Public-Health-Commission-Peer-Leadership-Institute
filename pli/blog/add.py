@@ -2,7 +2,7 @@ from flask import request, render_template, redirect
 from flask_login import current_user
 from new_blog_page_form import AddBlogPageForm
 from pli.images import add_new_img
-from util import build_file_list, dict_from_add_page_form
+from util import build_file_list, dict_from_page_form
 
 import mimetypes
 from blog_db import add_new_document
@@ -11,7 +11,7 @@ from blog_db import add_new_document
 def _post_add_page():
     form = AddBlogPageForm(request.form)
     if form.validate():
-        new_id = blog_db.add_new_document(dict_from_add_page_form(form))
+        new_id = add_new_document(dict_from_page_form(form))
         return redirect("/blog/show?id="+str(new_id))
     else:
         return render_template("blog_new_post.html", form=form)
