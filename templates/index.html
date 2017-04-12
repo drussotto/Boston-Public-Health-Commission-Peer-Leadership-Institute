@@ -68,7 +68,7 @@
 <!-- /Carousel -->
 
 <!-- QOTD -->
-<div class="section">
+{#<div class="section">
   <h1 class='section-heading'>
     <img class="section-bubbles" src="{{ url_for('static', filename='images/bubbles.png') }}">
     Question of the Day&nbsp;<span id="qotd-heading-date"></span>
@@ -83,15 +83,14 @@
     <h4>{{ cur_q['question'] }}</h4>
     <form action="/question/{{cur_q.question_number}}" method="post">
       <ol id="qotd-options">
-{#        {% for letter, text in cur_q["choices"].iteritems() %}
+        {% for letter, text in cur_q["choices"].iteritems() %}
         <input type="radio" name="answer" value="{{ letter }}"> {{ text }}<br>
-        {% endfor %}#}
+        {% endfor %}
       </ol>
       <input type="submit" value="Submit">
     </form>
   </div>
-    
-</div>
+</div>#}
 <!-- /QOTD -->
 
 <!-- Resources -->

@@ -5,7 +5,11 @@ from bson import ObjectId
 import gridfs
 import os
 from datetime import datetime
-from pli import objectId_str
+from pli import objectId_str, datetime_today
+from datetime import timedelta
+def day(dd):
+    return datetime_today() - timedelta(days=dd)
+
 client = MongoClient()
 db = client.pli
 gridfs = gridfs.GridFS(db)
@@ -29,7 +33,7 @@ db.responses.remove()
 db.usercontent.remove()
 db.staff.remove()
 db.reset_times.remove()
-
+db.qotd_meta.remove()
 u1={
     "_id": 12345,
     "email_address": "the.principal@gmail.com",
@@ -437,5 +441,64 @@ db.staff.insert_many(
      staff2,
      staff3,
      staff_inactive])
+
+
+
+_nq2_id = ObjectId()
+_nq1_id = ObjectId()
+
+nq1 = {
+    "_id": _nq1_id,
+    "question": "What does PLI stand for?",
+    "choices": {
+        "a": "Please Leave It",
+        "b": "Pop Lock I",
+        "c": "Peer Leadership Institute"
+    },
+    "answer": "c",
+    # Only nq we have right now, so it loops onto itself
+    "_id": _nq1_id,
+    "next": _nq2_id,
+    "prev": _nq2_id,
+    "history": {
+        "a": 5,
+        "b": 60,
+        "c": 0
+    },
+    "response_count": 65
+}
+
+
+nq2 = {
+    "question": "What is the answer?",
+    "choices": {
+        "a": "This one",
+        "b": "This one",
+        "c": "This one"
+    },
+    "answer": "c",
+    "_id": _nq2_id,
+    "next": _nq1_id,
+    "prev": _nq1_id,
+    "history": {
+        "a": 0,
+        "b": 0,
+        "c": 1
+    },
+    "response_count": 1
+}
+
+
+meta = {
+    "hd": _nq1_id,
+    "qlog": [
+        { "day": day(-1) , "qid": _nq2_id },
+        { "day": day(-2), "qid": _nq1_id },
+        { "day": day(-3), "qid": _nq2_id }
+    ]
+}
+
+db.questions.insert_many([nq1, nq2])
+db.qotd_meta.insert_one(meta)
 
 client.close()
