@@ -3,13 +3,7 @@ from bson import ObjectId
 from service_util import get_signer, get_db
 from itsdangerous import BadSignature
 from time import time
-
-# This function is necessary because we need to use the mongomock ObjectId
-# when in the tests, and the bson one when not. This setup is done before the
-# app runs, and the config is overwritten during testing with the mongomock
-# version.
-def init_help(app):
-    app.config["object_id"] = ObjectId
+from datetime import datetime, date, timedelta
 
 # Performs the redirect to the "next" field in the query arguments.
 def redir_query_next():
@@ -58,3 +52,8 @@ def uid_exists(uid):
 #Allows for prettier object ids, represented as a string
 def objectId_str(name):
     return str(ObjectId(name))
+
+# Returns today as a datetime.
+def datetime_today():
+    d = date.today()
+    return datetime(d.year, d.month, d.day)

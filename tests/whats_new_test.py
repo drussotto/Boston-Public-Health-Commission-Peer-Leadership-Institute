@@ -38,44 +38,24 @@ class WnAdd(PliEntireDbTestCase):
         with open(os.path.join(os.path.dirname(__file__), "res", "python-logo.png"), "r") as f:
             res = post_add_wn_card(client, f, "Caption", "Sub-caption", "http://test.example.com")
         self.assertEqual(200, res.status_code)
-
-    @with_login(user1["email_address"], user1["real_pass"])
-    def test_display_add_wn_card(self, client):
-        res = client.get('/manage/whats-new')
-        self.assertTrue("Add New" in res.data)
-
+        
     @with_login(user2["email_address"], user2["real_pass"])
     def test_display_add_wn_card_noauth(self, client):
-        res = client.get('/manage/whats-new')
+        res = client.get('/manage/slideshow')
         self.assertEqual(403, res.status_code)
 
     @with_test_client
     def test_display_add_wn_card_not_logged_in(self, client):
-        res = client.get('/manage/whats-new')
+        res = client.get('/manage/slideshow')
         self.assertEqual(302, res.status_code)
-
+        
     @with_login(user1["email_address"], user1["real_pass"])
     def test_invalid_add_wn_card_form(self, client):
-        res = client.post("/manage/whats-new", data={}, follow_redirects=True)
-        self.assertEqual(400, res.status_code)
+        res = client.post("/add-wn-card", data={})
+        self.assertEqual(302, res.status_code)
 
 
 class WnSet(PliEntireDbTestCase):
-
-    @with_login(user1["email_address"], user1["real_pass"])
-    def test_set_wn_card(self, client):
-        res = post_set_wn_cards(client, [ex.wn_card1, ex.wn_card0])
-        self.assertEqual(200, res.status_code)
-        third_party = current_app.test_client()
-
-        index = third_party.get('/')
-        assert_index_page(self, index)
-
-        for card in [ex.wn_card1, ex.wn_card0]:
-            self.assertTrue(card["caption"] in index.data)
-            self.assertTrue(card["sub_caption"] in index.data)
-            self.assertTrue(str(card["background"]) in index.data)
-            self.assertTrue(card["hyperlink"] in index.data)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_set_wn_card_empty(self, client):
@@ -98,19 +78,14 @@ class WnSet(PliEntireDbTestCase):
         res = post_set_wn_cards(client, [ex.wn_card0, ex.wn_card2, ex.wn_card1])
         self.assertEqual(200, res.status_code)
 
-    @with_login(user1["email_address"], user1["real_pass"])
-    def test_display_set_wn_card(self, client):
-        res = client.get('/set-wn-cards')
-        self.assertTrue("Set Cards" in res.data)
-
     @with_login(user2["email_address"], user2["real_pass"])
     def test_display_set_wn_card_noauth(self, client):
-        res = client.get('/set-wn-cards')
+        res = client.post('/set-wn-cards')
         self.assertEqual(403, res.status_code)
 
     @with_test_client
     def test_display_set_wn_card_not_logged_in(self, client):
-        res = client.get('/set-wn-cards')
+        res = client.post('/set-wn-cards')
         self.assertEqual(302, res.status_code)
 
     @with_login(user1["email_address"], user1["real_pass"])

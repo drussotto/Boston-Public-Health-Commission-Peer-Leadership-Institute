@@ -16,27 +16,32 @@ import os
 application = Flask(__name__)
 application.config.from_envvar('PLI_SETTINGS')
 
-# Don't use these directly.
-# See service_util.get_db ... etc. for how to get these...
-db = MongoClient().pli
-mail = Mail(application)
-principals = Principal(application)
-gridfs = gridfs.GridFS(db)
-Bootstrap(application)
 
 login_manager = LoginManager()
 login_manager.init_app(application)
 login_manager.login_view="login"
 
-application.url_map.strict_slashes = False
+# Function to prevent usage of these names directly
+# use the get_* functions in pli
+def init_services():
+    db = MongoClient().pli
+    mail = Mail(application)
+    principals = Principal(application)
+    gridfs_ = gridfs.GridFS(db)
+    Bootstrap(application)
 
-application.config["db"] = db
-application.config["mail"] = mail
-application.config["signer"] = URLSafeSerializer(application.config["SECRET_KEY"])
-application.config["principals"] = principals
-application.config["gridfs"] = gridfs
+    application.url_map.strict_slashes = False
 
-pli.init_help(application)
+    application.config["db"] = db
+    application.config["mail"] = mail
+    application.config["signer"] = URLSafeSerializer(application.config["SECRET_KEY"])
+    application.config["principals"] = principals
+    application.config["gridfs"] = gridfs_
+
+init_services()
+with application.app_context():
+    # Hook to give any additional setup required.
+    pli.pli_init()
 
 @login_manager.user_loader
 def load_pli_user(uid):
@@ -53,19 +58,19 @@ def index():
     return render_template("index.html")
 
 # WN CARDS
-@application.route('/add-wn-card', methods = [ "POST"])
+@application.route('/add-wn-card', methods = [ "POST" ])
 @login_required
 @pli.editor_perm
 def add_wn_card():
     return pli.add_wn_card()
 
-@application.route('/manage/slideshow', methods= ["GET"])
+@application.route('/manage/slideshow', methods= [ "GET" ])
 @login_required
 @pli.editor_perm
 def manage_whats_new():
     return pli.manage_whats_new()
 
-@application.route('/set-wn-cards', methods = [ "POST"])
+@application.route('/set-wn-cards', methods = [ "POST" ])
 @login_required
 @pli.editor_perm
 def set_wn_cards():
@@ -95,24 +100,6 @@ def remove_blog_page():
 @login_required
 def edit_my_page():
     return pli.edit_blog_page()
-
-# @application.route('/uc/manage/mine', methods = [ "GET", "POST" ])
-# @login_required
-# def view_my_pages():
-#     return pli.view_my_pages()
-
-# @application.route('/uc/manage/getpage', methods = [ "GET" ])
-# def get_page_json():
-#     return pli.get_page_dict()
-
-# @application.route('/uc/manage/pageofpages', methods = [ "GET" ])
-# def get_segmented_page_list():
-#     return pli.get_segmented_page_list()
-
-# @application.route('/uc/manage/count')
-# def blog_page_count():
-#     return pli.blog_page_count()
-# / BLOG
 
 # STAFF
 @application.route('/staff', methods = [ "GET" ])
@@ -207,11 +194,55 @@ def peer_leader_resources():
     return render_template("peer_leader_resources.html")
 # / RESOURCES
 
+    add_question, \
+    get_rel_date_question
+
 # QOTD
-@application.route('/question', methods = ["POST"])
-@application.route('/question/<int:qid>', methods=["POST"])
+@application.route('/questions/reorder', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def reorder_questions():
+    return pli.reorder_questions()
+
+@application.route('/questions/enable', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def enable_question():
+    return pli.enable_question()
+
+@application.route('/questions/disable/<string:qid>', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def disable_question(qid):
+    return pli.disable_question(qid)
+
+@application.route('/questions/add', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def add_question():
+    return pli.add_question()
+
+@application.route('/questions/get_by_day')
+@login_required
+@pli.editor_perm
+def get_rel_date_question():
+    return pli.get_rel_date_question()
+
+@application.route('/questions/answer')
+@login_required
+@pli.editor_perm
+def answer_question():
+    return pli.answer_question()
+
+
+
+
+
+
+
+@application.route('/question/<int:qid>', methods = ["POST"])
 def question(qid=1):
-    return pli.answer_question(qid)
+    return "Nope"
 # / QOTD
 
 # SURVEYS
@@ -331,9 +362,8 @@ def file_url_for(name, **kwargs):
 application.add_template_global(file_url_for, "file_url_for")
 
 # This allows the jinja templates to get todays question directly.
-application.add_template_global(pli.get_todays_question, "get_todays_question")
-application.add_template_global(pli.get_todays_choices, "get_todays_choices")
-
+application.add_template_global((lambda: pli.get_question_by_idx(0)), "get_todays_question")
+application.add_template_global((lambda: pli.get_question_by_idx(0)["choices"]), "get_todays_choices")
 application.add_template_global(current_user, "current_user")
 application.add_template_global(pli.get_login_form, "get_login_form")
 application.add_template_global(pli.PliUser.get, "get_user_by_uid")
