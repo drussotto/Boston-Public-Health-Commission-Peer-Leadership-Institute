@@ -42,22 +42,22 @@ class WnAdd(PliEntireDbTestCase):
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_display_add_wn_card(self, client):
-        res = client.get('/add-wn-card')
+        res = client.get('/manage/whats-new')
         self.assertTrue("Add New" in res.data)
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_display_add_wn_card_noauth(self, client):
-        res = client.get('/add-wn-card')
+        res = client.get('/manage/whats-new')
         self.assertEqual(403, res.status_code)
 
     @with_test_client
     def test_display_add_wn_card_not_logged_in(self, client):
-        res = client.get('/add-wn-card')
+        res = client.get('/manage/whats-new')
         self.assertEqual(302, res.status_code)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_invalid_add_wn_card_form(self, client):
-        res = client.post("/add-wn-card", data={}, follow_redirects=True)
+        res = client.post("/manage/whats-new", data={}, follow_redirects=True)
         self.assertEqual(400, res.status_code)
 
 

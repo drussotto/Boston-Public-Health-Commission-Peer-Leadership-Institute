@@ -54,13 +54,19 @@ def index():
     return render_template("index.html")
 
 # WN CARDS
-@application.route('/add-wn-card', methods = [ "POST", "GET" ])
+@application.route('/add-wn-card', methods = [ "POST"])
 @login_required
 @pli.editor_perm
 def add_wn_card():
     return pli.add_wn_card()
 
-@application.route('/set-wn-cards', methods = [ "POST", "GET" ])
+@application.route('/manage/slideshow', methods= ["GET"])
+@login_required
+@pli.editor_perm
+def manage_whats_new():
+    return pli.manage_whats_new()
+
+@application.route('/set-wn-cards', methods = [ "POST"])
 @login_required
 @pli.editor_perm
 def set_wn_cards():
@@ -200,7 +206,7 @@ def peer_leader_resources():
 
 # QOTD
 @application.route('/question', methods = ["POST"])
-@application.route('/question/<int:qid>', methods = ["POST"])
+@application.route('/question/<int:qid>', methods=["POST"])
 def question(qid=1):
     return pli.answer_question(qid)
 # / QOTD

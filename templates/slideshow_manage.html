@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% block styles %}
+  {{ super() }}
+  <style>
+  .slideshow-thumb {
+    padding: 3px;
+  }
+
+  .selected {
+    background-color: #00255e;
+  }
+
+  .thumbnail {
+    margin: 0;
+    height: 150px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+  }
+
+  .thumbnail-container {
+    padding: 7px;
+    border-radius: 10px;
+  }
+  </style>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+
+  <script>
+      $('.thumbnail-container').click(function() {
+          $(this).toggleClass('selected');
+      });
+      $('#error-message').hide();
+      $('#success-message').hide();
+
+      $('#set-cards').click(function () {
+          var ids = [];
+          $(".slideshow-thumb .selected").each(function() {
+              ids.push($(this).data("card-id"));
+          });
+
+          $.ajax('/set-wn-cards',
+              {
+                  'type': 'POST',
+                  'dataType': 'json',
+                  contentType: "application/json",
+                  "data": JSON.stringify({'ids': ids}),
+                  statusCode: {
+                      200: function() {
+                          $('#success-message').show();
+                      },
+                      400: function () {
+                          $('#error-message').show()
+                      }
+                  }
+              })
+      });
+  </script>
+{% endblock %}
+{% block page_content %}
+{% from "layout.html" import render_field %}
+  <div class="modal fade" id="slideshow-add-modal" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add Slide</h4>
+          </div>
+          <div class="modal-body">
+            <form method="post" enctype="multipart/form-data" action="/add-wn-card">
+              <dl>
+                {{ render_field(add_form.background) }}
+                {{ render_field(add_form.caption) }}
+                {{ render_field(add_form.sub_caption) }}
+                {{ render_field(add_form.hyperlink) }}
+              </dl>
+              <p><input class="btn btn-primary" type="submit" value="Add card">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  <br>
+
+  <div id="success-message" class="alert alert-success">
+    You have successfully updated/added a card.
+  </div>
+  <div id="error-message" class="alert alert-danger">
+    Unable to change slideshow.
+  </div>
+
+  <div class="container-fluid">
+    <h1 class="page-header">Manage Front Page Slideshow</h1>
+
+    <h3>Add Cards</h3>
+    <button class="btn btn-success" data-toggle="modal" data-target="#slideshow-add-modal">Add New Card</button>
+  </div>
+
+
+  <div class="container-fluid">
+    {% set wn_cards = list_all_wn_cards() %}
+    <div class="row">
+      <div class="col-lg-12">
+        <h3>Select Cards</h3>
+      </div>
+      {% for wn_card in wn_cards %}
+        <div class="col-lg-3 col-md-4 col-xs-6 thumb slideshow-thumb">
+          <div data-card-id="{{ wn_card.str_id }}" class="thumbnail-container {% if wn_card.str_id in active_card_ids %}selected{% endif %}">
+            <div class="thumbnail" style="background-image: url('/card-img/{{ wn_card.get_bg() }}')">
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <input id="set-cards" class="btn btn-primary" value="Set cards"/>
+  </div>
+
+
+{% endblock %}
