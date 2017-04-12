@@ -49,13 +49,11 @@ def decode_passwd_reset(tkn):
 def uid_exists(uid):
     return get_db().users.find({"_id":uid}).limit(1).count() == 1
 
-<<<<<<< HEAD
 #Allows for prettier object ids, represented as a string
 def objectId_str(name):
     return str(ObjectId(name))
-=======
+
 # Returns today as a datetime.
 def datetime_today():
     d = date.today()
     return datetime(d.year, d.month, d.day)
->>>>>>> 6b15a77... More work
