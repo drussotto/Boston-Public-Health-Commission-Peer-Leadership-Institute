@@ -212,11 +212,55 @@ def peer_leader_resources():
     return render_template("peer_leader_resources.html")
 # / RESOURCES
 
+    add_question, \
+    get_rel_date_question
+
 # QOTD
-@application.route('/question', methods = ["POST"])
-@application.route('/question/<int:qid>', methods=["POST"])
+@application.route('/questions/reorder', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def reorder_questions():
+    return pli.reorder_questions()
+
+@application.route('/questions/enable', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def enable_question():
+    return pli.enable_question()
+
+@application.route('/questions/disable/<string:qid>', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def disable_question(qid):
+    return pli.disable_question(qid)
+
+@application.route('/questions/add', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def add_question():
+    return pli.add_question()
+
+@application.route('/questions/get_by_day')
+@login_required
+@pli.editor_perm
+def get_rel_date_question():
+    return pli.get_rel_date_question()
+
+@application.route('/questions/answer')
+@login_required
+@pli.editor_perm
+def answer_question():
+    return pli.answer_question()
+
+
+
+
+
+
+
+@application.route('/question/<int:qid>', methods = ["POST"])
 def question(qid=1):
-    return pli.answer_question(qid)
+    return "Nope"
 # / QOTD
 
 # SURVEYS
@@ -336,9 +380,8 @@ def file_url_for(name, **kwargs):
 application.add_template_global(file_url_for, "file_url_for")
 
 # This allows the jinja templates to get todays question directly.
-application.add_template_global(pli.get_todays_question, "get_todays_question")
-application.add_template_global(pli.get_todays_choices, "get_todays_choices")
-
+application.add_template_global((lambda: pli.get_question_by_idx(0)), "get_todays_question")
+application.add_template_global((lambda: pli.get_question_by_idx(0)["choices"]), "get_todays_choices")
 application.add_template_global(current_user, "current_user")
 application.add_template_global(pli.get_login_form, "get_login_form")
 application.add_template_global(pli.PliUser.get, "get_user_by_uid")

@@ -80,12 +80,12 @@
 
   <!-- Display today's question -->
   <div id="qotd">
-    <h4>{{ cur_q.question }}</h4>
+    <h4>{{ cur_q['question'] }}</h4>
     <form action="/question/{{cur_q.question_number}}" method="post">
       <ol id="qotd-options">
-        {% for letter, text in cur_q.choices.iteritems() %}
+{#        {% for letter, text in cur_q["choices"].iteritems() %}
         <input type="radio" name="answer" value="{{ letter }}"> {{ text }}<br>
-        {% endfor %}
+        {% endfor %}#}
       </ol>
       <input type="submit" value="Submit">
     </form>

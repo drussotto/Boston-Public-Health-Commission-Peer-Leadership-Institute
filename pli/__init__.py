@@ -41,8 +41,7 @@ from .register import \
 from .qotd import \
     get_todays_question, \
     get_todays_choices, \
-    get_question, \
-    answer_question
+    get_question
 
 
 # Blog stuff

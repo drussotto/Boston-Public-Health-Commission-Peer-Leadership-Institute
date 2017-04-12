@@ -25,10 +25,12 @@ def _load_deque():
         dq.append(q)
     return dq
 
+def _set_dq(new_dq):
+    g.q_deque = new_dq
 
 def _dq():
     if not hasattr(g, 'q_deque'):
-        g.q_deque = _load_deque()
+        _set_dq(_load_deque())
     return g.q_deque
 
 def _write_deque(d):
@@ -55,16 +57,42 @@ def insert_question(question, idx=-1):
     dq = _dq()
     if abs(idx) > len(dq):
         raise IndexError("Out of deque size")
-    dq.rotate(-idx)
-    if not hasattr(dq, '_id'):
+    
+    if "_id" not in question:
         question["_id"] = get_obj_id()()
+    dq.rotate((-idx) if idx >= 0 else -(idx+1))
     question["prev"] = dq[-1]["_id"]
     question["next"] = dq[0]["_id"]
     dq[-1]["next"] = question["_id"]
     dq[0]["prev"] = question["_id"]
     dq.appendleft(question)
-    dq.rotate((idx-1) if idx < 0 else idx)
+    dq.rotate(idx)
 
+def disable_question_in_list(qid):
+    dq = _dq()
+    count = 0
+    found = False
+    for x in dq:
+        if x["_id"] == qid:
+            found = True
+            break
+        count+=1
+
+    if not found:
+        return False
+    
+    to_go = dq[count]
+    to_go_next = succ(to_go)
+    to_go_prev = pred(to_go)
+    to_go_next["prev"] = to_go_prev["_id"]
+    to_go_prev["next"] = to_go_next["_id"]
+    to_go["next"] = None
+    to_go["prev"] = None
+    del dq[count]
+    return True
+    
+    
+    
 def _find_nxt(q, itr):
     missing = (None, None)
     cur = next(itr, None)
@@ -130,10 +158,9 @@ def _log_question():
             }
         })
 
-def _get_question_log(low=0, high=10):
+def _get_question_log():
     meta = get_db().qotd_meta.find_one({})
-    l = len(meta["qlog"])
-    return meta["qlog"][low:min(l, high)]
+    return meta["qlog"]
 
 def next_day():
     _log_question()
@@ -141,9 +168,42 @@ def next_day():
     _write_deque(_dq())
 
 
-def get_q_by_day_diff(d_day):
+def get_question_by_day(d_day=0):
     if d_day < 0:
-        id = _get_question_log(d_day, d_day+1)[0][qid]
-        return get_question_by_id(id)
+        try:
+            id = _get_question_log()[abs(d_day)]["qid"]
+            return get_question_by_id(id)
+        except IndexError:
+            return None
     else:
-        return get_question_by_index(d_day)
+        return get_question_by_idx(d_day)
+
+def answer_question(qid, answer):
+    qid = get_obj_id(qid)
+    question = get_question_by_id(qid)
+    if question is None:
+        return False
+    if answer not in question["history"]:
+        return False
+
+    question["history"][answer]+=1
+    question["response_count"] +=1
+
+    get_db().questions.update_one({"_id": qid}, {"$set": question})
+    
+    return True
+
+# Should not be used to add or delete questions,
+# doesn't null out the next/prev links of questions that are removed
+def reorder_question_list(new_question_list):
+    new_questions = []
+    for x in new_question_list:
+        new_questions.append(get_question_by_id(x))
+    for idx, q in enumerate(new_questions):
+        next_idx = idx+1 if idx < len(new_questions)-1 else 0
+        nxt = new_questions[next_idx]
+        q["next"] = nxt["_id"]
+        nxt["prev"] = q["_id"]
+    _set_dq(deque(new_questions))
+    _write_deque(_dq())
+    

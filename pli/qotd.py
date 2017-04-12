@@ -18,7 +18,7 @@ def get_todays_choices():
 def get_question(qid):
     return get_db().questions.find_one({"question_number": qid})
 
-def answer_question(qid):
+def answer_question_(qid):
     form = QotdSubmissionForm(request.form)
     answering = get_question(qid)
     if form.validate() and \
