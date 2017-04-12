@@ -26,4 +26,6 @@ def show_blog_page():
 def get_blog():
     all_posts = get_allowed_pages()
     page = request.args.get("page", 1, int)
+    if page < 1:
+        return redirect("/blog")
     return render_template("blog.html", posts=all_posts, page=page)

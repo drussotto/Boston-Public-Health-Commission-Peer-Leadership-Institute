@@ -2,47 +2,78 @@
 {% block styles %}
 {{ super() }}
 <style>
- .page-button {
-     float: left;
-     background-color: orange;
-     margin: 5px;
-     
- }
- .blogbox {
-     border: 1px solid black;
- }
- .section-heading {
-     border-bottom: 1px solid #FA3800;
-     font-size: 2em;
-     margin-top: 0px;
-     position: relative;
- }
- .section-bubbles {
-     position: absolute;
-     top: 0;
-     left: -40px;
-     height: 30px;
- } 
- .section {
-     background-color: #8ABFDD;
-     padding: 20px 30px;
-     margin: 5px;
- }
- .button-container {
-     margin: 0 auto;
-     display: inline-block;
- }
+  #content-column {
+    padding: 0 15px;
+  }
+
+  .heading {
+    text-align: center;
+  }
+ 
+  #add-post-btn {
+    margin: 0 auto;
+  }
+
+  hr {
+    border-color: #FA3800;
+  }
+
+  h2 {
+    border-bottom: 1px solid #FA3800;
+  }
+
+  .author-info {
+    font-style: italic;
+  }
+
+  .blog-body {
+    padding: 1em;
+    color: initial;
+    max-height: 300px;
+    overflow: hidden;
+  }
+
+  .edit-link {
+    float: right;
+  }
+
+  .pager {
+    font-size: 1.2em;
+  }
 
 </style>
 {% endblock %}
-<!-- {% block scripts %}
-{{ super() }}
-  <script type="text/javascript" src="{{ url_for('static', filename='js/whats_new_posts.js') }}"></script>
-{% endblock %} -->
 {% block page_content %}
-    {% for post in posts %}
-    <a href="/blog/show?id={{post['_id']}}"><h1>{{ post['title']|safe }}</h1></a>
-    {% endfor %}
+  <div class="heading">
+    <h1>What's New</h1>
+    {% if has_editor() %}
+      <a href="/blog/add" class="btn btn-success" id="add-post-btn">Add Post</a>
+    {% endif %}
+    <hr>
+  </div>
+  {% for post in posts[((page - 1) * 10):(page * 10)] %}
+    {% set owner = get_user_by_uid(post.owner).get_me() %}
+    <a href="/blog/show?id={{post['_id']}}"><h2>{{ post['title']|safe }}</h2></a>
+    <span class="author-info">by {{ owner.first_name }} {{ owner.last_name }}</span>
+    {% if has_admin() or current_user.get_id() == post.owner %}
+      <a href="/blog/edit?id={{ post._id }}" class="btn btn-sm btn-primary edit-link">Edit</a>
+    {% endif %}
+    <div class="blog-body">
+      {{ post.body|safe }}
+    </div>
+
+  {% endfor %}
+  {% set post_count = posts|length %}
+  {% set last_page = ((post_count - 1) // 10) + 1 %}
+  <ul class="pager">
+    {% if page > 1 %}
+      <li class="previous"><a href="/blog?page={{ page - 1}}">Previous</a></li>
+    {% endif %}
+    {% if page < last_page %}
+    <li class="next"><a href="/blog?page={{ page + 1 }}">Next</a></li>
+    {% endif %}
+  </ul>
+
 
 <!-- <div class="container-fluid">
     <div id="post_container"></div>

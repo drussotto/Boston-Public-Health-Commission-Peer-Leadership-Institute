@@ -17,7 +17,6 @@ def _edit_blog_page_post():
         update_document(page["_id"], dict_from_page_form(form))
         return redirect("/blog/show?id="+page_id)
     else:
-        print(form.data)
         return render_template("blog_new_post.html", edit=page_id, form=form)
 
 # Returns the editting page for the page given
