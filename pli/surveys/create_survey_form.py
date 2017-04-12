@@ -60,10 +60,11 @@ class CreateQuestionForm(Form):
 
     def validate(self):
         if not Form.validate(self):
-            return False
+            return False, str(self.errors)
 
         if len(self.answers.data) < 1:
-            self.errors["answers"] = "Must provide at least one answer for the question"
-            return False
+            e = "Must provide at least one answer for the question"
+            self.errors["answers"] = e
+            return False,e
 
-        return True
+        return True, "Valid"

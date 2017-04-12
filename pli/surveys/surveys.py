@@ -72,8 +72,8 @@ def create_survey():
 
         validated, reason = form.validate()
         if validated:
-            store_survey(form, get_db())
-            return render_template("surveys/successfully_created.html", form=form)
+            sid = store_survey(form, get_db())
+            return redirect("/surveys/{sid}".format(sid=sid))
         else:
             abort(400, reason)
 
@@ -84,11 +84,12 @@ def create_question():
 
     else:
         form = CreateQuestionForm(request.form)
-        # short circuits if invalid form                                        ??
-        if form.validate() and store_question(form, current_app.config["db"]) != -1:
-                return render_template("surveys/successfully_created.html", form=form)
+        validated, reason = form.validate()
+        if validated:
+            qid = store_question(form, get_db())
+            return redirect("/surveys/questions/{qid}".format(qid=qid))
         else:
-            return render_template("surveys/error_page.html", form=form)
+            abort(400, reason)
 
 def delete_survey(sid):
     try:
@@ -97,7 +98,7 @@ def delete_survey(sid):
             abort(400, "Invalid survey id: {sid}".format(sid=sid))
         else:
             get_db().responses.remove({"survey_id": str(sid)})
-            return "Success!"
+            return "Success!" #response is ignored in case of success anyway
     except Exception as e:
         abort(400, str(e))
 
@@ -115,7 +116,7 @@ def delete_survey_question(qid):
         if removed is None:
             abort(400, "Invalid question id: {qid}".format(qid=qid))
         else:
-            return "Success!"
+            return "Success!" #response is ignored in case of success anyway
     except Exception as e:
         abort(400, str(e))
 
@@ -135,7 +136,7 @@ def complete_survey(sid):
 
         if validated:
             store_response(form, get_db())
-            return render_template("surveys/successfully_created.html", form=form)
+            return render_template("surveys/thank_you.html")
         else:
             abort(400, error_msg)
 
@@ -150,7 +151,10 @@ def get_survey_questions():
         return render_template("/surveys/survey_question_list.html", questions=questions)
 
 def get_survey_question(qid):
-    question = get_db().survey_questions.find_one({"_id": ObjectId(qid)})
+    try:
+        question = get_db().survey_questions.find_one({"_id": ObjectId(qid)})
+    except:
+        abort(404)
 
     if question is None:
         abort(404)
@@ -160,10 +164,10 @@ def get_survey_question(qid):
 
 
 def store_question(form, db):
-    return db.survey_questions.insert_one(form.as_mongo_doc())
+    return db.survey_questions.insert_one(form.as_mongo_doc()).inserted_id
 
 def store_survey(form, db):
-    return db.surveys.insert_one(form.as_mongo_doc())
+    return db.surveys.insert_one(form.as_mongo_doc()).inserted_id
 
 def store_response(form, db):
-    return db.responses.insert_one(form.as_mongo_doc())
+    return db.responses.insert_one(form.as_mongo_doc()).inserted_id

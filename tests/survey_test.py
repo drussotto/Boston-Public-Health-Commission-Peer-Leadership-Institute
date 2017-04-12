@@ -147,7 +147,7 @@ class CreateQuestionTest(PliUsersTestCase):
         }
 
         res = client.post("/surveys/questions/create", data=form_data)
-        assert_create_success_page(self, res)
+        self.assertEqual(302, res.status_code)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_create_question_fail_1(self, client):
@@ -203,7 +203,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
         }
 
         res = client.post("/surveys/create", data=form_data)
-        assert_create_success_page(self, res)
+        self.assertEqual(302, res.status_code)
 
     #editor privilege
     @with_login(user_editor["email_address"], user_editor["real_pass"])
@@ -216,7 +216,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
         }
 
         res = client.post("/surveys/create", data=form_data)
-        assert_create_success_page(self, res)
+        self.assertEqual(302, res.status_code)
 
     #participant privilege (forbidden)
     @with_login(user2["email_address"], user2["real_pass"])
@@ -232,7 +232,7 @@ class CreateSurveyTest(PliSurveyQuestionsTestCase):
         self.assertEqual(403, res.status_code)
 
     @with_test_client
-    def test_create_valid_survey_failure1(self, client):
+    def test_create_valid_survey_failure2(self, client):
         form_data = {
             "name": "NewSurvey1",
             "question-0": "sq0000000001",

@@ -280,9 +280,11 @@ def page_not_found(e):
     return page("404.html"), 404
 
 @application.errorhandler(400)
-def bad_request(e): #to-do: Make more generic
-    return e.description, 400
-    #return render_template("surveys/error_page.html", error=e.description), 400
+def bad_request(e):
+    if request.form:
+        return render_template("surveys/error_page.html", error=e.description), 400
+    else:
+        return e.description, 400
 
 # override_url_for automatically adds a timestamp query parameter to
 # static files (e.g. css) to avoid browser caching issues
