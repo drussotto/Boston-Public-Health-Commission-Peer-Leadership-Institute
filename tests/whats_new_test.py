@@ -52,7 +52,7 @@ class WnAdd(PliEntireDbTestCase):
     @with_login(user1["email_address"], user1["real_pass"])
     def test_invalid_add_wn_card_form(self, client):
         res = client.post("/add-wn-card", data={})
-        self.assertEqual(302, res.status_code)
+        self.assertEqual(400, res.status_code)
 
 
 class WnSet(PliEntireDbTestCase):
