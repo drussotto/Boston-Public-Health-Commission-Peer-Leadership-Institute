@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block styles %}
+{{ super() }}
+<style>
+  #content-column {
+    padding: 0 15px;
+  }
+
+  .heading {
+    text-align: center;
+  }
+ 
+  #add-post-btn {
+    margin: 0 auto;
+  }
+
+  hr {
+    border-color: #FA3800;
+  }
+
+  h2 {
+    border-bottom: 1px solid #FA3800;
+  }
+
+  .author-info {
+    font-style: italic;
+  }
+
+  .blog-body {
+    padding: 1em;
+    color: initial;
+    max-height: 300px;
+    overflow: hidden;
+  }
+
+  .edit-link {
+    float: right;
+  }
+
+  .pager {
+    font-size: 1.2em;
+  }
+
+</style>
+{% endblock %}
+{% block page_content %}
+  <div class="heading">
+    <h1>What's New</h1>
+    {% if has_editor() %}
+      <a href="/blog/add" class="btn btn-success" id="add-post-btn">Add Post</a>
+    {% endif %}
+    <hr>
+  </div>
+  {% for post in posts[((page - 1) * 10):(page * 10)] %}
+    {% set owner = get_user_by_uid(post.owner).get_me() %}
+    <a href="/blog/show?id={{post['_id']}}"><h2>{{ post['title']|safe }}</h2></a>
+    <span class="author-info">by {{ owner.first_name }} {{ owner.last_name }}</span>
+    {% if has_admin() or current_user.get_id() == post.owner %}
+      <a href="/blog/edit?id={{ post._id }}" class="btn btn-sm btn-primary edit-link">Edit</a>
+    {% endif %}
+    <div class="blog-body">
+      {{ post.body|safe }}
+    </div>
+
+  {% endfor %}
+  {% set post_count = posts|length %}
+  {% set last_page = ((post_count - 1) // 10) + 1 %}
+  <ul class="pager">
+    {% if page > 1 %}
+      <li class="previous"><a href="/blog?page={{ page - 1}}">Previous</a></li>
+    {% endif %}
+    {% if page < last_page %}
+    <li class="next"><a href="/blog?page={{ page + 1 }}">Next</a></li>
+    {% endif %}
+  </ul>
+
+
+<!-- <div class="container-fluid">
+    <div id="post_container"></div>
+    <div class="button-container">
+	{% for x in blog_page_count() %}
+	{% if x is divisibleby(10) %}
+	{% set page_num = x / 10 %}
+	<div class="page-button" onClick="getPage({{ page_num|int }})">{{ (page_num|int) + 1 }}</div>
+	{% endif %}
+	{% endfor %}
+    </div>
+</div> -->
+{% endblock %}

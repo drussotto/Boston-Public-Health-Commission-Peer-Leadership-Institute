@@ -72,43 +72,47 @@ def set_wn_cards():
     return pli.set_wn_cards()
 # / WN CARDS
 
-# UC
-@application.route('/uc/add', methods = [ "POST", "GET" ])
+# BLOG
+@application.route('/blog', methods = [ "GET" ])
+def get_blog_page():
+    return pli.get_blog()
+
+@application.route('/blog/show', methods = [ "GET" ])
+def show_blog_page():
+    return pli.show_blog_page()
+
+@application.route('/blog/add', methods = [ "POST", "GET" ])
 @login_required
 @pli.editor_perm
 def add_user_content():
     return pli.add_blog_page()
 
-@application.route('/uc/show', methods = [ "GET" ])
-def show_blog_page():
-    return pli.show_blog_page()
-
-@application.route('/uc/remove', methods = [ "GET", "POST" ])
+@application.route('/blog/remove', methods = [ "POST" ])
 def remove_blog_page():
     return pli.remove_blog_page()
 
-@application.route('/uc/manage/mine', methods = [ "GET", "POST" ])
-@login_required
-def view_my_pages():
-    return pli.view_my_pages()
-
-@application.route('/uc/manage/getpage', methods = [ "GET" ])
-def get_page_json():
-    return pli.get_page_dict()
-
-@application.route('/uc/manage/pageofpages', methods = [ "GET" ])
-def get_segmented_page_list():
-    return pli.get_segmented_page_list()
-
-@application.route('/uc/edit', methods = [ "GET", "POST" ])
+@application.route('/blog/edit', methods = [ "GET", "POST" ])
 @login_required
 def edit_my_page():
     return pli.edit_blog_page()
 
-@application.route('/uc/manage/count')
-def blog_page_count():
-    return pli.blog_page_count()
-# / UC
+# @application.route('/uc/manage/mine', methods = [ "GET", "POST" ])
+# @login_required
+# def view_my_pages():
+#     return pli.view_my_pages()
+
+# @application.route('/uc/manage/getpage', methods = [ "GET" ])
+# def get_page_json():
+#     return pli.get_page_dict()
+
+# @application.route('/uc/manage/pageofpages', methods = [ "GET" ])
+# def get_segmented_page_list():
+#     return pli.get_segmented_page_list()
+
+# @application.route('/uc/manage/count')
+# def blog_page_count():
+#     return pli.blog_page_count()
+# / BLOG
 
 # STAFF
 @application.route('/staff', methods = [ "GET" ])
@@ -281,16 +285,22 @@ def page(path):
     except TemplateNotFound:
         abort(404)
 
+# ERRORS
 @application.errorhandler(404)
 def page_not_found(e):
     return page("404.html"), 404
 
+@application.errorhandler(403)
+def bad_request(e):
+    return page("403.html"), 403
+
 @application.errorhandler(400)
 def bad_request(e):
     if request.form:
-        return render_template("surveys/error_page.html", error=e.description), 400
+        return page("400.html"), 400
     else:
         return e.description, 400
+# / ERRORS
 
 # override_url_for automatically adds a timestamp query parameter to
 # static files (e.g. css) to avoid browser caching issues
@@ -326,6 +336,7 @@ application.add_template_global(pli.get_todays_choices, "get_todays_choices")
 
 application.add_template_global(current_user, "current_user")
 application.add_template_global(pli.get_login_form, "get_login_form")
+application.add_template_global(pli.PliUser.get, "get_user_by_uid")
 
 # This allows the jinja templates to get todays whats new cards
 application.add_template_global(pli.WhatsNewCard.get_frontpage_cards, "get_wn_cards")

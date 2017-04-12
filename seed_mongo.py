@@ -343,18 +343,18 @@ db.responses.insert_many(response_list)
 
 blog_page_one = {
     "_id": ObjectId(),
-    "title":"<h1>Page one</h1>",
-    "body":"<h2>Body one</h2>",
-    "required_roles": [],
+    "title":"Page one",
+    "body":"Body one",
+    "required_role": None,
     "owner": u3["_id"],
     "attachments": [],
 }
 
 blog_page_two = {
     "_id": ObjectId(),
-    "title": "<h1>Page two</h1>",
-    "body": "<h2>Body two</h2>",
-    "required_roles": ["peer_leader"],
+    "title": "Page two",
+    "body": "Body two",
+    "required_role": "peer_leader",
     "owner": u2["_id"],
     "attachments": [
         {"picture": put_gridfs("mongodb.png", "image/png", gridfs)}
@@ -363,9 +363,9 @@ blog_page_two = {
 
 blog_page_three = {
     "_id": ObjectId(),
-    "title": "<h1>Page three</h1>",
-    "body": "<h2>Body three</h2>",
-    "required_roles": [],
+    "title": "Page three",
+    "body": "Body three",
+    "required_role": None,
     "owner": u1["_id"],
     "attachments": [
         {"picture": put_gridfs("FlaskLogo.png", "image/png", gridfs)}
@@ -375,9 +375,9 @@ blog_page_three = {
 
 blog_page_four = {
     "_id": ObjectId(),
-    "title": "<h1>For the public</h1>",
-    "body": "<h2>A post</h2>",
-    "required_roles": [],
+    "title": "For the public",
+    "body": "A post",
+    "required_role": None,
     "owner": u2["_id"],
     "attachments": []
 }

@@ -18,7 +18,7 @@ def dict_from_page_form(form):
         "body" : form.body.data,
         # Owner is the current user (the one making it)
         "owner": current_user.get_id(),
-        "required_roles": form.requiredPerms.data,
+        "required_role": form.required_role.data,
         # Construct the attachments from the form attachments
         "attachments": build_file_list(request.files)
     }

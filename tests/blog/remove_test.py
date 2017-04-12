@@ -6,15 +6,15 @@ class RemoveBlogPageTest(PliEntireDbTestCase):
     # Otherwise you can only remove your own content
 
     def try_remove_suc(self, client, page):
-        res = client.post('/uc/remove?page='+str(page), follow_redirects=True)
+        res = client.post('/blog/remove?id='+str(page), follow_redirects=True)
         self.assertEqual(200, res.status_code)
-        self.assertTrue("Success" in res.data)
+        #self.assertTrue("Success" in res.data)
 
     def try_remove_fail(self, client, page, logged_in=True):
-        res = client.post('/uc/remove?page='+str(page))
+        res = client.post('/blog/remove?id='+str(page))
         if logged_in:
             self.assertEqual(403, res.status_code)
-            self.assertTrue("Forbidden" in res.data)
+            self.assertTrue("Not Authorized" in res.data)
         else:
             self.assertEqual(302, res.status_code)
             self.assertTrue("login" in res.data)

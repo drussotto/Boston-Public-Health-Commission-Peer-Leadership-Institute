@@ -6,7 +6,7 @@ from manage import view_my_pages, get_page_dict
 from add import add_blog_page
 
 # To show user content pages
-from show import show_blog_page
+from show import show_blog_page, get_blog
 
 # To remove user-content pages
 from remove import remove_blog_page

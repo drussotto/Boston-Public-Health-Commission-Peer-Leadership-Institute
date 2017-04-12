@@ -1,5 +1,6 @@
 import os
 import mongomock
+import pli
 from mongomock import ObjectId
 from mongomock import gridfs
 from pli.service_util import get_db
@@ -25,18 +26,18 @@ def build_and_assign_blogs(db, gridfs):
 
     blog_page_one = {
         "_id": ObjectId(),
-        "title":"<h1>Page one</h1>",
-        "body":"<h2>Body one</h2>",
-        "required_roles": ["admin"],
+        "title":"Page one",
+        "body":"Body one",
+        "required_role": pli.roles.all_roles._ADMIN_ROLE,
         "owner": user1["_id"],
         "attachments": [],
     }
 
     blog_page_two = {
         "_id": ObjectId(),
-        "title": "<h1>Page two</h1>",
-        "body": "<h2>Body two</h2>",
-        "required_roles": ["peer_leader"],
+        "title": "Page two",
+        "body": "Body two",
+        "required_role": pli.roles.all_roles._PEERLEADER_ROLE,
         "owner": user2["_id"],
         "attachments": [
             {"picture": put_gridfs("mongodb.png", "image/png", gridfs)}
@@ -45,9 +46,9 @@ def build_and_assign_blogs(db, gridfs):
 
     blog_page_three = {
         "_id": ObjectId(),
-        "title": "<h1>Page three</h1>",
-        "body": "<h2>Body three</h2>",
-        "required_roles": [],
+        "title": "Page three",
+        "body": "Body three",
+        "required_role": None,
         "owner": user3["_id"],
         "attachments": [
             {"picture": put_gridfs("FlaskLogo.png", "image/png", gridfs)}
@@ -56,9 +57,9 @@ def build_and_assign_blogs(db, gridfs):
 
     blog_page_four = {
         "_id": ObjectId(),
-        "title": "<h1>For the public</h1>",
-        "body": "<h2>A post</h2>",
-        "required_roles": [],
+        "title": "For the public",
+        "body": "A post",
+        "required_role": None,
         "owner": user2["_id"],
         "attachments": []
     }

@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block styles %}
+  {{ super() }}
+  <style type="text/css">
+    #content-column {
+      padding: 0 15px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    h3 {
+      margin-top: 0;
+    }
+
+    hr {
+      border-color: #FA3800;
+    }
+
+    .missing-blog-field-msg {
+      color: red;
+    }
+  </style>
+{% endblock %}
+
+{% block page_content %}
+  {% set heading = "Create" %}
+  {% set action = "add" %}
+  {% set title = "" %}
+  {% set body = "" %}
+  {% set role = None %}
+
+  {% if edit is defined %}
+    {% set heading = "Edit" %}
+    {% set action = "edit?id=" + edit %}
+    {% if page is defined %}
+      {% set title = page.title %}
+      {% set body = page.body %}
+      {% set role = page.required_role %}
+    {% endif %}
+  {% endif %}
+
+  {% if form is defined %}
+    {% set title = form.data.title %}
+    {% set body = form.data.body %}
+    {% set role = form.data.required_role %}
+    {% if form.errors %}
+      {% if "title" in form.errors %}
+        {% set title_error = form.errors["title"][0] %}
+      {% endif %}
+      {% if "body" in form.errors %}
+        {% set body_error = form.errors["body"][0] %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  <h1>{{ heading }} Post</h1>
+  <hr>
+  <form id="editor-form" method='post' action="/blog/{{ action }}" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="title-box">
+        <h3>Title{% if title_error is defined %} <span class="missing-blog-field-msg">{{ title_error }}</span>{% endif %}</h3>
+      </label>
+      <input type="text" class="form-control" id="title-box" name="title" value="{{ title }}" placeholder="Enter title">
+    </div>
+    <div class="form-group">
+      <label for="body-box">
+        <h3>Body{% if body_error is defined %} <span class="missing-blog-field-msg">{{ body_error }}</span>{% endif %}</h3>
+      </label>
+      <textarea id="body-box" name="body" class="tinymce">{{ body }}</textarea>
+    </div>
+    <div class="form-group">
+      <h3>Permissions</h3>
+      {% macro make_perm_radio(text, value) -%}
+        <div class="radio">
+          <label><input type="radio" 
+                        name="required_role"
+                        value="{{ value }}"
+                        {% if value|string == role|string %}checked="true"{% endif %}>{{ text }}</label>
+        </div>
+      {%- endmacro %}
+      {{ make_perm_radio("Admin (visible to only admin users)", "admin") }}
+      {{ make_perm_radio("Editor (visible to only editor users)", "editor") }}
+      {{ make_perm_radio("Peer Leader (visible to peer leader users and above)", "peer_leader") }}
+      {{ make_perm_radio("User (visible to only logged-in users)", "user") }}
+      {{ make_perm_radio("None (visible to everybody)", None) }}
+    </div>
+  </form>
+  <br>
+  <button type="button" onclick="submitEditor()" class="btn btn-success btn-block btn-lg">{{ heading }}</button>
+  <br>
+  <br>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='js/tinymce/jquery.tinymce.min.js') }}" ></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/tinymce/setup_tinymce.js') }}"></script>
+  <script type="text/javascript">
+    function submitEditor() {
+      tinyMCE.triggerSave();
+      $('#editor-form').submit();
+    }
+  </script>
+{% endblock %}

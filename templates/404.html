@@ -3,15 +3,19 @@
 {% block styles %}
   {{super()}}
   <style>
-    .error404 {
-      color: black;
-      font-weight: bold;
-      font-size: 5em;
-      font-family: monospace;
+    #content-column {
+      text-align: center;
+      max-width: 600px;
+    }
+    
+    hr {
+      border-color: #FA3800;
     }
   </style>
 {% endblock %} 
 
 {% block page_content %}
-  <h1 class="error404">Sorry, there's nothing here.</h1>
+  <h1>Page Not Found</h1>
+  <hr>
+  <p>Sorry, the page you've requested doesn't exist.</p>
 {% endblock %}

@@ -7,7 +7,7 @@ class EditBlogPageTest(PliEntireDbTestCase):
         new_body = rand_string(1000)
         new_title = rand_string(1000)
         form = {"title": new_title, "body": new_body}
-        res = client.post('/uc/edit?page='+str(page["_id"]), data=form)
+        res = client.post('/blog/edit?id='+str(page["_id"]), data=form)
 
         # We get redirected to the page.
         self.assertEqual(302, res.status_code)
@@ -17,7 +17,7 @@ class EditBlogPageTest(PliEntireDbTestCase):
         new_body = rand_string(1000)
         new_title = rand_string(1000)
         form = {"title": new_title, "body": new_body}
-        res = client.post('/uc/edit?page='+str(page["_id"]), data=form)
+        res = client.post('/blog/edit?id='+str(page["_id"]), data=form)
 
         # We get redirected to the page.
         self.assertEqual(status_code, res.status_code)

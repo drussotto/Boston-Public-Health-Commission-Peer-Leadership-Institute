@@ -35,7 +35,6 @@ class StaffTest(PliEntireDbTestCase):
         res = post_edit_staff(client, ex.staff1["_id"], {"edit_active": False})
         self.assertEqual(200, res.status_code)
         staff_page = client.get('/page/staff.html')
-#        print(staff_page.data)
         self.assertFalse(ex.staff1["name"] in staff_page.data)
         editted = get_db().staff.find_one({"_id": ex.staff1["_id"]})
         self.assertFalse(editted["active"])
