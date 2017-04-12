@@ -9,6 +9,9 @@
     </button>
   {% endif %}
   <h2>{{survey["name"]}}</h2>
+  {% if has_editor() %}
+    <a href="./responses">See responses to this survey</a>
+  {% endif %}
   <form id="questions-container" method=post>
     {% for q in survey["questions"] %}
       <strong>{{q["question"]}}</strong>

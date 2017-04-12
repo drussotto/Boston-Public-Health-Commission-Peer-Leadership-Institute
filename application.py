@@ -11,7 +11,6 @@ import mongomock
 import gridfs
 import pli
 import os
-import pprint
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
@@ -246,6 +245,7 @@ def complete_survey(sid):
 def show_survey_results(sid):
     return render_template("/surveys/survey_response.html",
                             results=pli.retrieve_response_data(sid))
+
 @application.route('/surveys/<string:sid>', methods=["DELETE"])
 @login_required
 @pli.editor_perm

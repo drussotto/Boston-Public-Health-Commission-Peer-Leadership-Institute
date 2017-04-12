@@ -45,11 +45,10 @@ def retrieve_response_data(sid):
     ret_val["num_responses"] = len(responses)
 
     for q_idx, question in enumerate(questions):
-        new_q = dict(question=question["question"], answers={})
+        new_q = dict(question=question["question"], q_idx=q_idx, answers={})
 
         for ans_idx, ans in enumerate(question["answers"]):
             chosen_count = 0
-
 
             for ans_arr in responses:
                 if ans_arr[q_idx] == ans_idx: #if they answered the question with this option

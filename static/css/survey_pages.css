@@ -28,3 +28,12 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+#total_responses {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.question_header {
+  padding-bottom: 20px;
+}

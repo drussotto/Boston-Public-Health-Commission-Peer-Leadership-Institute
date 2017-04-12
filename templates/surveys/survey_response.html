@@ -3,27 +3,63 @@
 {% from "layout.html" import render_field %}
 <div class="container-fluid">
   <h1>{{results["name"]}}</h1>
-  <div style="padding: 15px">
+  <div id="total_responses">
     Total responses for this survey: {{results["num_responses"]}}
   </div>
-  {% for question in results["questions"] %}
-    <div style="padding-bottom: 20px">
-      <strong>{{question["question"]}}</strong>
-    </div>
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <tr>
-          <th>Answer</th>
-          <th>Times selected</th>
-        </tr>
-        {% for question, answered in question["answers"].iteritems() %}
+  <div id="data_container">
+    {% for question in results["questions"] %}
+      <div class="question_header">
+        <strong>{{question["question"]}}</strong>
+      </div>
+      <div id={{"pie-{q_idx}".format(q_idx=question["q_idx"])}} style="height: 300px; width: 300px;">
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered">
           <tr>
-            <td>{{question}}</td>
-            <td>{{answered}}</td>
+            <th>Answer</th>
+            <th>Times selected</th>
           </tr>
-        {% endfor %}
-      </table>
-    </div>
-  {% endfor %}
+          {% for question, answered in question["answers"].iteritems() %}
+            <tr>
+              <td>{{question}}</td>
+              <td>{{answered}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% endfor %}
+  </div>
 </div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='js/flot/jquery.flot.min.js') }}" ></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/flot/jquery.flot.pie.min.js') }}"></script>
+
+  <script type="text/javascript">
+    var options = {
+      series: {
+        pie: {
+          show: true
+        }
+      }
+    };
+
+    function testFunction(survey) {
+      for(var i = 0; i < survey.questions.length; i++) {
+        var answers = [];
+        var answer_keys = Object.keys(survey.questions[i].answers);
+        for(var j = 0; j < answer_keys.length; j++) {
+          answers.push({
+            label: answer_keys[j],
+            data: survey.questions[i].answers[answer_keys[j]],
+          });
+        }
+        $("#pie-" + i).plot(answers, options);
+      }
+
+    }
+
+    testFunction({{ results|tojson|safe }})
+  </script>
 {% endblock %}
