@@ -1,9 +1,13 @@
+from flask import redirect
 from flask import render_template, request
 from wn_card_form import WnCardInfoAddForm
 from card import CarouselCard, card_exists
 from set_wn_cards_form import SetWnCardsForm
 from pli.service_util import get_db, get_obj_id
 
+'''
+Backend code for carousel on front page of website
+'''
 class WhatsNewCard(CarouselCard):
 
     def __init__(self, db_doc):
@@ -38,6 +42,20 @@ class WhatsNewCard(CarouselCard):
 
         return map(WhatsNewCard.load, ids["cards"])
 
+
+# Render forms for adding and setting cards
+def manage_whats_new():
+    add_form = WnCardInfoAddForm(request.form)
+    set_form = SetWnCardsForm(request.form)
+    active_card_ids = map(lambda card: card.str_id, WhatsNewCard.get_frontpage_cards())
+    return render_template('slideshow_manage.html',
+                           add_form=add_form,
+                           set_form=set_form,
+                           success=request.args.get('success', ''),
+                           active_card_ids=active_card_ids)
+
+
+# Handle API call for adding card
 def add_wn_card():
     form = WnCardInfoAddForm(request.form)
     if request.method == "POST":
@@ -45,30 +63,32 @@ def add_wn_card():
             card = WhatsNewCard.new_card(form.extract())
             obj_id = card.save_to_db()
             card.str_id = str(obj_id)
-            return render_template('redir_success.html')
+            return redirect('/manage/slideshow?success=yes')
         else:
-            return "",400
+            return redirect('/manage/slideshow?success=no')
     else:
-        return render_template('add_wn_card.html', form=form)
+        return "", 405
 
+
+# Handle API call for setting card
 def set_wn_cards():
-    form = SetWnCardsForm(request.form)
+    # form = SetWnCardsForm(request.form)
     new_wn_list = []
+    data = request.get_json()
+    ids = data['ids']
     if request.method == "POST":
-        if form.validate():
-            for id_field in form.cards.data:
-                if len(str(id_field)) == 0:
-                    continue
-                try:
-                    oid = get_obj_id()(str(id_field))
-                except Exception, e:
-                    return "", 400
-                
-                if not card_exists(oid):
-                    return "", 400
-                new_wn_list.append(oid)
-                get_db().whatsnew.update({}, {"$set": { "show" : new_wn_list }})
-            return render_template('redir_success.html')
-        else:
-            return "", 400
-    return render_template("set_wn_cards.html", form=form)
+        for id_field in ids:
+            if len(str(id_field)) == 0:
+                continue
+            try:
+                oid = get_obj_id()(str(id_field))
+            except Exception, e:
+                return "", 400
+
+            if not card_exists(oid):
+                return "", 400
+            new_wn_list.append(oid)
+            get_db().whatsnew.update({}, {"$set": { "show" : new_wn_list }})
+        return "", 200
+    else:
+        return "", 405
