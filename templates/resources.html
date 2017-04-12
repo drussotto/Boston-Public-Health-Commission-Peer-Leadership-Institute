@@ -3,24 +3,57 @@
 {{super()}}
 <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
 <style type="text/css">
-  .center-container {
-    margin: 0 auto;
+  #content-column {
     max-width: 600px;
-  }
-
-  .page-heading {
+    padding: 0 15px;
     text-align: center;
   }
 
-  .key {
-    color: #0070C0;
+  .section {
+    padding: 0px 30px 20px 30px;
+  }
+
+  .section-heading {
+    border-bottom: 1px solid #FA3800;
+    font-size: 2em;
+    margin-top: 0px;
+    position: relative;
+  }
+
+  hr {
+    border-color: #FA3800;
   }
 </style>
 {% endblock %}
 
 {% block page_content %}
+  {% macro resource_link(url, text) -%}
+    <a href='{{url}}' class="btn btn-primary btn-sm btn-block">{{text}}</a>
+  {%- endmacro %}
+
+  <h1>Student Resources</h1>
+  <hr>
+  <div class="section">
+    <h1 class='section-heading'>Substance Abuse</h1>
+    {{ resource_link("http://abovetheinfluence.com/", "Above The Influence") }}
+    {{ resource_link("http://justthinktwice.gov/", "Just Think Twice") }}
+    {{ resource_link("http://teens.drugabuse.gov/", "Teen Drug Abuse") }}
+    {{ resource_link("http://drugabuse.gov/", "General Drug Abuse") }}
+  </div>
+  <div class="section">
+    <h1 class='section-heading'>Sexual Health</h1>
+    {{ resource_link("http://www.iwannaknow.org/teens/index.html", "I wanna know") }}
+    {{ resource_link("http://www.teensource.org/", "Teen Sexual Health") }}
+  </div>
+  <div class="section">
+    <h1 class='section-heading'>Wellness</h1>
+    {{ resource_link("http://teenhealthandwellness.com/", "Teen Health & Wellness") }}
+    {{ resource_link("http://teenmentalhealth.org/", "Teen Mental Health") }}
+    {{ resource_link("http://kidshealth.org/", "General Health") }}
+  </div>
+  
   <!-- Resources-Page -->
-  <div class="container-fluid">
+  <!-- <div class="container-fluid">
     <div class="center-container">
       <div class="row">
         <div class="row page-heading">
@@ -101,5 +134,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 {% endblock %}

@@ -108,9 +108,12 @@
         {% if has_admin() %}
         	{{ sitemap_link("Manage Users","","", url_for('change_roles')) }}
         {% endif %}
-        {% if has_editor() %}
-          {{ sitemap_link("Manage Surveys","","", url_for('show_surveys')) }}
-        {% endif %}
+        {{ sitemap_link("Manage Surveys","","", url_for('show_surveys')) }}
+        {{ sitemap_link("Create Surveys","","", "/surveys/create") }}
+        {{ sitemap_link("Manage Survey Questions","","", "/surveys/questions") }}
+        {{ sitemap_link("Create Survey Questions","","", "/surveys/questions/create") }}
+        {{ sitemap_link("Manage Slideshow","","", "/manage/slideshow") }}
+        {{ sitemap_link("Manage Staff Bios","","", "/manage/staff") }}
       {% endif %}
 
       {{ sitemap_heading("About") }}

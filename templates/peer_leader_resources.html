@@ -3,41 +3,38 @@
 {{super()}}
 <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
 <style type="text/css">
-  .center-container {
-    margin: 0 auto;
+  #content-column {
     max-width: 600px;
-  }
-
-  .page-heading {
+    padding: 0 15px;
     text-align: center;
   }
 
-  .key {
-    color: #0070C0;
+  .section {
+    padding: 0px 30px 20px 30px;
+  }
+
+  .section-heading {
+    border-bottom: 1px solid #FA3800;
+    font-size: 2em;
+    margin-top: 0px;
+    position: relative;
+  }
+
+  hr {
+    border-color: #FA3800;
   }
 </style>
 {% endblock %}
 
 {% block page_content %}
-  <!-- Resources-Page -->
-  <div class="container-fluid">
-    <div class="center-container">
-      <div class="row">
-        <div class="row page-heading">
-          <h1>Peer Leader Resources</h1>
-        </div>
-        <div class="col">
-          <div class="row">
-            <div class="col-xs-12 card">
-              <div class="heading">Worksheets</div>
-              <div class="card-body">
-              <ul>
-                <li><a href="{{ url_for ( 'static', filename='docs/SampleWorksheet.pdf' ) }}" target="_blank">Worksheet</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  {% macro resource_link(url, text) -%}
+    <a href='{{url}}' class="btn btn-primary btn-sm btn-block">{{text}}</a>
+  {%- endmacro %}
+
+  <h1>Peer Leader Resources</h1>
+  <hr>
+  <div class="section">
+    <h1 class='section-heading'>Worksheets</h1>
+    {{ resource_link(url_for ( 'static', filename='docs/SampleWorksheet.pdf' ), "Example Worksheet") }}
   </div>
 {% endblock %}
