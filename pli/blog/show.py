@@ -15,13 +15,10 @@ def show_blog_page():
         return redirect("/blog")
     # Check if allowed to view page
     valid_page = check_blog_permissions(page)
-    print(valid_page)
     if valid_page is not None:
         return render_template("blog_post.html", page=page)
     elif not current_user.is_authenticated:
-        print("two")
         # redirect user to login to try again
         return redirect("/login?"+urllib.urlencode({"next": "/blog/show?id="+str(page_id)}))
     else:
-        print("three")
         return abort(403) # not authorized

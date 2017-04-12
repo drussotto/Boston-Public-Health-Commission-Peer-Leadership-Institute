@@ -29,8 +29,9 @@ def get_page_with_id(id):
 # Returns the page object if the current user has permissions to view it
 # or None otherwise
 def check_blog_permissions(page):
-    print("User: ", current_user.get_id(), " type: ", type(current_user.get_id()))
+
     role = page["required_role"]
+    
     # if no required role, anyone can access the page;
     # owners can always see their own pages regardless of permissions
     if role is None:

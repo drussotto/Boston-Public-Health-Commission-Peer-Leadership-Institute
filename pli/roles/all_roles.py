@@ -49,15 +49,15 @@ def user_perm(f):
 
 def _to_perm(name):
     if name == _ADMIN_ROLE:
-        return _ADMIN_PERM
+        return _ADMIN_PERM.can()
     elif name == _EDITOR_ROLE:
-        return _EDITOR_PERM
+        return _EDITOR_PERM.can() or _ADMIN_PERM.can()
     elif name == _PEERLEADER_ROLE:
-        return _PEERLEADER_PERM
+        return _PEERLEADER_PERM.can() or _EDITOR_PERM.can() or _ADMIN_PERM.can()
     elif name == _USER_ROLE:
-        return _USER_PERM
+        return _USER_PERM.can() or _PEERLEADER_PERM.can() or _EDITOR_PERM.can() or _ADMIN_PERM.can()
     else:
         return None
-
+        
 def has_permission(name):
-    return Permission(_to_perm(name)).can()
+    return _to_perm(name)
