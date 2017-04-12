@@ -1,5 +1,5 @@
 from flask import request, abort, jsonify, session
-from question_list import get_question_by_id, insert_question, disable_question_in_list, reorder_question_list, get_question_by_day
+from question_list import get_question_by_id, insert_question, disable_question_in_list, reorder_question_list, get_question_by_day, answer_question_list
 from pli import get_obj_id, get_db
 def reorder_questions():
     new_list = request.get_json()["new_list"]
@@ -60,15 +60,21 @@ def add_question():
     }).inserted_id)
 
 def get_rel_date_question():
-    day = request.args.get("day", None)
+    try:
+        # Check that we got it, and that
+        # it is a valid number
+        day = request.form.get("day", None)
+        if day is None:
+            return abort(400)
+        day = int(day)
 
-    if day is None:
+    except ValueError:
         return abort(400)
     
-    q = get_question_by_day(day)
+    q = get_question_by_day(int(day))
     del q["next"]
     del q["prev"]
-    del q["_id"]
+    q["_id"] = str(q["_id"])
     return jsonify(q)
 
 
@@ -76,4 +82,15 @@ def answer_question():
     qid = request.form.get("qid", None)
     session[qid] = True
     answer = request.form.get("answer", None)
+
+    if qid is None or answer is None:
+        return abort(400)
+
+    success = answer_question_list(qid, answer)
+    if success:
+        return "", 200
+    else:
+        return abort(400)
+    
+
     

@@ -1,6 +1,6 @@
 from testlib import *
 import unittest
-from pli import get_question_by_idx, save_question_list, insert_question, succ, pred, get_db, current_question_rotation, get_question_by_day, answer_question, disable_question, reorder_question_list, disable_question_in_list
+from pli import get_question_by_idx, save_question_list, insert_question, succ, pred, get_db, current_question_rotation, get_question_by_day, answer_question_list, disable_question, reorder_question_list, disable_question_in_list, answer_question
 from flask import current_app
 import json
 
@@ -48,7 +48,7 @@ class TestQuestionList(PliEntireDbTestCase):
 
     @with_app_ctxt
     def test_answer1(self):
-        self.assertTrue(answer_question(ex.nq1["_id"], "c"))
+        self.assertTrue(answer_question_list(ex.nq1["_id"], "c"))
         q = get_db().questions.find_one({"_id": ex.nq1["_id"]})
         self.assertEqual(ex.nq1["history"]["c"]+1, q["history"]["c"])
         self.assertEqual(ex.nq1["response_count"]+1, q["response_count"])
@@ -59,7 +59,7 @@ class TestQuestionList(PliEntireDbTestCase):
 
     @with_app_ctxt
     def test_answer2(self):
-        self.assertFalse(answer_question(ex.nq1["_id"], "d"))
+        self.assertFalse(answer_question_list(ex.nq1["_id"], "d"))
         q = get_db().questions.find_one({"_id": ex.nq1["_id"]})
         self.assertEqual(ex.nq1["history"]["c"], q["history"]["c"])
         self.assertEqual(ex.nq1["response_count"], q["response_count"])
@@ -70,7 +70,7 @@ class TestQuestionList(PliEntireDbTestCase):
 
     @with_app_ctxt
     def test_answer3(self):
-        self.assertFalse(answer_question(ObjectId(), "d"))
+        self.assertFalse(answer_question_list(ObjectId(), "d"))
         q = get_db().questions.find_one({"_id": ex.nq1["_id"]})
         self.assertEqual(ex.nq1["history"]["c"], q["history"]["c"])
         self.assertEqual(ex.nq1["response_count"], q["response_count"])
@@ -211,15 +211,29 @@ class TestQuestionList(PliEntireDbTestCase):
         def test(x):
             res = client.get('/questions/get_by_day', data={"day": x})
             self.assertEqual(200, res.status_code)
-            self.assertEqual(json.loads(res.data)["_id"], str(get_question_by_day(x)["_id"]))
+            self.assertEqual(json.loads(res.data)["_id"],
+                             str(get_question_by_day(x)["_id"]))
             
         test(-1)
         test(0)
         test(1)
 
     @with_login(user1)
-    def test_answer_question_endpoint(self):
-        pass
+    def test_answer_question_endpoint(self, client):
+        res = client.get('/questions/answer', data=
+                         {
+                             "qid": ex.nq1["_id"],
+                             "answer": "c"
+                         })
+        self.assertEqual(200, res.status_code)
+        q = get_db().questions.find_one({"_id": ex.nq1["_id"]})
+        self.assertEqual(ex.nq1["history"]["c"]+1, q["history"]["c"])
+        self.assertEqual(ex.nq1["response_count"]+1, q["response_count"])
+        q = get_db().questions.find_one({"_id": ex.nq2["_id"]})
+        self.assertEqual(ex.nq2["history"]["c"], q["history"]["c"])
+        self.assertEqual(ex.nq2["response_count"], q["response_count"])
+        
+        
 
     @with_app_ctxt
     def test_read_and_save_insert1(self):

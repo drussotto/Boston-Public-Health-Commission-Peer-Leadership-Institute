@@ -6,8 +6,8 @@ from .question_list import \
     pred, \
     current_question_rotation, \
     get_question_by_day, \
+    answer_question_list, \
     next_day, \
-    answer_question, \
     disable_question_in_list, \
     reorder_question_list
 
@@ -17,5 +17,6 @@ from .manage import \
     enable_question, \
     disable_question, \
     add_question, \
-    get_rel_date_question
+    get_rel_date_question, \
+    answer_question
     

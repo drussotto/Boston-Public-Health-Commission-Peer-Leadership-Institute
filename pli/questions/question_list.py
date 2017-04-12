@@ -178,7 +178,7 @@ def get_question_by_day(d_day=0):
     else:
         return get_question_by_idx(d_day)
 
-def answer_question(qid, answer):
+def answer_question_list(qid, answer):
     qid = get_obj_id(qid)
     question = get_question_by_id(qid)
     if question is None:
