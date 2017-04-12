@@ -1,24 +1,7 @@
 {% extends "layout.html" %}
 {% block page_content %}
 {% from "layout.html" import render_field %}
-<div class="container-fluid">
-  <h1>Submission Failed</h1>
-  <div>
-    <div>
-      Form submission raised the following errors:
-    </div>
-    <div>
-      {{ form.errors }}
-    </div>
-  </div>
-  <div>
-    Try Again:
-    <div>
-      <a href="/surveys/create">Create a Survey</a>
-    </div>
-    <div>
-      <a href="/surveys/questions/create">Create a Survey Question</a>
-    </div>
-  </div>
+<div>
+  Error: {{error}}
 </div>
 {% endblock %}

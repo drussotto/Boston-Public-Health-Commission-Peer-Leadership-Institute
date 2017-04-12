@@ -2,11 +2,11 @@
 {% block page_content %}
 {% from "layout.html" import render_field %}
 <div class="container-fluid">
-  <h1>Surveys</h1>
+  <h1>Survey Questions</h1>
   <div class="list-group surveys_cont">
-    {% for survey_id,survey_name in surveys %}
-        <a href={{"/surveys/{sid}".format(sid=survey_id)}} class="list-group-item">
-          {{survey_name}}
+    {% for qid,question in questions %}
+        <a href={{"/surveys/questions/{qid}".format(qid=qid)}} class="list-group-item">
+          {{question}}
         </a>
     {% endfor %}
   </div>

@@ -244,9 +244,12 @@ survey_questions = [survey_question1, survey_question2, survey_question3, survey
 
 db.survey_questions.insert_many(survey_questions)
 
-survey1 = dict(_id=ObjectId("survey000001"), name="Survey One", qids=["sq0000000001", "sq0000000002"])
-survey2 = dict(_id=ObjectId("survey000002"), name="Survey Two", qids=["sq0000000003","sq0000000004"])
-survey3 = dict(_id=ObjectId("survey000003"), name="Survey Three", qids=["sq0000000001", "sq0000000002", "sq0000000003","sq0000000004"])
+survey1 = dict(_id=ObjectId("survey000001"), name="Survey One",
+                    qids=[objectId_str(qid) for qid in ["sq0000000001", "sq0000000002"]])
+survey2 = dict(_id=ObjectId("survey000002"), name="Survey Two",
+                    qids=[objectId_str(qid) for qid in ["sq0000000003","sq0000000004"]])
+survey3 = dict(_id=ObjectId("survey000003"), name="Survey Three",
+                qids=[objectId_str(qid) for qid in ["sq0000000001", "sq0000000002", "sq0000000003","sq0000000004"]])
 
 surveys = [survey1, survey2, survey3]
 

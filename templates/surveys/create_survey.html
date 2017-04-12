@@ -5,20 +5,20 @@
   <h1>Create a Survey</h1>
   <div class="form-group">
     <form method=post>
-      <div>
+      <div class="form_elem">
         <label for="survey_name">Name</label>
         <div>
           <input id="survey_name" class="form-control" name="name" type="text" value="">
         </div>
       </div>
-      <div>
+      <div class="form_elem">
         <label for="answers">Questions</label>
-       <button class="btn" type="button" onclick="newQuestion()">Add Question</button>
+       <button class="btn add_btn" type="button" onclick="newQuestion()">Add Question</button>
         <div id="s_questions">
 
         </div>
       </div>
-      <div>
+      <div class="form_elem">
         <input type="submit" class="btn btn-primary" value="Create Survey!">
       </div>
     </form>
@@ -27,11 +27,12 @@
 <div>
 
 </div>
+{% endblock %}
 {% block scripts %}
 {{super()}}
 <script>
   function buildDiv(insideDiv) {
-    return "<div>" + insideDiv + "</div>";
+    return "<div class='option_li'>" + insideDiv + "</div>";
   }
 
   function buildSelect(name, optionsStr) {
@@ -63,13 +64,12 @@
 
     var newId = $("#s_questions").children().length;
 
-    $.ajax({url: "/surveys/questions"}).done(function(response){
-        var div = buildDiv(buildSelect("question-" + newId, 
+    $.ajax({url: "/surveys/questions", data: {ajax: true}}).done(function(response){
+        var div = buildDiv(buildSelect("question-" + newId,
                                           buildOptList(JSON.parse(response))));
         $(div).appendTo("#s_questions");
     });
 
   }
 </script>
-{% endblock %}
 {% endblock %}

@@ -11,7 +11,6 @@ import mongomock
 import gridfs
 import pli
 import os
-import pprint
 
 # EB looks for an 'application' callable by default.
 application = Flask(__name__)
@@ -252,6 +251,27 @@ def complete_survey(sid):
 def show_survey_results(sid):
     return render_template("/surveys/survey_response.html",
                             results=pli.retrieve_response_data(sid))
+
+@application.route('/surveys/<string:sid>', methods=["DELETE"])
+@login_required
+@pli.editor_perm
+def delete_survey(sid):
+    return pli.delete_survey(sid)
+
+@application.route('/surveys/questions/<string:qid>', methods=["GET"])
+@login_required
+@pli.editor_perm
+def get_survey_question(qid):
+    return pli.get_survey_question(qid)
+
+
+
+@application.route('/surveys/questions/<string:qid>', methods=["DELETE"])
+@login_required
+@pli.editor_perm
+def delete_survey_question(qid):
+    return pli.delete_survey_question(qid)
+
 # / SURVEYS
 
 @application.route('/page/<path:path>')
@@ -266,9 +286,11 @@ def page_not_found(e):
     return page("404.html"), 404
 
 @application.errorhandler(400)
-def bad_request(e): #to-do: Make more generic
-    return e.description, 400
-    #return render_template("surveys/error_page.html", error=e.description), 400
+def bad_request(e):
+    if request.form:
+        return render_template("surveys/error_page.html", error=e.description), 400
+    else:
+        return e.description, 400
 
 # override_url_for automatically adds a timestamp query parameter to
 # static files (e.g. css) to avoid browser caching issues
