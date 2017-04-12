@@ -47,5 +47,17 @@ def peerleader_perm(f):
 def user_perm(f):
     return _USER_PERM.require(http_exception=403)(f)
 
+def _to_perm(name):
+    if name == _ADMIN_ROLE:
+        return _ADMIN_PERM
+    elif name == _EDITOR_ROLE:
+        return _EDITOR_PERM
+    elif name == _PEERLEADER_ROLE:
+        return _PEERLEADER_PERM
+    elif name == _USER_ROLE:
+        return _USER_PERM
+    else:
+        return None
+
 def has_permission(name):
-    return Permission(RoleNeed(name)).can()
+    return Permission(_to_perm(name)).can()

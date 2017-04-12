@@ -8,14 +8,14 @@ def _remove_blog_page_get():
     return render_template("remove_user_content.html")
 
 def _remove_blog_page_post():
-    page_str = request.args.get("page")
-    page = get_page_to_delete(page_str)
+    page_id = request.args.get("id")
+    page = get_page_to_delete(page_id)
     if page is not None:
         remove_document(page["_id"])
-        return render_template("redir_success.html")
+        return "", 200#render_template("redir_success.html")
     elif not current_user.is_authenticated:
         # Hax to redirect user to login
-        return redirect("/login?"+urllib.urlencode({"next": "/uc/remove?page="+str(page_str)}))
+        return redirect("/login?"+urllib.urlencode({"next": "/blog/remove?id="+str(page_id)}))
     else:
         return abort(403)
 

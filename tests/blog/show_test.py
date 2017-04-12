@@ -10,7 +10,7 @@ class ShowBlogPageTest(PliEntireDbTestCase):
     # in which case you don't need to be logged in.
 
     def try_show(self, client, expect, blog_id, status_code=200):
-        res = client.get("/uc/show?page="+str(blog_id))
+        res = client.get("/blog/show?id="+str(blog_id))
         self.assertEqual(status_code, res.status_code)
         for s in expect:
             self.assertTrue(s, s in res.data)
@@ -33,10 +33,8 @@ class ShowBlogPageTest(PliEntireDbTestCase):
     def test_good_with_auth(self, client):
         self.show_blog_four(client)
         self.show_blog_three(client)
-        # This user can also see blog one
+        # This user can also see blog one and two
         self.show_blog_one(client)
-        # This user can't see page two
-        # But is an admin
         self.show_blog_two(client)
 
     @with_login(user2["email_address"], user2["real_pass"])
@@ -70,15 +68,15 @@ class ShowBlogPageTest(PliEntireDbTestCase):
 
     @with_test_client
     def test_show_bad_ids(self, client):
-        self.try_show(client, ["login"], "abc3498943", status_code=302)
-        self.try_show(client, ["login"], uuid.uuid1(), status_code=302)
+        self.try_show(client, ["What's New"], "abc3498943", status_code=302)
+        self.try_show(client, ["What's New"], uuid.uuid1(), status_code=302)
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_show_bad_ids_not_admin(self, client):
-        self.try_show(client, ["Forbidden"], "abc3498943", status_code=403)
-        self.try_show(client, ["Forbidden"], uuid.uuid1(), status_code=403)
+        self.try_show(client, ["Not Authorized"], "abc3498943", status_code=302)
+        self.try_show(client, ["Not Authorized"], uuid.uuid1(), status_code=302)
 
     @with_login(user1["email_address"], user1["real_pass"])
     def test_show_bad_ids_admin(self, client):
-        self.try_show(client, ["Forbidden"], "abc3498943", status_code=403)
-        self.try_show(client, ["Forbidden"], uuid.uuid1(), status_code=403)
+        self.try_show(client, ["Not Authorized"], "abc3498943", status_code=302)
+        self.try_show(client, ["Not Authorized"], uuid.uuid1(), status_code=302)

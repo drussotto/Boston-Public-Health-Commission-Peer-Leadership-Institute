@@ -2,28 +2,24 @@ from flask import request, render_template, redirect
 from flask_login import current_user
 from new_blog_page_form import AddBlogPageForm
 from pli.images import add_new_img
-from util import build_file_list, dict_from_page_form
+from util import build_file_list, dict_from_add_page_form
 
 import mimetypes
-import blog_db
+from blog_db import add_new_document
 
 # Performs the actual addition to the DB
 def _post_add_page():
     form = AddBlogPageForm(request.form)
     if form.validate():
-        new_doc = dict_from_page_form(form)
-        
-        # Now that we've made the new doc
-        # we can add it
-        new_id = blog_db.add_new_document(new_doc)
-        return redirect("/uc/show?page="+str(new_id))
+        new_id = blog_db.add_new_document(dict_from_add_page_form(form))
+        return redirect("/blog/show?id="+str(new_id))
     else:
-        return abort(400)
+        return render_template("blog_new_post.html", form=form)
 
 
 # Just render the editor page.
 def _get_add_page():
-    return render_template("editor.html")
+    return render_template("blog_new_post.html")
 
 # Endpoint to add an actual user content page
 # accepts POST and GET

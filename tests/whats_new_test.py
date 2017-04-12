@@ -26,7 +26,6 @@ class WnAdd(PliEntireDbTestCase):
             res = post_add_wn_card(client, f, "Caption", "Sub-caption", "http://test.example.com")
         self.assertEqual(200, res.status_code)
         l = get_db().cards.find_one({"caption": "Caption"})
-        self.assertTrue("Success" in res.data)
 
     @with_login(user2["email_address"], user2["real_pass"])
     def test_add_wn_card_noauth(self, client):

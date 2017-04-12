@@ -16,19 +16,34 @@ def add_new_document(doc):
 def remove_document(doc_id):
     get_db().usercontent.delete_one({"_id": doc_id})
 
-# Internal function which safely collects the document that corresponds
+# Safely collects the document that corresponds
 # the given id
-def _get_page_with_id(id):
-    try:
-        # Allow users to pass in strings OR ObjectId's
-        if not isinstance(id, get_obj_id()):
-            oid = get_obj_id()(id)
-        else:
-            oid = id
-    except:
-        return None # Bad objid
+def get_page_with_id(id):
+    oid = get_obj_id(id)
+    
+    if oid is None:
+        return None
 
     return get_db().usercontent.find_one({"_id": oid})
+
+# Returns the page object if the current user has permissions to view it
+# or None otherwise
+def check_blog_permissions(page):
+    print("User: ", current_user.get_id(), " type: ", type(current_user.get_id()))
+    role = page["required_role"]
+    # if no required role, anyone can access the page;
+    # owners can always see their own pages regardless of permissions
+    if role is None:
+        return page
+    
+    if has_permission(role):
+        return page
+
+    if current_user.is_authenticated and \
+       current_user.get_id() == page["owner"]:
+       return page
+    # not authorized to view page
+    return None
 
 # Returns (title, body) for the page with the given id
 def get_page_title_body(id):
@@ -40,34 +55,7 @@ def get_page_title_body(id):
 # Safely collects the blog page with the given id, will return None
 # if the current_user is not allowed to view the page
 def get_page_to_view(id):
-    # When not given an id, we can't authorize the page
-    if not id:
-        return None
 
-    page = _get_page_with_id(id)
-
-    # No page => can't view it ?
-    if not page:
-        return None
-
-    if current_user.is_authenticated and \
-       (page["owner"] == current_user.get_id()) or \
-       has_admin():
-        # Owners can always see their own pages.
-        # (and so can admins)
-        return page
-
-    # No requirements => everyone is allowed
-    if len(page["required_roles"]) == 0:
-        return page
-
-    for role in page["required_roles"]:
-        if current_user.is_authenticated and \
-           has_permission(role):
-            return page
-
-    # We've reached here if they don't meet any of the role reqs
-    # or they aren't authenticated
     return None
 
 def get_page_to_edit(id):
@@ -82,7 +70,7 @@ def get_page_to_delete(id):
        not current_user.is_authenticated:
         return None
 
-    page = _get_page_with_id(id)
+    page = get_page_with_id(id)
 
     # If the page doesn't exist you can't remove it.
     if page is None:
