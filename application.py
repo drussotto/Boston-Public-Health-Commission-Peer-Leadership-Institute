@@ -58,19 +58,19 @@ def index():
     return render_template("index.html")
 
 # WN CARDS
-@application.route('/add-wn-card', methods = [ "POST"])
+@application.route('/add-wn-card', methods = [ "POST" ])
 @login_required
 @pli.editor_perm
 def add_wn_card():
     return pli.add_wn_card()
 
-@application.route('/manage/slideshow', methods= ["GET"])
+@application.route('/manage/slideshow', methods= [ "GET" ])
 @login_required
 @pli.editor_perm
 def manage_whats_new():
     return pli.manage_whats_new()
 
-@application.route('/set-wn-cards', methods = [ "POST"])
+@application.route('/set-wn-cards', methods = [ "POST" ])
 @login_required
 @pli.editor_perm
 def set_wn_cards():
@@ -100,24 +100,6 @@ def remove_blog_page():
 @login_required
 def edit_my_page():
     return pli.edit_blog_page()
-
-# @application.route('/uc/manage/mine', methods = [ "GET", "POST" ])
-# @login_required
-# def view_my_pages():
-#     return pli.view_my_pages()
-
-# @application.route('/uc/manage/getpage', methods = [ "GET" ])
-# def get_page_json():
-#     return pli.get_page_dict()
-
-# @application.route('/uc/manage/pageofpages', methods = [ "GET" ])
-# def get_segmented_page_list():
-#     return pli.get_segmented_page_list()
-
-# @application.route('/uc/manage/count')
-# def blog_page_count():
-#     return pli.blog_page_count()
-# / BLOG
 
 # STAFF
 @application.route('/staff', methods = [ "GET" ])

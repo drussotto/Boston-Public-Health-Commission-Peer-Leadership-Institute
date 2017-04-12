@@ -1,5 +1,4 @@
-from flask import redirect
-from flask import render_template, request
+from flask import redirect, abort, render_template, request
 from wn_card_form import WnCardInfoAddForm
 from card import CarouselCard, card_exists
 from set_wn_cards_form import SetWnCardsForm
@@ -58,16 +57,13 @@ def manage_whats_new():
 # Handle API call for adding card
 def add_wn_card():
     form = WnCardInfoAddForm(request.form)
-    if request.method == "POST":
-        if form.validate():
-            card = WhatsNewCard.new_card(form.extract())
-            obj_id = card.save_to_db()
-            card.str_id = str(obj_id)
-            return redirect('/manage/slideshow?success=yes')
-        else:
-            return redirect('/manage/slideshow?success=no')
+    if form.validate():
+        card = WhatsNewCard.new_card(form.extract())
+        obj_id = card.save_to_db()
+        card.str_id = str(obj_id)
+        return redirect('/manage/slideshow?success=yes')
     else:
-        return "", 405
+        return redirect('/manage/slideshow?success=no')
 
 
 # Handle API call for setting card
@@ -75,6 +71,10 @@ def set_wn_cards():
     # form = SetWnCardsForm(request.form)
     new_wn_list = []
     data = request.get_json()
+
+    if data is None or "ids" not in data:
+        return abort(400)
+    
     ids = data['ids']
     if request.method == "POST":
         for id_field in ids:
