@@ -37,13 +37,6 @@ from .register import \
     is_confirmed_uid, \
     validate_user
 
-# Question of the day
-from .qotd import \
-    get_todays_question, \
-    get_todays_choices, \
-    get_question
-
-
 # Blog stuff
 from blog import *
 
