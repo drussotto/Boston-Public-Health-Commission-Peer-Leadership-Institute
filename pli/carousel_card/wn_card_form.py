@@ -1,7 +1,7 @@
 from wtforms import StringField, IntegerField, validators, Form, FileField, validators
 
 class WnCardInfoAddForm(Form):
-    background = FileField("Background Image", [validators.DataRequired("Image required")])
+    background = FileField("Background Image")
     caption = StringField('Image caption')
     sub_caption = StringField('Image sub-caption')
     hyperlink = StringField('Link')
