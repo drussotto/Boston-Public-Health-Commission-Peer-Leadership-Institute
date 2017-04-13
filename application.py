@@ -98,6 +98,7 @@ def remove_blog_page():
 
 @application.route('/blog/edit', methods = [ "GET", "POST" ])
 @login_required
+@pli.editor_perm
 def edit_my_page():
     return pli.edit_blog_page()
 

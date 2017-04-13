@@ -36,10 +36,9 @@ class EditBlogPageTest(PliEntireDbTestCase):
             
     @with_login(user2["email_address"], user2["real_pass"])
     def test_own_edit_all(self, client):
-        # User2 owns page 2 and page 4
-        self.try_edit_suc(client, ex.blog_page_two)
-        self.try_edit_suc(client, ex.blog_page_four)
-        # # And they don't own these
+        # User2
+        self.try_edit_fail(client, ex.blog_page_two)
+        self.try_edit_fail(client, ex.blog_page_four)
         self.try_edit_fail(client, ex.blog_page_three)
         self.try_edit_fail(client, ex.blog_page_one)
 
