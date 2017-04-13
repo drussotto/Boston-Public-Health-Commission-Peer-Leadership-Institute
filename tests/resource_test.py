@@ -36,14 +36,14 @@ class AddResourceTestCase(PliEntireDbTestCase):
     @with_login(user1)
     def test_add4(self, client):
         f = make_add_form_data()
-        l = ["link", "name", "category", "type"]
+        l = ["link", "name", "category", "rtype"]
         ll = len(l)
         for idx, x in enumerate(l):
             fnew = dict(f)
             del fnew[x]
-            res = client.post('/resources/add', data=f)
+            res = client.post('/resources/add', data=fnew)
             self.assertEqual(400, res.status_code)
-            key = l[(x+1) % ll]
+            key = l[(idx+1) % ll]
             doc = get_db().resources.find_one({key: f[key]})
             self.assertIsNone(doc)
 
@@ -152,7 +152,7 @@ def make_add_form_data():
         "link": rand_string(50),
         "name": rand_string(50),
         "category": rand_string(50),
-        "type": rand_string(50),
+        "rtype": rand_string(50),
         "active": True
     }
 

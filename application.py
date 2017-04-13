@@ -193,6 +193,14 @@ def validate():
 @pli.peerleader_perm
 def peer_leader_resources():
     return render_template("peer_leader_resources.html")
+
+
+@application.route('/resources/add', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def add_resource():
+    return pli.add_resource()
+
 # / RESOURCES
 
     add_question, \

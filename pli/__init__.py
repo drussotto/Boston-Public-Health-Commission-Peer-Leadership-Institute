@@ -12,7 +12,6 @@ from .helpers import \
     objectId_str, \
     datetime_today
 
-
 # Service utilities
 from .service_util import \
     get_db, \
@@ -36,6 +35,8 @@ from .register import \
     register, \
     is_confirmed_uid, \
     validate_user
+
+from resources import *
 
 # Blog stuff
 from blog import *

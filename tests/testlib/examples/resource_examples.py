@@ -5,7 +5,7 @@ resource1 = {
     "link": "http://google.com",
     "name": "Google",
     "category": "sexual health",
-    "type": "student",
+    "rtype": "student",
     "active": True
 }
 
@@ -14,7 +14,7 @@ resource2 = {
     "link": "http://example.com",
     "name": "Example.com",
     "category": "wellness",
-    "type": "peerleader",
+    "rtype": "peerleader",
     "active": True
 }
 
@@ -23,7 +23,7 @@ resource3 = {
     "link": "http://notareal.business",
     "name": "We ran out of examples",
     "category": "wellness",
-    "type": "peerleader",
+    "rtype": "peerleader",
     "active": False 
 }
 
