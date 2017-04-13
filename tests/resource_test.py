@@ -36,14 +36,24 @@ class AddResourceTestCase(PliEntireDbTestCase):
     @with_login(user1)
     def test_add4(self, client):
         f = make_add_form_data()
+<<<<<<< HEAD
         l = ["link", "name", "category", "rtype"]
+=======
+        l = ["link", "name", "category", "type"]
+>>>>>>> 04f4b69... Testing for resource endpoints
         ll = len(l)
         for idx, x in enumerate(l):
             fnew = dict(f)
             del fnew[x]
+<<<<<<< HEAD
             res = client.post('/resources/add', data=fnew)
             self.assertEqual(400, res.status_code)
             key = l[(idx+1) % ll]
+=======
+            res = client.post('/resources/add', data=f)
+            self.assertEqual(400, res.status_code)
+            key = l[(x+1) % ll]
+>>>>>>> 04f4b69... Testing for resource endpoints
             doc = get_db().resources.find_one({key: f[key]})
             self.assertIsNone(doc)
 
@@ -152,9 +162,17 @@ def make_add_form_data():
         "link": rand_string(50),
         "name": rand_string(50),
         "category": rand_string(50),
+<<<<<<< HEAD
         "rtype": rand_string(50),
+=======
+        "type": rand_string(50),
+>>>>>>> 04f4b69... Testing for resource endpoints
         "active": True
     }
 
 def get_res(id):
+<<<<<<< HEAD
     return get_db().resources.find_one({"_id": id})
+=======
+    return get_db().resources.find_one({"_id": str(id)})
+>>>>>>> 04f4b69... Testing for resource endpoints
