@@ -157,4 +157,4 @@ def make_add_form_data():
     }
 
 def get_res(id):
-    return get_db().resources.find_one({"_id": str(id)})
+    return get_db().resources.find_one({"_id": id})

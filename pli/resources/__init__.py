@@ -1,1 +1,4 @@
-from add_resource import add_resource
+from manage_resource import \
+    add_resource, \
+    activate_resource, \
+    deactivate_resource

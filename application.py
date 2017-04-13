@@ -201,10 +201,18 @@ def peer_leader_resources():
 def add_resource():
     return pli.add_resource()
 
-# / RESOURCES
+@application.route('/resources/activate', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def activate_resource():
+    return pli.activate_resource()
 
-    add_question, \
-    get_rel_date_question
+@application.route('/resources/deactivate', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def deactivate_resource():
+    return pli.deactivate_resource()
+# / RESOURCES
 
 # QOTD
 @application.route('/questions/reorder', methods = [ "POST" ])
