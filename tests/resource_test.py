@@ -1,12 +1,5 @@
-from pli import get_db
+from pli import get_db, get_resource_by_type, get_resource_by_category
 from testlib import *
-
-# add
-# activate
-# deactivate
-# query_by_type
-# query_by_category
-
 
 class AddResourceTestCase(PliEntireDbTestCase):
 
@@ -36,24 +29,14 @@ class AddResourceTestCase(PliEntireDbTestCase):
     @with_login(user1)
     def test_add4(self, client):
         f = make_add_form_data()
-<<<<<<< HEAD
         l = ["link", "name", "category", "rtype"]
-=======
-        l = ["link", "name", "category", "type"]
->>>>>>> 04f4b69... Testing for resource endpoints
         ll = len(l)
         for idx, x in enumerate(l):
             fnew = dict(f)
             del fnew[x]
-<<<<<<< HEAD
             res = client.post('/resources/add', data=fnew)
             self.assertEqual(400, res.status_code)
             key = l[(idx+1) % ll]
-=======
-            res = client.post('/resources/add', data=f)
-            self.assertEqual(400, res.status_code)
-            key = l[(x+1) % ll]
->>>>>>> 04f4b69... Testing for resource endpoints
             doc = get_db().resources.find_one({key: f[key]})
             self.assertIsNone(doc)
 
@@ -155,24 +138,68 @@ class ActivateDeactivateResourceTestCase(PliEntireDbTestCase):
 
 
 class QueryResourceTestCase(PliEntireDbTestCase):
-    pass
+
+    @with_app_ctxt
+    def test_query_type1(self):
+        resources = get_resource_by_type("student")
+        self.assertEqual(1, len(resources))
+        self.assertEqual(ex.resource1, resources[0])
+        
+    @with_app_ctxt
+    def test_query_type2(self):
+        resources = get_resource_by_type("peerleader")
+        self.assertEqual(2, len(resources))
+        self.assertEqual([ex.resource2,
+                          ex.resource3], resources)
+
+    @with_app_ctxt
+    def test_query_type3(self):
+        resources = get_resource_by_type("bogus")
+        self.assertEqual(0, len(resources))
+
+    @with_app_ctxt
+    def test_query_type4(self):
+        resources = get_resource_by_type("PEErleader")
+        self.assertEqual(2, len(resources))
+        self.assertEqual([ex.resource2,
+                          ex.resource3], resources)
+
+    @with_app_ctxt
+    def test_query_cat1(self):
+        resources = get_resource_by_category("wellness")
+        self.assertEqual(1, len(resources))
+        self.assertEqual(ex.resource3, resources[0])
+
+    @with_app_ctxt
+    def test_query_cat2(self):
+        resources = get_resource_by_category("sexual health")
+        self.assertEqual(2, len(resources))
+        self.assertEqual([ex.resource2,
+                          ex.resource1], resources)
+
+    @with_app_ctxt
+    def test_query_cat3(self):
+        resources = get_resource_by_category("sexual fl;dgkfld")
+        self.assertEqual(0, len(resources))
+
+    @with_app_ctxt
+    def test_query_cat4(self):
+        resources = get_resource_by_category("SEXual health")
+        self.assertEqual(2, len(resources))
+        self.assertEqual([ex.resource2,
+                          ex.resource1], resources)
+
+        
+
 
 def make_add_form_data():
     return {
         "link": rand_string(50),
         "name": rand_string(50),
         "category": rand_string(50),
-<<<<<<< HEAD
         "rtype": rand_string(50),
-=======
-        "type": rand_string(50),
->>>>>>> 04f4b69... Testing for resource endpoints
         "active": True
     }
 
 def get_res(id):
-<<<<<<< HEAD
     return get_db().resources.find_one({"_id": id})
-=======
-    return get_db().resources.find_one({"_id": str(id)})
->>>>>>> 04f4b69... Testing for resource endpoints

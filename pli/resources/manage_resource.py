@@ -35,4 +35,15 @@ def activate_resource():
 def deactivate_resource():
     return do_something_to_resource(False)
 
+def search_and_sort_by(key, name, sort_name):
+    return list(get_db().resources.find({key: name.lower()}).sort(sort_name, 1))
+
+def get_resource_by_category(cat):
+    return search_and_sort_by("category", cat, "rtype")
+
+def get_resource_by_type(type_):
+    return search_and_sort_by("rtype", type_, "category")
+
+
+
         

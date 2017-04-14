@@ -5,11 +5,7 @@ resource1 = {
     "link": "http://google.com",
     "name": "Google",
     "category": "sexual health",
-<<<<<<< HEAD
     "rtype": "student",
-=======
-    "type": "student",
->>>>>>> 04f4b69... Testing for resource endpoints
     "active": True
 }
 
@@ -17,12 +13,8 @@ resource2 = {
     "_id" : ObjectId(),
     "link": "http://example.com",
     "name": "Example.com",
-    "category": "wellness",
-<<<<<<< HEAD
+    "category": "sexual health",
     "rtype": "peerleader",
-=======
-    "type": "peerleader",
->>>>>>> 04f4b69... Testing for resource endpoints
     "active": True
 }
 
@@ -31,11 +23,7 @@ resource3 = {
     "link": "http://notareal.business",
     "name": "We ran out of examples",
     "category": "wellness",
-<<<<<<< HEAD
     "rtype": "peerleader",
-=======
-    "type": "peerleader",
->>>>>>> 04f4b69... Testing for resource endpoints
     "active": False 
 }
 
