@@ -98,6 +98,7 @@ def remove_blog_page():
 
 @application.route('/blog/edit', methods = [ "GET", "POST" ])
 @login_required
+@pli.editor_perm
 def edit_my_page():
     return pli.edit_blog_page()
 
@@ -192,10 +193,26 @@ def validate():
 @pli.peerleader_perm
 def peer_leader_resources():
     return render_template("peer_leader_resources.html")
-# / RESOURCES
 
-    add_question, \
-    get_rel_date_question
+
+@application.route('/resources/add', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def add_resource():
+    return pli.add_resource()
+
+@application.route('/resources/activate', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def activate_resource():
+    return pli.activate_resource()
+
+@application.route('/resources/deactivate', methods = [ "POST" ])
+@login_required
+@pli.editor_perm
+def deactivate_resource():
+    return pli.deactivate_resource()
+# / RESOURCES
 
 # QOTD
 @application.route('/questions/reorder', methods = [ "POST" ])

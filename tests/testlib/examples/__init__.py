@@ -5,6 +5,8 @@ from .questions_examples import *
 from .survey_examples import *
 from .blog_page_examples import *
 from .new_questions import *
+from .resource_examples import *
+
 def get_db_mock_initializers():
     return [add_mocked_users,
             add_mocked_questions,
@@ -14,4 +16,5 @@ def get_db_mock_initializers():
             add_mocked_responses,
             add_mocked_blogs,
             add_mocked_staff,
-            add_mocked_nquestions]
+            add_mocked_nquestions,
+            add_mocked_resources]
