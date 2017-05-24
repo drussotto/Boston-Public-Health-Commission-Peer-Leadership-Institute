@@ -6,6 +6,55 @@
 * Neil Locketz
 * Daniel Russotto
 
+## Application features:
+A major requirement of all the features of the site is that they can be modified by the user. Editting site features/content should not require any programming.
+* "News" slideshow on frontpage (at the top)
+  * Slideshow of pictures with captions and subcaptions which scroll on the homescreen
+  * Slides can be enabled and disabled, so editors can display a certain set of cards on the home site.
+  * Slides have an associated link which, when clicked, will redirect the user to the linked page, which may or may not be on the site.
+  * Navigate to `/manage/slideshow` in order to manage the frontpage slideshow. 
+    This requires editor privileges
+* "Question of the day"
+  * Daily trivia run on a loop
+  * Statistics kept on responses to questions
+* Role management
+  * Content on the site is restricted based on roles
+  * Each user has a role
+  * Roles are hierarchical, and are (in descending power order):
+    1. Admin
+	2. Editor
+	3. Peer leader
+	4. User
+  * Navigate to `/change-roles` in order modify the roles of users
+    This requires admin privileges
+* Staff page
+  * Lists bios for staff
+  * Navigate to `/staff` in order to view active staff bios
+  * To edit there is a link at the bottom of the page (only visible to editors) that allows editting of staff
+* "What's new" blog 
+  * A news feed which is visible to people who visit the site.
+  * Allows user to create their own pages without programming.
+  * Pages can be permissioned
+  * To view a feed of the questions (which you have permission to view), 
+    ordered by creation date navigate to `/blog`
+  * Editors are the only ones that are allowed to create blog pages
+  * To create new pages navigate to `/blog/add` (must be logged in as an editor)
+  * To view a created blog page, navigate to `/blog/show?id=<page-objid>`. 
+    Keep in mind that you will only be able to view a page if you have permission to see it.
+  * If you are allowed to edit blog pages, navigate to the blog page, and there will be an edit button on the page.
+    Alternatively, you can navigate to `/blog/edit?id=<page-objid>` to edit the page with that objid
+* Resources (for peer leaders, and normal users)
+  * Allows creation of resources that are visible to either peerleaders or normal users.
+  * Resources are links with specified text. The links may or may not point to the site (this means they can create custom ones via the blog feature, and linking using the `/blog/show` endpoint)
+* Surveys
+  * Editors can create surveys and individual questions.
+  * Can be administered to logged in users
+  * Provides metrics on distribution of answers to questions
+* Email validation, and registration
+  * Users can register with an email, and are sent an email to validate their email.
+* Password reset
+  * Passwords are stored hashed so to reset the password we send them a "reset token" via email which is good to reset their password for a fixed amount of time.
+
 ## Installation:
 
 For those of you who are using OSX or linux (or Cygwin) I've written a script to get you set up.
@@ -17,10 +66,10 @@ There is also a "test-app.py" which is the example web page given in the AWS exa
 If you aren't able to use the script you will need to create a virtual environment named 'virtenv'
 and install the requirements in 'requirements.txt' to it.
 
-## Running the application:
+## Running the application (locally):
 
 To run a local version of the app you can run `./run-local.sh`.
-To use the full functionality of the site, you'll need to install mongodb locally so you can use it with no username or password on `localhost:27017` (this is the default).
+To use the full functionality of the site, you'll need to install mongodb locally so you can use it with no username or password on `localhost:27017` (this is the default). Since you'll need some initial data to make the application work locally, you can run `./seed_db.py` with mongodb runnning in order to seed the database with some example data. The data that is added is sufficient to use all the features of the website.
 You'll also need a local smtp server, I'd recommend `sendmail` which is easy to get on linux & mac (the default installation works for this also).
 
 ## Running the tests:
@@ -41,6 +90,8 @@ ImportError: No module named flask
 or any version of this with flask replaced by another module, 
 You probably don't have the virtual env activated, in which case you should run 'source ./virtenv/bin/activate'.
 If you do have it activated you should install the required dependancies via `pip install -r requirements.txt`
+
+2. If you see "No news!" on the home page, you should run `./seed_db.py` to add seed data.
 
 # About our testing infrastructure
 

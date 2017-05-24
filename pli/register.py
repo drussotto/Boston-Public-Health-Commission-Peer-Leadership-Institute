@@ -73,7 +73,7 @@ def create_user(user_document):
     newID = str(int(lastID)+1)
     doc["_id"] = newID
     doc["confirmed"] = False
-    doc["roles"] = ""
+    doc["role"] = "user"
     get_db().users.insert(doc)
     return newID
 
