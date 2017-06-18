@@ -8,8 +8,6 @@ source ./virtenv/bin/activate
 # Install flask to new virtualenv
 echo "Installing requirements ... "
 pip install -r ./requirements.txt > /dev/null 2>&1
-echo "Installing custom mongomock distribution ... "
-easy_install mongomock-3.7.1.dev31-py2.7.egg > /dev/null 2>&1
 
 cat <<EOF
 You're all set!
